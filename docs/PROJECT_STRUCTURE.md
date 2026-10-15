@@ -212,6 +212,7 @@ Rubedo/
 │   │   ├── full_stack_minimal.py          All 4 tiers attach without error
 │   │   ├── single_source_100step.py       Basic "does it run" test
 │   │   ├── multi_source_500step.py        Resonance Family canonical workload
+│   │   ├── emotion_checkpoint_roundtrip.py  Bridge checkpoint restores the six emotion scalars (arousal/valence recompute)
 │   │   ├── stream_recorder_smoke.py       Observe-only stream census: bounded ring, status, dump
 │   │   └── test_attention_weight.py       Speech-bridge attention: regimes, per-embedder floors
 │   │

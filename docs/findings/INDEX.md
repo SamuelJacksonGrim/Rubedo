@@ -22,3 +22,4 @@ recorded below.
 
 | Finding | One-line verdict | Status |
 |---|---|---|
+| `2026-10-14-bridge-emotion-never-restored` | Bridge checkpoint saved only derived arousal/valence; emotion reset on every restart. Fixed: six scalars persist | resolved (same commit) |
