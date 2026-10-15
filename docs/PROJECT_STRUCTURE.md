@@ -182,6 +182,7 @@ Rubedo/
 │
 ├── docs/
 │   ├── PROJECT_STRUCTURE.md               This file
+│   ├── FLOW.md                            Movement and time: state, one step, clocks, a symbol's life
 │   ├── north_star.md                      End goal and the three voices
 │   ├── WIDENING_PLAN.md                   Why the field goes 128 → 256/768, and what done means
 │   ├── EXPERIMENTAL_LEVERS.md             On/off switches and the dial census
