@@ -152,6 +152,9 @@ CONFIG = {
     # rhythm_read_margin: act only when the read beats the runner-up by this much.
     "six_rhythm_selector":          False,
     "rhythm_read_margin":           0.10,
+    # Rupture variant (a): bend the generator's raw output toward the held
+    # direction and let the ordinary path carry it (no forced reflective loop).
+    "rupture_upstream":             False,
 }
 
 # Default token sequences — replace with your own input pipeline
@@ -304,6 +307,7 @@ def build_engine(config: dict = None):
         binding_leak                  = config.get("fix0b_binding_leak", 0.0),
         six_rhythm_selector           = config.get("six_rhythm_selector", False),
         rhythm_read_margin            = config.get("rhythm_read_margin", 0.10),
+        rupture_upstream              = config.get("rupture_upstream", False),
         attractor_formation_threshold = cyc.get("attractor_formation_threshold", 0.88),
         merge_interval                = cyc.get("merge_interval", 50),
         lattice_emit_interval         = cyc.get("lattice_emit_interval", 100),

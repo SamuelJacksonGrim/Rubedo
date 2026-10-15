@@ -194,6 +194,7 @@ class AutonomousCycle:
         binding_leak:                 float = 0.0,
         six_rhythm_selector:          bool  = False,
         rhythm_read_margin:           float = 0.10,
+        rupture_upstream:             bool  = False,
         config:                       Optional[dict] = None,
     ):
         # config: merged YAML dict (configs.loader.load_config()) or None. Used to
@@ -320,6 +321,12 @@ class AutonomousCycle:
         self.six_rhythm_selector = six_rhythm_selector
         self.rhythm_read_margin  = rhythm_read_margin
         self.rhythm_reader       = None
+        # Rupture variant (a), upstream: the held direction is mixed into the
+        # generator's raw output (stage A) and the ordinary path (pull, refine,
+        # band-gated reflect, gate) takes it from there. Nothing bypasses the loop
+        # or forces the field. False = the reflective-loop variant measured
+        # 2026-10-14 (integrator absorbs it).
+        self.rupture_upstream    = rupture_upstream
 
         # ------------------------------------------------------------------
         # Config (Tier 2 behavioral knobs — Boredom Teeth, etc.)
@@ -400,6 +407,21 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         vec = self._generate(tokens, mode or rhythm)
 
+        # Upstream rupture: bend the raw expression toward ONE held novel
+        # direction for the whole pulse, before anything else sees it.
+        if mode == "rupture" and self.rupture_upstream:
+            tgt = getattr(self, "_rupture_target", None)
+            if tgt is None:
+                anchor0 = self.witness.current_anchor()
+                base = anchor0 if anchor0 is not None else vec
+                tgt = inject_ambiguity(base, scale=self.config.get("rupture_lock_scale", 1.5),
+                                       mode="gaussian")
+                self._rupture_target = tgt
+            blend = self.config.get("rupture_hold_blend", 0.5)
+            mixed = (1.0 - blend) * vec + blend * tgt
+            vec = (mixed / (np.linalg.norm(mixed) + 1e-8)).astype(vec.dtype)
+            self._rupture_fires = getattr(self, "_rupture_fires", 0) + 1
+
         # Stethoscope: record the raw generator output (stage A) for upstream
         # metastability — BEFORE attractor-pull and refinement, which homogenize
         # direction. Observe-only; never alters vec or control flow. The monitor
@@ -472,8 +494,9 @@ class AutonomousCycle:
             and report.stable
             and self.generator_metastability is not None
             and self.generator_metastability.report.regime_state == "locked"
-        ) or mode == "rupture"
-        if (self.config.get("rupture_on_lock", False) or self.six_rhythm_selector) and not rupture_now:
+        ) or (mode == "rupture" and not self.rupture_upstream)
+        if ((self.config.get("rupture_on_lock", False) or self.six_rhythm_selector)
+                and not rupture_now and mode != "rupture"):
             self._rupture_target = None          # release: fresh target next pulse
         reflect_now = rhythm in ("reflect", "explore") and report.stable and mode != "witness"
         if reflect_now or rupture_now:

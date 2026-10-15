@@ -116,6 +116,28 @@ def main():
     assert s_low.extras['behavior'] != 'witness', "a read under the margin still switched to witness"
     print(f'  witness -> {s_w.extras["behavior"]} (0 reflection passes); rupture -> {s_r.extras["behavior"]} '
           f'(held push fired, released next step); under-margin -> {s_low.extras["behavior"]}')
+
+    # 4. upstream rupture: one held target across consecutive rupture steps, released after
+    gen, cycle, gov, ve = build_full_stack()
+    cycle.six_rhythm_selector = True
+    cycle.rupture_upstream = True
+    cycle.attach_rhythm_reader(ScriptedReader([RhythmRead('rupture', 0.5, 0.8)] * 2
+                                              + [RhythmRead('reflect', 0.5, 0.8)]))
+    calls = []
+    real_reflect = cycle.reflector.reflect
+    cycle.reflector.reflect = lambda *a, **k: (calls.append(cycle._step), real_reflect(*a, **k))[1]
+    cycle.step(tokens=TOKS[1], source_id='gate', origin_type='internal')
+    t1 = cycle._rupture_target
+    s2 = cycle.step(tokens=TOKS[1], source_id='gate', origin_type='internal')
+    assert t1 is not None and cycle._rupture_target is t1, "upstream rupture did not hold one target across the pulse"
+    assert s2.extras['behavior'] == 'rupture'
+    cycle.step(tokens=TOKS[2], source_id='gate', origin_type='internal')
+    assert cycle._rupture_target is None, "upstream target not released after the pulse"
+    forced = [st for st in calls[:2] if st in (0, 1)]
+    bands = [h.rhythm for h in list(cycle._history)[:2]]
+    assert not any(b not in ('reflect', 'explore') for b, st in zip(bands, range(2)) if st in forced), \
+        "upstream rupture forced the reflective loop outside its bands"
+    print('  upstream rupture: one held target across the pulse, released after, loop not forced')
     print('Selector inert when off, read-only peek, modes wired as designed.')
 
 
