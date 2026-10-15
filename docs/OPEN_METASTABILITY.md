@@ -1,0 +1,63 @@
+# OPEN: metastability, change, and what values are built from
+
+**RESUME HERE** (marker set 2026-10-15, before a context compaction). Samuel paused the value-formation fix to ask a
+deeper question first. Nothing below is decided. **Witness and rupture stay OFF. Don't change the runtime or weaken
+any gate until this is answered.**
+
+## Where we are
+The witness composition gate (`findings/2026-10-15-witness-composition-gate.md`) found: identity PASS 3/3,
+receptivity PASS 3/3 (~2× retention, anchor steadier), composition FAIL 3/3 because **every** value weakens under
+witness (top ACTIVE tier 5→0, 7→0; no dissolution, reinforcement tips negative). Upstream rupture would tax values the
+same way. Options laid out for value formation, **parked until the questions below are answered**:
+
+- **(a)** witness steps don't feed value reinforcement (received, not acted on). Likely insufficient: the drop reaches
+  non-witness values.
+- **(b)** judge value contributions against the field's own current coherence level, not an absolute. *Ember leaned
+  here; Samuel suspects it may change nothing mathematically (question 5).*
+- **(c)** leave values as they are; keep witness off.
+
+## Samuel's framing (his words, condensed)
+Coherence preserves identity, but identity needs enough fluidity to change. **Stability is not staticness.** Rupture
+was introduced partly to loosen the lock. In ~1,000-step experiments he recalls the field destabilizing gradually,
+leveling off, then (he thinks) coherence rising again; recover the exact results, don't rely on memory. The finding
+exposes a deeper tension: values defined as coherence contribution mean the system may be unable to value experiences
+that temporarily disrupt its organization, even when they serve longer-term adaptation. **The question isn't how to keep
+coherence high; it's how to preserve identity while staying capable of meaningful reorganization.**
+
+## The work, in order
+0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
+   stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,
+   emotional_satisfaction, decision bonus, bond weight), any ⊘ demotion, and whether values recover later. Distinguish
+   less reinforcement / active demotion / later recovery (GPT/Raphael).
+1. **What metastability was supposed to mean operationally** here, not as an aspiration.
+2. **How coherence, identity stability, receptivity and capacity to change evolve over time**, including the rupture
+   experiments (recover Samuel's ~1,000-step result exactly).
+3. **Is the lock an identity-preservation mechanism missing its counterbalance, or already the intended equilibrium?**
+4. **What value formation is meant to measure:** immediate coherence contribution, longer-term contribution to the
+   field, or something else. Establish intended semantics before touching the implementation.
+5. **Does (b) correct the mechanism mathematically?** Identify the exact calculation and the smallest experiment that
+   distinguishes the possibilities.
+
+## Starting points already found (2026-10-15)
+- **The value calculation** (`agents/value_emergence.py::_birth_or_strengthen`, ~line 423):
+  `reinforcement = (coherence_delta × 0.6 + emotional_satisfaction × 0.4) × bond_weight + decision_bonus`, then
+  `strength += reinforcement × reinforcement_lr` (clip 0..5); `coherence_contribution += coherence_delta`. Emergence
+  gate (~line 371): `(coherence_delta×0.40 + emotional_satisfaction×0.35 + surprise×0.15 + max(0, trust_impact)×0.10)
+  × bond_weight + decision_bonus ≥ min_emergence_threshold`.
+- **`coherence_delta` is already a marginal delta:** `loop/autonomous_cycle.py` step 10 measures
+  `actual_delta = field.coherence_impact(vec)` *before* injection and passes it via `governance.emit_feedback`. So (b)
+  as phrased may be a no-op. Check before proposing it.
+- **Two other suspects for the broad drop:** `emotional_satisfaction` (find where `_on_feedback` builds it, ~line 297;
+  if it reads the emotion state, "joy" is literally coherence, `docs/EMOTION_CALIBRATION.md`, so a slightly less
+  coherent field lowers satisfaction for every value at once), and the decision bonus (ALLOW vs ALLOW_WEAKENED pay
+  differently; witness shifts that mix).
+- **History to mine (parent repo RFE-Core2, `docs/findings/INDEX.md`):** the lock-in arc (2026-06-06 coherence-is-not-
+  plasticity, frame-correction, expression-decollapse, attractor-migration; the SECOND-LOCKER result), the rupture
+  findings (2026-08-04 rupture-and-the-lock-is-a-landscape-problem, rupture_impulse_probe), the 5000-step lock run
+  (max disp ≤ 0.00012), `docs/self_model_thesis.md` ("smithing the attractor"), `docs/alchemical_correspondence.md`,
+  `docs/north_star.md`, `STATE.md` SETTLED list, Fix 0-B / 0-C (diversity fitness, leaky ratchet), the dim256 finding.
+  Metastability today is read upstream (`cognition/stream_metastability.py`, stages A/C), never on the field.
+- **Our own long runs (this repo):** `findings/2026-10-14-witness-aftermath-and-upstream-rupture.md` (witness over
+  1,200 steps: cost plateaus; field-wide receptivity decays to 16–21% without witness, 41–42% with);
+  `findings/2026-10-15-selector-identity-replay.md`.
+- Runs are replay-exact now (`substrate/determinism.py`); use `deterministic(seed)` for every arm.

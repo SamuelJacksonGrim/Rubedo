@@ -8,6 +8,9 @@ optional but aren't — read this before editing. For the project overview, stru
 tour, and conceptual walkthrough, read `README.md` first. This file covers only what you
 can't infer from reading the tree.
 
+**OPEN NOW (2026-10-15): `docs/OPEN_METASTABILITY.md` is the resume point.** Witness and rupture stay off; no
+runtime or gate changes until its questions are answered.
+
 **What Rubedo is for:** widening the field from 128 to 256/768 so a real encoder (the
 corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, then
 re-tuning what the widening moves. The why, the steps and "done" are in
