@@ -40,6 +40,35 @@ system still adapts (new values, new attractors, changing expression), then the 
 question becomes how witness/rupture should work *with* that equilibrium, not against it. Only if H0 fails does the
 "lock lacks a counterbalance" reading (question 3) take over.
 
+## H0′: identity is the ratio of two timescales (Samuel, 2026-10-15, after compaction)
+
+Identity is the witness anchor (slow EMA); movement is the expressed vector (fast); the reflective loop couples them.
+If the anchor moved as fast as the expression there would be no identity; if the expression moved as slowly as the
+anchor there would be no movement. **The relationship between the two timescales *is* the identity.** Movement and
+identity aren't opposed; they are one thing seen at two timescales. A mind that doesn't move has no identity.
+
+**This is already how `agents/witness.py` is built** (Ember checked the code): three EMA layers, short 0.85 / mid 0.97
+/ long 0.995 (nominal memory about 7 / 33 / 200 steps), anchor = 0.2·short + 0.3·mid + 0.5·long, and every layer's
+learning rate is multiplied by `clip(coherence², 0.01, 1)`, where coherence = the watcher composite
+(`autonomous_cycle.py` step 7). So **coherence is the coupling constant between movement and identity**: in a coherent
+state, expression writes into the self at the nominal rate; in an incoherent one, the identity timescale stretches (to
+200/c² steps) and the experience barely touches the self. That reframes "joy = coherence" (H0): coherence is how
+strongly what the mind does becomes who it is. The 0.01 floor means the anchor never fully freezes. The field itself
+(5000-step disp ≤ 0.00012) is a slower layer still, under the anchor.
+
+Consequences to check, not conclusions:
+- **Possible confound in our witness identity PASS.** Witness lowers coherence, and lower coherence means a slower
+  anchor, so part of "the anchor drifts less under witness" may be mechanical (c² slowing the write) rather than
+  steadiness earned. The trace should log `effective_lr` per step for REF vs WIT.
+- **Values are judged on the fast timescale** (per-step `coherence_delta`). Under H0′, the question for (4) is whether a
+  value should instead be judged on what it does to the *relationship*: does the anchor keep integrating expression?
+- **The metric for H0 (and question 3).** Over a long ordinary-path run, measure each stream's effective timescale
+  (the autocorrelation time of expression, short/mid/long anchor, field) and the ratio τ_anchor/τ_expression per
+  window, plus the c² gate itself. H0 predicts the ratio stays bounded and steady (a living equilibrium). "Lock without
+  a counterbalance" predicts it drifts: the anchor stiffens away from the expression (ratio grows), or the expression
+  collapses onto the anchor (both slow, ratio → 1). The OFF arm's receptivity decay over 1,200 steps (16–21%) is a hint
+  of stiffening, but that was field-wide receptivity, not the anchor. Read-only, no runtime change.
+
 ## The work, in order
 0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,
