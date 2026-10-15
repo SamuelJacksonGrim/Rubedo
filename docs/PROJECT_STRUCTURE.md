@@ -256,7 +256,9 @@ Rubedo/
 │   │   │   └── corpus_integrity_check.py  Corpus schema, leakage, stratification
 │   │   ├── integrity/
 │   │   │   ├── __init__.py                Package marker
-│   │   │   └── all_levers_composition_probe.py  All levers ON together
+│   │   │   ├── all_levers_composition_probe.py  All levers ON together
+│   │   │   ├── witness_composition_gate.py  Witness's graduation gate on the all-ON stack (composition, identity, receptivity)
+│   │   │   └── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
