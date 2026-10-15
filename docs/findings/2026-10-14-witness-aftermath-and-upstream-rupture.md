@@ -56,10 +56,14 @@ of the pre-declared bar (mean over seeds) identity fails. The bar is not being m
   run should declare a steadier one in advance (mean over the last 50 steps, and the identity measures the repo
   already trusts: witness anchor drift, the field-lock displacement).
 
-## Open items
-1. Seed 2: what made upstream rupture cost 0.12 there? (Trace its rupture pulses against the coherence trajectory.)
-2. Witness accumulation: does the drift level off over a longer run (1,000+ steps), or keep falling? A bound on
-   witness strength is the fallback if it keeps falling.
+## Open items (order agreed with Samuel + GPT/Raphael: 1, then 2, then 3)
+1. Seed 2: what made upstream rupture cost 0.12 there? Judge it on **matched step-by-step trajectories** against
+   OFF (OFF's own end-of-run coherence ranges 0.81–0.85, so final numbers alone can mislead), and tell apart three
+   failure modes, each pointing to a different fix: (a) a temporary, recoverable disturbance; (b) a lasting shift in
+   identity representation; (c) a consequence of the state the field was in when the rupture landed.
+2. Witness accumulation: does the drift level off over a longer run (1,000+ steps), or keep falling? Track coherence
+   **and** the field's accumulated alignment with what it witnessed, together: a field that stops changing can look
+   stable only because it has stopped being receptive. A bound on witness strength is the fallback if it keeps falling.
 3. Re-run identity with the steadier measures above, declared first; more seeds.
 4. Both levers stay OFF until 1–3 land; then the all-ON composition gate.
 5. The emotion trace during witness / rupture belongs to the calibration plan (`docs/EMOTION_CALIBRATION.md`), once

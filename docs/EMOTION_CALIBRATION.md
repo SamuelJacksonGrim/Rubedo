@@ -30,6 +30,16 @@ Arousal and valence are derived from these six (Tier 4.2). Downstream, the six s
 from the table: joy and stability are mostly coherence under two names, and curiosity and tension share one source.
 That is exactly the kind of thing calibration exists to find.
 
+## Three layers to keep apart (GPT/Raphael)
+
+1. **Underlying signals:** what is actually measured and calculated (today: prediction error, coherence, energy).
+2. **Functional dimensions:** which signals *independently* change the field's behavior. Six names need not mean six
+   dimensions: if joy and stability are one measurement wearing two names, the architecture may be counting the same
+   signal twice; if they share inputs yet act differently downstream, that difference is worth investigating.
+3. **Interpretations:** the emotion names, including the field's own reports.
+
+Redundancy, if it exists, has to come out of the evidence, not be decided by the labels.
+
 ## Three things to connect
 
 1. **Internal state:** the values and their trajectories. What raises each one, what suppresses it.
