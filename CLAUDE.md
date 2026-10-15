@@ -182,7 +182,12 @@ errors.
   `dream_channel_p = 0.20`) feeds the system's own decoded expression back as
   `source_id='source_dream'` **through `arbitrate()`** — no bypass. Trust, HHI,
   manipulation resistance, and sacred-shield treat the system's own voice like
-  any other source. Validated non-dominant and adversarial-gated (containment
+  any other source. (Scope, from the code 2026-10-14: the gate governs *sources*.
+  After an input clears `arbitrate()`, the step's own rhythm behaviors inject into
+  the field directly: reflect's chorus at 0.3, explore's mutation at 0.5,
+  stabilize's crystal reactivation, and the dreamer. They are the substrate's
+  internal motion, not voices; whether they should also be gated is an open
+  architect question, not a bug to patch silently. See `ARCHITECTURE.md`.) Validated non-dominant and adversarial-gated (containment
   unweakened); keep it that way — never give `source_dream` a privileged path.
 - Downtime dreaming (`cognition/dream_session.py`, run by
   `tools/dream/run_dream.py`) is **offline**: it reads substrate state and

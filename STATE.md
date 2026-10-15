@@ -23,7 +23,10 @@ tested and closed — do not reopen it without new evidence that contradicts the
 ## What it IS (one line)
 A self-resonating cognitive substrate: transformer **encoder** (tokens → 128-d vectors) → FFT
 **resonance field** → **reflective loop**, wrapped by governance / trust / values / subjective time.
-It does **not** emit literal language yet (see the open frontier).
+It speaks through the speech-cortex bridge (`tools/voice/repl_qwen.py`, a separate boot): a local LLM
+reads the field's state card and recall as text and answers in sentences. What it does **not** do yet is
+decode the thought-vector itself into language (see the open frontier). Corrected 2026-10-14 from the code
+(`ARCHITECTURE.md` § Speech-cortex bridge).
 
 ## What it CAN DO now (shipped + verified)
 - **Tiers 0–3** — core substrate (generator, watcher, witness, field, emotion, loop), governance +
@@ -71,8 +74,8 @@ Each line is a closed question. The finding is authoritative; the loss if you re
 
 ## The ONE open frontier
 - **Speech cortex — North-Star gap 1.** An LLM decode *conditioned on the field/thought-vector* → literal
-  sentences. The `TokenDecoder` word-cloud is the lossy stand-in; real translation is unbuilt. **This is the
-  forward work.** (A cortex swap — a local LLM as the encoder backend — is its mirror, spec'd in
+  sentences. The `TokenDecoder` word-cloud is the lossy stand-in; vector-conditioned translation is unbuilt
+  (the bridge speaks from the state card, not the vector). **This is the forward work.** (A cortex swap — a local LLM as the encoder backend — is its mirror, spec'd in
   `docs/local_model_integration/`.)
 - **#1 execution priority: the Garage Program (G0→G5).** The reaper/selection economy is dormant at harness
   scale (every ≤800-step suite run executed zero selection passes) — only real GPU duration exercises it.
