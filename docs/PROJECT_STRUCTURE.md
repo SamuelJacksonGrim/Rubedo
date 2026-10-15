@@ -251,9 +251,12 @@ Rubedo/
 │   │   ├── training/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   └── corpus_integrity_check.py  Corpus schema, leakage, stratification
-│   │   └── integrity/
+│   │   ├── integrity/
+│   │   │   ├── __init__.py                Package marker
+│   │   │   └── all_levers_composition_probe.py  All levers ON together
+│   │   └── selector/
 │   │       ├── __init__.py                Package marker
-│   │       └── all_levers_composition_probe.py  All levers ON together
+│   │       └── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
 │   │
 │   ├── doc_accuracy/
 │   │   ├── __init__.py                    Package marker
