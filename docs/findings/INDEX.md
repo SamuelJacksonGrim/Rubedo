@@ -22,4 +22,5 @@ recorded below.
 
 | Finding | One-line verdict | Status |
 |---|---|---|
+| `2026-10-14-six-rhythm-corpus-and-reading` | Corpus 1.4.0 adds witness (integrity clean); six-class pretrain reads rhythm from unseen holdout at 0.977 (witness precision 1.000) | **standing** |
 | `2026-10-14-bridge-emotion-never-restored` | Bridge checkpoint saved only derived arousal/valence; emotion reset on every restart. Fixed: six scalars persist | resolved (same commit) |

@@ -73,6 +73,14 @@ DEFAULT_RHYTHM_SEEDS: Dict[str, List[List[str]]] = {
         ["sever", "cleave", "split"],
         ["collapse", "rupture", "burst"],
     ],
+    # witness: the receptive pole (perceive without transforming); corpus 1.4.0 rows
+    "witness": [
+        ["sit", "dwell", "abide"],
+        ["linger", "await", "patience"],
+        ["unmoved", "vigil", "contemplate"],
+        ["meditate", "hush", "unsought"],
+        ["sojourn", "attune", "ken"],
+    ],
 }
 
 RHYTHM_IDS = {r: i for i, r in enumerate(DEFAULT_RHYTHM_SEEDS.keys())}

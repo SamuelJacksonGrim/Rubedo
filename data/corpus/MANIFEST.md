@@ -1,14 +1,14 @@
 # Corpus MANIFEST
 
-version: 1.3.0
-date: 2026-08-05
+version: 1.4.0
+date: 2026-10-14
 generated_by: Claude (automated, RFE vocabulary); validated and cleaned in-repo;
 operational-vocabulary extension built by data/corpus/build_extension_v1_1_0.py
 
 ## Composition
-- train: 8527 sequences
-- holdout: 1505 sequences — 15.0%
-- rhythms: stabilize, dream, reflect, explore, rupture
+- train: 9533 sequences
+- holdout: 1680 sequences — 15.0%
+- rhythms: stabilize, dream, reflect, explore, rupture, witness
 - vocab: 709 plain-English tokens — RFE conceptual neighborhood + the full
   operational vocabulary (Resonance Family streams, DEFAULT_RHYTHM_SEEDS,
   bootstrap WORDS, recursion1188 DEFAULT_TOKENS)
@@ -45,6 +45,13 @@ generalization — exactly what Gate G1 needs.
 
 ## Versioning
 Any corpus change increments version. All findings reference corpus version.
+
+### 1.4.0 (2026-10-14)
+- **Witness, the 6th rhythm** (the receptive pole: perceive without transforming). 1,181 witness sequences over
+  170 words (the grown set authored for the encoder work, same rules as this corpus; see `authoring/witness.md`)
+  appended by `build_witness_v1_4_0.py`: train +1,006, holdout +175 (14.8%, seed 1188, repaired for vocab closure
+  and the 8-context floor). The five existing rhythms are byte-identical to 1.3.0. `RHYTHMS` and
+  `DEFAULT_RHYTHM_SEEDS` gained `witness`. The boot pretrain now trains six classes.
 
 ### 1.3.0 (2026-08-05)
 - **Rupture 5th rhythm + vocabulary expansion.** Added the `rupture` rhythm (structural-failure / kinetic-disruption axis, verified separable — rupture⊥explore centroid cos -0.096) and expanded the vocabulary (~335 -> 709 tokens) via a hand-audited procedural pass (Kimi K3). Train 2870 -> 8527; the train/holdout split was **rebuilt** — stratified ~15% per rhythm (incl. rupture), de-duplicated, leakage-free, label-coherent, every train token >= 8 contexts. `RHYTHMS` + `DEFAULT_RHYTHM_SEEDS` gained `rupture` (`training/corpus.py`, `training/rhythm_pretraining.py`).
