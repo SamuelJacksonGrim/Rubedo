@@ -72,9 +72,9 @@ def run(ckpt, arm, seed, steps):
     try:
         cfg = dict(r.CONFIG)
         cfg.update(session_persistence=True, checkpoint_dir=str(ckpt),
-                   six_rhythm_selector=(arm != "OFF"), rupture_upstream=(arm == "RUPTURE-UP"))
+                   six_rhythm_selector=(arm != "OFF"), rupture_upstream=(arm in ("RUPTURE-UP", "BOTH")))
         gen, cycle, gov, ve = r.build_engine(cfg)
-        if arm != "OFF":
+        if arm in ("WITNESS", "RUPTURE-UP"):   # BOTH: no mask, both modes live
             from cognition.rhythm_reader import RhythmRead
             keep = "witness" if arm == "WITNESS" else "rupture"
             real = cycle.rhythm_reader.read
@@ -97,6 +97,7 @@ def run(ckpt, arm, seed, steps):
             s = cycle.step(tokens=toks, source_id=src, origin_type="internal")
             rows.append(dict(kind=kind, behavior=s.extras.get("behavior", s.rhythm),
                              band=s.rhythm, energy=s.field_energy,
+                             anchor=np.array(cycle.witness.current_anchor(), dtype=float),
                              field=cycle.field.field.copy(), coh=field_coh(cycle),
                              expr=np.array(cycle._last_expressed, dtype=float),
                              u=vecs[0] if known[0] else None,

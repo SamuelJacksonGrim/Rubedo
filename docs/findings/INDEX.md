@@ -22,6 +22,7 @@ recorded below.
 
 | Finding | One-line verdict | Status |
 |---|---|---|
+| `2026-10-15-selector-identity-replay` | Replay-exact, pre-declared identity bars: WITNESS PASS 2/3 (anchor drifts less than OFF), RUPTURE-UP PASS 3/3, BOTH FAIL 0/3 (coherence costs add, −0.06). Levers stay OFF; BOTH needs a shared budget | **standing** |
 | `2026-10-15-reproducible-runs` | 36 wall-clock reads, 9 unseeded generators, 3 random-key sites routed through `substrate/determinism.py`; seeded runs now replay bit-for-bit in and across processes; production unchanged; guard test | resolved (same commit) |
 | `2026-10-14-witness-aftermath-and-upstream-rupture` | Witness: retention 3/3, per-event recovery 3/3, responsiveness 2/3 → the dip is the update, small cost accumulates. Upstream rupture: behavior 3/3 (0.63 vs 0.02), integration 3/3; identity holds 2/3 seeds, fails the pre-declared mean bar (seed 2 −0.12). Follow-ups: seed 2 = steady recoverable cost (~0.02), runs don't replay exactly (wall clock); witness over 1,200 steps plateaus and keeps the field ~2× as receptive as OFF under long-run stiffening. Levers stay OFF | **standing** |
 | `2026-10-14-six-rhythm-selector-live-off-on` | Live OFF/ON, 3 seeds: reading precise (1.00, never hijacks stance); split run: witness works (field moves 35–45% less) and owns the coherence drop (−0.06..−0.13); rupture-through-reflect FAILS (integrator absorbs it). Lever stays OFF; rupture + witness cost are architect decisions | **standing** |

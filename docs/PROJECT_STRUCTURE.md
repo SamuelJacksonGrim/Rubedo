@@ -262,7 +262,8 @@ Rubedo/
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
 │   │       ├── aftermath_probe.py         What witness leaves behind; upstream rupture's downstream effect
 │   │       ├── rupture_trace.py           One seed, matched step-by-step: temporary vs lasting vs state-bound cost
-│   │       └── witness_long_probe.py      1,200 steps: does witness's cost plateau, and does the field stay receptive
+│   │       ├── witness_long_probe.py      1,200 steps: does witness's cost plateau, and does the field stay receptive
+│   │       └── identity_probe.py          Replay-exact identity bars (anchor, lock, coherence, governance) per arm
 │   │
 │   ├── doc_accuracy/
 │   │   ├── __init__.py                    Package marker
