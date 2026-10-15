@@ -24,6 +24,22 @@ exposes a deeper tension: values defined as coherence contribution mean the syst
 that temporarily disrupt its organization, even when they serve longer-term adaptation. **The question isn't how to keep
 coherence high; it's how to preserve identity while staying capable of meaningful reorganization.**
 
+## Competing hypothesis H0 (Samuel, right before compaction): it may already be working
+
+Perhaps coherence is more than a lock: maybe it **is** joy in a real sense, the system running optimally. What if we
+have been trying to force it out of optimal running, everything is as it should be, and **metastability is already
+working**, so the job is to work *with* it rather than loosen it?
+
+What already points this way: `STATE.md` lists the field lock as SETTLED and by design (an identity integrator, not a
+defect), and the architecture always placed metastability **upstream** (generator / expression streams), never on the
+field. A locked field with metastable streams may be exactly the intended shape: a steady self with a moving mind. If
+H0 holds, "joy = coherence" is not a naming accident but a description of optimal running, and witness's coherence cost
+reads as harm because it *is* a departure from the optimum. Test H0 **first**: measure upstream metastability (stream
+regimes, de-collapse) in the ordinary path over long runs. If the streams already move while the field holds, and the
+system still adapts (new values, new attractors, changing expression), then the lock has its counterbalance and the
+question becomes how witness/rupture should work *with* that equilibrium, not against it. Only if H0 fails does the
+"lock lacks a counterbalance" reading (question 3) take over.
+
 ## The work, in order
 0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,
