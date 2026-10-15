@@ -38,7 +38,7 @@ is the conceptual tour; the other references divide the rest:
 | Read | For |
 |------|-----|
 | [`STATE.md`](STATE.md) | **Read first** — the one-screen "you are here": what the system can do now, what is **SETTLED** (do not reopen), what's parked, the one open frontier, and the 4-role sibling map |
-| [`ARCHITECTURE_ANALYSIS.md`](ARCHITECTURE_ANALYSIS.md) | How information flows and recurs, end to end — the deep reference (subsystem tables, feedback loops, findings F1–F10) |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | How information flows and recurs, end to end — module index, the step in source order, the speech-cortex bridge |
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
 | [`docs/WIDENING_PLAN.md`](docs/WIDENING_PLAN.md) | **Rubedo's job:** why the field widens 128 → 256/768, the steps, and what "done" means |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
@@ -100,7 +100,7 @@ Two layers sit on top of the tier stack: the **voice layer** (a decoder
 read-out head, waking self-dialogue, and offline symbolic dreaming —
 North-Star rungs 1–2), covered after Tier 4 below, and the opt-in
 **Two-Operator overlay** (λ ignition · ⊕ solvent gate · ⊘ integrity-read),
-documented in [`ARCHITECTURE_ANALYSIS.md`](ARCHITECTURE_ANALYSIS.md) §8.
+documented in [`ARCHITECTURE.md`](ARCHITECTURE.md) (the Two-Operator overlay).
 
 The whole stack is composed at boot through one function —
 `build_engine()` in `loop/recursion1188.py` — and every launchable entry point
@@ -228,7 +228,9 @@ Herfindahl-Hirschman Index over rolling window of allowed injections. Tracks whi
 
 ### RelationalBondManager — emergent bonds
 
-Bonds form automatically when `interaction_count ≥ 20` AND `crystal_count ≥ 1` AND **either** of two coherence signals clears: an *adaptive* `coherence_mean` threshold (variance-scaled, floor `0.01`), OR `allow_rate ≥ 0.80`. The dual-signal design lets bonds form for sources that produce many small positive contributions (high allow-rate, lower individual coherence) as well as sources that produce fewer but more strongly coherent ones. This was added in the Tier 1 Revision after the initial single-threshold design proved too restrictive in hyper-coherent saturated fields.
+Bonds form automatically when `interaction_count ≥ 20` AND `crystal_count ≥ 1` AND a quality signal clears. The classic quality signal — still the class default, and what you get if you opt out — is **either** of two reads: an *adaptive* `coherence_mean` threshold (variance-scaled, floor `0.01`), OR `allow_rate ≥ 0.80`. The dual-signal design lets bonds form for sources that produce many small positive contributions (high allow-rate, lower individual coherence) as well as sources that produce fewer but more strongly coherent ones. This was added in the Tier 1 Revision after the initial single-threshold design proved too restrictive in hyper-coherent saturated fields.
+
+The composed boot (`build_engine`, `bond_ddm_formation` default **on**) replaces only that instantaneous quality read with the leaky asymmetric accumulator in `agents/bond_accumulator.py`. The structural counts above are unchanged, an ACCEPT still has to meet them, and the field never sees the accumulator's variable. Opt out with `bond_ddm_formation: False`. Constants are in the dial census.
 
 Bonds carry a `bond_type` inferred from accumulated signals:
 
@@ -386,49 +388,43 @@ dilation_factor = clamp(1.0 + arousal_effect + dissociation_effect + flow_eff + 
 
 The **flow term** ships LIVE (`k_flow = 0.5`): organized field deepens flow compression. The **agitation term** ships INERT (`k_agitation = 0.0`) — a labeled phenomenological hypothesis (chaotic negative-valence drag-vs-panic-compression), off until the sign sweep resolves it. The **clamp** `[0.1, 3.0]` closes a latent 4.2 gap (4.2 had none). At a neutral `phase_coherence` of 0.5 the whole addition is zero, so this is byte-identical to Tier 4.2 — a strict, regression-safe extension. `dilation_factor` remains a terminal sink: 4.3 introduces no feedback loop and does not alter governance ordering.
 
-Validation finding (`docs/tier4_3_validation.md`): the flow term is validated as a degeneracy resolution, but the *discrimination* claim is **half-validated** — under tested workloads `phase_coherence` pins high (mean ≈ 0.96, never below ≈ 0.79), so the chaotic side of the axis is never exercised. Closing it needs a high-novelty workload, not a synthetic heartbeat.
+`STATE.md` records the flow term's discrimination claim as **half-validated** — the chaotic side of `phase_coherence` was not exercised under the workloads that were run, and closing it needs a high-novelty workload, not a synthetic heartbeat. The write-up those numbers lived in (`docs/tier4_3_validation.md`) is in the parent repo, not this tree.
 
 ---
 
-## The Voice Layer — three voices, one gate
+## The Voice Layer — three voices, and a bridge beside them
 
-The substrate thinks in vectors; the voice layer is how those vectors become
-words and re-enter as experience. It implements the first two rungs of the
-North Star (`docs/north_star.md`): **voice** (state → words) and **governed
-dialogue** (words back in, as a source like any other).
+The substrate thinks in vectors. Words come back out by three different
+mechanisms, and they are not interchangeable.
 
 ### The read-out head
 
 `TokenDecoder` (`agents/decoder.py`) is an autoencoder head trained at boot
 (`training/decoder_training.py`) that recovers a **bag-of-tokens word-cloud**
-from an expressed vector — the semantic neighborhood, not sentences
-(recall@8 ≈ 0.10, lossy by construction). That lossiness is a gap only for
-literal external speech (the planned fix is an LLM *speech cortex* mirroring
-the encoder swap — `docs/local_model_integration/`); for the other two voices
-the non-literal cloud is the *right* register.
+from an expressed vector — the semantic neighborhood, not sentences. Lossy
+by construction. That cloud is the right register for the dream channel and
+for downtime dreaming. It is not what the speech bridge says to a person.
 
-### Three voices
+### Three voices on the composed runtime
 
 | Voice | When | Mechanism | Status |
 |-------|------|-----------|--------|
-| **Waking inner monologue** (self ↔ self) | ~20% of waking steps | The dream channel (`cognition/dream_channel.py`): the system's last expression is decoded and fed back as `source_id='source_dream'` — **through `arbitrate()`**, no bypass | **Default ON** (`dream_channel_p = 0.20`); validated non-dominant + adversarial-gated |
-| **Waking external speech** (system ↔ human/AI) | — | Literal sentences to a reader; needs the speech-cortex upgrade | The honest gap — planned |
-| **Symbolic dreaming** (downtime) | Offline, on demand | `DreamSession` (`cognition/dream_session.py`, run by `tools/dream/run_dream.py`): recombines memory crystals + the field direction, perturbs, decodes each as a dream image; consolidation distills recurrent symbols + strong values into skill-compatible markdown artifacts | Shipped (first rung); reads state, writes files, **never touches the live loop** |
+| **Waking inner monologue** (self ↔ self) | ~20% of waking steps in `main()` | The dream channel (`cognition/dream_channel.py`): the last expressed vector is decoded and fed back as `source_id='source_dream'` — **through `arbitrate()`**, no bypass | **Default ON** in `recursion1188` (`dream_channel_p = 0.20`). Not attached by the API, the socket, or the speech bridge |
+| **Waking external speech** (system ↔ human) | When you run the bridge | `tools/voice/repl_qwen.py`: a local chat model speaks from the state card and from recall; perception is a separate embedder wrapped over `Generator.generate` | **Shipped as a tool, not as `build_engine`.** Literal sentences exist. Decode *of the thought-vector* does not — the mouth never sees the 128-d vector |
+| **Symbolic dreaming** (downtime) | Offline, on demand | `DreamSession` (`cognition/dream_session.py`, run by `tools/dream/run_dream.py`): recombines memory crystals + the field direction, perturbs, decodes each as a dream image; consolidation writes markdown | Shipped; reads state, writes files, **never touches the live loop** |
 
-Two properties are architectural, not incidental. **Every voice passes the
-gate** — trust, HHI, manipulation resistance, and sacred-shield treat
-`source_dream` like any external source (validated: voice diversity +13–25%,
-HHI *drops*, attacker containment unweakened with it on). And **waking
-rumination and downtime dreaming are separate paths** — the dream channel runs
-inside the live loop's gate; `DreamSession` runs outside the loop entirely.
+`source_dream` passes the gate like any other source. Downtime dreaming
+never enters the loop. The bridge is a third boot: human lines, world
+crumbs, and the mouth's own utterances are stepped as `you` / `world` /
+`self`, and those steps are governed too. How the two Qwens divide (embedder
+on 8081, mouth on 8080), and what neither of them is allowed to touch, is
+[`ARCHITECTURE.md`](ARCHITECTURE.md) § Speech-cortex bridge.
 
-### Instruments (observe-only)
-
-`tools/` renders the interior without feeding it: `tools/voice/repl.py` (the
-"larynx" — first-person state cards), `tools/decoder/listen.py` (decode each
-live step's expressed vector), `tools/dream/run_dream.py` (the downtime dream),
-and `tools/ignition/` (the CII probes). Instruments observe and render; none
-injects into the field.
+`tools/voice/repl.py` is the small larynx: your line is stepped, and the
+reply is `voice_from_card` with no chat model. `tools/decoder/listen.py`
+prints the word-cloud and does not step it back in. `state_card.py` only
+reads. The package is not, as a whole, observe-only — `repl.py` and
+`repl_qwen.py` inject by calling `step()`.
 
 ---
 
@@ -448,7 +444,7 @@ The tiers above describe the *parts*. This section traces how they *move togethe
 | 3 | **Attractor pull** | `Attractor.pull()` blends `vec` toward its nearest basin; pull strength scaled by `emotion.attractor_pull()` |
 | 4 | **Recursive attention** | `RecursiveAttention.refine()` attends `vec` over a rolling window of prior latent states; `diversity_blend` weights the raw vector back in so the untrained attention can't collapse the expression to its context centroid. The generator output (stage A, step 2) and this refined expression (stage C) feed the observe-only `StreamMetastabilityMonitor`s exposed in `status()`. |
 | 5 | **Watcher evaluation** | `Watcher.evaluate(vec, anchor, field_state)` → `CoherenceReport` — geometric × temporal × resonance, plus `coherence_delta` and `crystallization_pressure` |
-| 6 | **Reflective loop** | reflect / explore only, if `report.stable`: `ReflectiveLoop.reflect()` iterates attractor-pull + field-blend + coherence-check until convergence |
+| 6 | **Reflective loop** | reflect / explore only, if `report.stable`: `ReflectiveLoop.reflect()` iterates attractor-pull + field-blend + coherence-check until convergence. Opt-in `rupture_on_lock` (default off) can force this branch when the stethoscope reads `locked`, and holds one novel target for the pulse. `_last_expressed` is stored after this, for the decoder; the step does not read it |
 | 7 | **Witness update** | `Witness.update(vec, coherence)` updates the short / mid / long EMA anchors (coherence-weighted) → `RelationalProfile` |
 | 8 | **Predictive echo** | `PredictiveEcho.update(vec)` → prediction error → `curiosity / surprise / tension / boredom` |
 | 9 | **Emotional gradient** | `EmotionalGradient.update()` folds echo + coherence + field energy into six EMA-smoothed scalars |
@@ -461,8 +457,8 @@ The tiers above describe the *parts*. This section traces how they *move togethe
 | 18 | **Ecology signal relay** | `generator.signal_coherence()` feeds the Watcher's verdict back into the symbolic ecology |
 | 18b | **Manipulation resistance** | a `ResistanceMetrics` snapshot is assembled from Witness / Dependency / Watcher / Crystal signals; `ManipulationResistanceEngine.detect()` runs five detectors; any signals go to governance |
 | 19 | **Field decay** | `field.decay()` at a rate modulated by `emotion.field_decay_rate()` |
-| 20 | **Rhythm-routed behavior** | `stabilize` → crystal activation + spectral diffusion · `dream` → `Dreamer.dream()` · `reflect` → `Chorus` harmonization injected softly · `explore` → high-ambiguity mutation. A governance `force_dream_flag` overrides the rhythm. **Boredom with Teeth:** if `emotion.boredom` crosses threshold, the rhythm is forced to `explore` regardless of field energy — a system that finds stillness and stays there isn't at homeostasis, it's collapsing. |
-| 21 | **Periodic maintenance** | on cadence: `generator.maintenance_step()` (decay / reap / compaction), `attractor.merge_pass()`, `crystal_store.decay_step()`, `lattice.emit_centrality()` |
+| 20 | **Rhythm-routed behavior** | `stabilize` → crystal activation (those vectors are soft-injected) + spectral diffusion · `dream` → `Dreamer.dream()` · `reflect` → a second `Chorus` harmonization injected at 0.3 · `explore` → rotational ambiguity injected at 0.5. These writes call `field.inject` directly; they do not pass `arbitrate()` again. `force_dream_flag` takes the dream branch and skips the rest, including Boredom with Teeth. **Boredom with Teeth:** if `emotion.boredom` crosses its threshold and the flag is clear, this dispatch behaves as `explore` even when field energy says otherwise. It does not rewrite `StepState.rhythm`. |
+| 21 | **Periodic maintenance** | on cadence, and only after step 0: `generator.maintenance_step()` (decay / reap / compaction), `attractor.merge_pass()`, `crystal_store.decay_step()` and `attractor.decay_step()`, `lattice.emit_centrality()` and `binding.emit_centrality()` |
 | 22 | **Build `StepState`** | the observable result of the step |
 
 ### The three feedback loops
@@ -508,7 +504,7 @@ raw token
 Dreaming happens at four distinct scales, deliberately kept separate:
 
 - **In-step dream** — `AutonomousCycle._dream_behavior()` fires one `Dreamer.dream()` call when the rhythm is `dream`, or when governance sets `force_dream_flag` after a critical manipulation signal. It samples memory, harmonically recombines, bifurcates, and injects the coherent survivors.
-- **Deep dream cycle** — `DreamCycle.run()` is a dedicated offline loop, invoked from the entry point or the `/dream` API endpoint. It runs N dream iterations with *ramping* mutation depth, then an attractor merge pass and crystal consolidation. Honesty note: at production dim 128 the rhythm router is pinned to `explore` (finding F9), so its `stabilize` trigger almost never fires — the mechanism is intact, the precondition is starved.
+- **Deep dream cycle** — `DreamCycle.run()` is a dedicated offline loop, invoked from the entry point or the `/dream` API endpoint. It runs N dream iterations with *ramping* mutation depth, then an attractor merge pass and crystal consolidation. The driver fires only when the rhythm equals `dream_cycle_trigger` (default `stabilize`, field energy under 5) on a multiple of 20 steps. After warmup the home band is reflect (150–300), so a running field almost never enters this loop. The mechanism is intact; the precondition is the cold-start band, not an explore pin.
 - **Waking dream channel** — not sleep at all: the `source_dream` inner monologue described in "The Voice Layer" above, running *inside* the live loop through the governance gate.
 - **Downtime dreaming** — `DreamSession`, the symbolic dream + consolidation-to-artifacts path, running entirely *outside* the loop (also described above).
 
@@ -525,10 +521,11 @@ cycle.attach_value_engine(vee)                   # adds Tier 3
 `attach_governance()` **must** precede `attach_value_engine()` — the value engine subscribes to the governance feedback stream at construction time, and there is no stream to subscribe to until governance exists. Tier 0 is fully functional on its own; each higher tier is strictly additive.
 
 In practice you rarely compose by hand: **`build_engine()` in
-`loop/recursion1188.py` is the single composition point** (correct attach
-order, YAML config loading, the graduated boot levers), and all three entry
-points build through it. Hand-built entry points are how the runtime silently
-ran Tier-0-only for weeks — the trap is recorded in the findings ledger.
+`loop/recursion1188.py` is the composition point for the loop, the REST API,
+and the WebSocket server** (correct attach order, YAML config loading, the
+graduated boot levers). The speech REPLs do not use it — see Quick Start.
+Hand-built entry points are how the runtime silently ran Tier-0-only for
+weeks — the trap is recorded in the findings ledger.
 
 Two more composition facts that bite newcomers: **Tiers 1–3 need multi-source
 input to engage at all** (bonds need ≥ 20 interactions *per source*; HHI pins
@@ -536,7 +533,7 @@ to 1.0 under a single source), which is why the entry point drives a weighted
 round-robin over four sources. And the opt-in **Two-Operator overlay** attaches
 via three further hooks (`attach_lambda_ledger` / `attach_integrity_read` /
 `attach_integrity_consumer`) that nothing enables by default — see
-[`ARCHITECTURE_ANALYSIS.md`](ARCHITECTURE_ANALYSIS.md) §8 and
+[`ARCHITECTURE.md`](ARCHITECTURE.md) (the Two-Operator overlay) and
 `docs/EXPERIMENTAL_LEVERS.md`.
 
 ---
@@ -550,8 +547,8 @@ The full annotated file tree lives in **[`docs/PROJECT_STRUCTURE.md`](docs/PROJE
 ## Installation
 
 ```bash
-git clone https://github.com/SamuelJacksonGrim/RFE-Core2
-cd RFE-Core2
+git clone https://github.com/SamuelJacksonGrim/Rubedo
+cd Rubedo
 pip install -r requirements.txt
 ```
 
@@ -636,25 +633,31 @@ python -m loop.recursion1188              # Run the autonomous cycle
 uvicorn api.inference_api:app             # REST API
 python -m api.websocket_server            # Real-time stream
 
-# Instruments (observe-only)
-python -m tools.voice.repl                # Talk to the substrate, hear it answer
-python -m tools.decoder.listen            # Decode each step's expressed thought
+# Speech bridge and read-outs (not build_engine — see ARCHITECTURE.md)
+python -m tools.voice.repl                # Your line is stepped; the reply is the state card
+python -m tools.voice.repl_qwen           # Speech-cortex bridge (local Qwen mouth + perception)
+python -m tools.decoder.listen            # Decode each step's expressed vector; do not step it back
 python -m tools.dream.run_dream           # Waking steps, then a downtime dream
 ```
 
-All three entry points compose the full tier stack through `build_engine()`.
+The loop, the REST API, and the WebSocket server compose through
+`build_engine()`. The two REPLs compose through `tests._common.build_full_stack`
+instead, then (for `repl_qwen`) load the 5-rhythm checkpoint if it is present.
+They do not inherit the graduated boot levers unless they set them.
 
 ### Boot defaults (graduated levers)
 
-Four validated levers are **ON by default** — opt out via `CONFIG` in
-`loop/recursion1188.py`; the full switch table is `docs/EXPERIMENTAL_LEVERS.md`:
+These levers are **ON by default** in `build_engine` — opt out via `CONFIG` in
+`loop/recursion1188.py`; the full switch table is `docs/EXPERIMENTAL_LEVERS.md`.
+The speech bridge does not apply this list (see the command-line note above).
 
 | Default | What it does | Opt out |
 |---------|--------------|---------|
-| Eval-mode | Generator dropout off (architect decision) | — (applied unconditionally) |
+| Eval-mode | Generator dropout off (architect decision) | — (applied unconditionally by `build_engine`) |
 | Corpus pretraining | Trains the generator on `data/corpus/` at boot (~minutes); halves generator common-mode | `pretrain_on_corpus: False` (fast cold start) |
 | Novelty-gated loop attenuation | Loosens the reflective-loop field lock at the validated 0.30 ceiling, identity-safe | `reflect_novelty_attenuation: False` |
-| Waking dream channel | `source_dream` self-dialogue on ~20% of steps, through the gate | `dream_channel_enabled: False` |
+| Waking dream channel | `source_dream` self-dialogue on ~20% of steps of `main()`, through the gate. Not part of `build_engine`'s return | `dream_channel_enabled: False` |
+| Bond-formation DDM | Quality of a new bond is the leaky accumulator; structural counts stay `interaction_count ≥ 20` and `crystal_count ≥ 1` | `bond_ddm_formation: False` (classic coherence / `allow_rate ≥ 0.80` gate) |
 
 Two opt-in instruments (OFF by default, same `CONFIG`): `stream_recorder`
 (observe-only census of the lived token stream — future corpus input) and
@@ -718,28 +721,28 @@ The field is not a passive store. It accumulates, resonates, decays, and rhythmi
 The Watcher does not merely ask "is this vector coherent?" It asks "does injecting this vector increase or decrease overall system coherence?" Vectors are judged by their systemic effect, not just their local alignment.
 
 **Emotions are modulation dynamics.**
-Curiosity, wonder, joy, tension, boredom, and stability are scalar field variables that directly modulate injection strength, mutation scale, decay rate, and dream pressure on every step.
+Curiosity, wonder, joy, tension, boredom, and stability are scalar field variables that modulate injection strength, mutation scale, decay rate, and attractor pull on every step. `dream_pressure` is computed onto `StepState` and does not, by itself, start a dream.
 
-**Authority is hierarchical and single-pointed.**
-TrustLedger, EthicalBoundarySystem, DependencyMonitor, RelationalBondManager, and ManipulationResistanceEngine produce reports. Only `SelfhoodGovernance.arbitrate()` issues decisions. No subsystem acts unilaterally.
+**Authority over decisions is single-pointed. Authority over the field is not.**
+TrustLedger, EthicalBoundarySystem, DependencyMonitor, RelationalBondManager, and ManipulationResistanceEngine produce reports. Only `SelfhoodGovernance.arbitrate()` issues a `GovernanceDecision`. Rhythm behavior after the gate — dream products, the reflect chorus, explore's mutation, crystal reactivation — still calls `field.inject` on its own.
 
 **Sacred symbols are inviolable.**
 The philosophical constants — and any value subsequently promoted to CORE through the governance handshake — cannot be modified by any source regardless of trust level. `SACRED_SHIELD` is the only governance decision with no override.
 
 **Values emerge from experience, not declaration.**
-There is no permitted-values list. Any concept the system encounters can become a CORE value through accumulated coherence contribution, multi-source reinforcement, and dream-cycle survival — gated by `SelfhoodGovernance.review_core_promotion()`.
+There is no permitted-values list. Any concept the system encounters can become a CORE value through field-alignment, multi-source or dream reinforcement, and the governance handshake — `SelfhoodGovernance.review_core_promotion()`. The old marginal coherence-contribution sum is not the gate.
 
-**Every voice passes the gate — including the system's own.**
-The waking dream channel feeds the system's decoded expression back as `source_dream` through `arbitrate()` like any external source; downtime dreaming never enters the loop at all. Nothing — not external input, not the system's own thoughts, not a self-proposed change — bypasses governance.
+**Token-bearing voices pass the gate. Later field writes do not ask twice.**
+The waking dream channel feeds the decoded expression back as `source_dream` through `arbitrate()`, and the speech bridge steps human lines and its own utterances the same way. Downtime dreaming never enters the loop. Dream products, chorus, explore mutation, and crystal reactivation inject after the decision and do not call `arbitrate()` again.
 
-**High coherence is the routing axis, not a health signal.**
-Left alone, the field pins near-ceiling coherence — rigid-attractor lock-in, a collapsed monocultural field. The healthy target is *metastability*: formed enough to hold, light enough to drift. Smithing that attractor is the active work.
+**Coherence is the decision axis. The near-ceiling pin is the identity integrator.**
+The Watcher scores a vector by its effect on the field, and that score is what the witness, the crystal store, and the gate consume. Left alone, the field locks near ceiling coherence. That lock is the long-memory integrator doing its job — settled, not a defect, and not something the corpus can unlock (`STATE.md`). The reflective loop is the lock. Smithing, if it happens, is in how that loop reconstitutes the vector.
 
 ---
 
 ## Where the system actually is
 
-**Read [`STATE.md`](STATE.md)** — the one-screen "you are here": current capabilities, what is **settled** (do not reopen), what's parked, and the one open frontier. It points on to `docs/findings/INDEX.md` (the empirical ledger) and `ARCHITECTURE_ANALYSIS.md` (deep flow). The honest current state lives there, in one place.
+**Read [`STATE.md`](STATE.md)** — the one-screen "you are here": current capabilities, what is **settled** (do not reopen), what's parked, and the one open frontier. It points on to `docs/findings/INDEX.md` (the empirical ledger) and [`ARCHITECTURE.md`](ARCHITECTURE.md) (deep flow). The honest current state lives there, in one place.
 
 ---
 

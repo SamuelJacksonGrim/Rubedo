@@ -16,7 +16,7 @@ tested and closed — do not reopen it without new evidence that contradicts the
 - `docs/findings/INDEX.md` — the findings ledger (every experiment + its status). The scientific record.
 - `ROADMAP.md` — tier status (what's shipped / planned / unspecified).
 - `docs/BACKLOG.md` — the prioritized open-work queue.
-- `README.md` / `ARCHITECTURE_ANALYSIS.md` — architecture & information flow.
+- `README.md` / `ARCHITECTURE.md` — architecture & information flow.
 
 ---
 

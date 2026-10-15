@@ -38,8 +38,8 @@ project-structure tree is enforced by `tests/doc_accuracy/verify_docs.py`):
   speech / inner monologue / symbolic dreaming), and the rung-by-rung arc.
   Course-corrections are measured against it; collaborating instances may amend
   it with justification.
-- `ARCHITECTURE_ANALYSIS.md` — end-to-end recursion + information-flow
-  reference.
+- `ARCHITECTURE.md` — end-to-end recursion + information-flow
+  reference (replaces `ARCHITECTURE_ANALYSIS.md`).
 - `docs/findings/` — Rubedo's **empirical ledger** (lab notebook), starting
   empty; its `INDEX.md` links RFE-Core2's 256 findings. Read `README.md` for
   the schema and discipline before recording a result; every finding names its

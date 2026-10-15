@@ -32,7 +32,7 @@ manifold.
   reference of a sacred token passing at normal trust; the CORE arc
   (witness → CORE) must complete without cascading the contributing source.
 
-**Settles:** ARCHITECTURE_ANALYSIS §9 F8; ROADMAP "survival-by-coherence" CORE
+**Settles:** the F8 read/write shield (formerly ARCHITECTURE_ANALYSIS §9; the live map is ARCHITECTURE.md); ROADMAP "survival-by-coherence" CORE
 item. **Status:** decided, implementation queued (after the bonded-adversarial
 probe).
 
