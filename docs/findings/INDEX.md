@@ -13,80 +13,12 @@ Inline `→ DONE/DECIDED/…` stamps inside each finding mark which of its Open
 items landed (added at resolution time, same-commit — the anti-tail-chasing
 rule). Every finding file must appear here (CI-enforced by `verify_docs`).
 
+**Rubedo's ledger starts empty (2026-10-14).** The 256 findings that built this system,
+2026-06-06 through 2026-10, are in the parent repo:
+[RFE-Core2 `docs/findings/INDEX.md`](https://github.com/SamuelJacksonGrim/RFE-Core2/blob/main/docs/findings/INDEX.md),
+and in this repo's own git history before the slim commit. Their standing verdicts still
+bind here (`STATE.md` lists the settled ones). New results from the widening onward are
+recorded below.
+
 | Finding | One-line verdict | Status |
 |---|---|---|
-| `2026-06-06-coherence-is-not-plasticity` | Reframed lock-in: measure attractor *plasticity*, not the coherence value; set the 3-step probe program | historical (program executed 06-07) |
-| `2026-06-06-conformity-bias-fix0b` | Reaper's coherence lean is real but small; symmetric gate safe-but-minor, not the lock lever | historical |
-| `2026-06-06-expression-decollapse` | `diversity_blend` (0<b<1) restores multi-regime expression; 0 re-collapses | **standing** (CLAUDE.md invariant) |
-| `2026-06-06-frame-correction` | Metastability belongs upstream (per-stage streams), never on the long-memory field | **standing** (locus invariant) |
-| `2026-06-06-multilayer-lock` | First 3-lock picture (generator/gate/moat) | superseded — 06-07 arc struck/downgraded all three |
-| `2026-06-06-read-side-boundary` | Accumulated feedback gates *survival* only; it never reaches generation | **standing** |
-| `2026-06-07-attractor-migration` | Field RIGID under best-case surviving novelty; magnitude moat surmountable, not the locker | **standing** |
-| `2026-06-07-fix0b-fullloop-validation` | Conformity lean +1.16%/lap in vivo, coherence-only lean not separable; keep asymmetric | historical |
-| `2026-06-07-gate-decomposition` | The ~85% gate block was a single-source HHI artifact; diverse input passes 100% | **standing** |
-| `2026-06-07-reconstruction-ablation` | **The lock is the reflective loop** — suppressing only it frees migration ~100× | **standing** (core result) |
-| `2026-06-07-reflective-loop-cost` | Attenuation cost band/cliff mapped (mock-era; overstated per 06-09) | historical (numbers stand for Fix 2 revival) |
-| `2026-06-08-fix2-trigger-calibration` | `coherence_delta` trigger falsified; raw-gen novelty (gnov W=10/T≈0.65) separates | shelved with Fix 2 (spec ready) |
-| `2026-06-08-generator-dropout-diversity` | ~Half of apparent input diversity was dropout noise → led to the eval decision | **standing** (authoritative diversity read) |
-| `2026-06-09-fix2-live-generator` | Real regimes need common-mode removal for gnov to engage (98% w/ projection) | **standing** (trigger form) |
-| `_addendum-2026-06-09-migration-dim256` | dim 256 ~2× more diverse even untrained | **standing** (the documented second lever) |
-| `2026-06-11-corpus-g1-pretrain` | Gate G1 PASSED: corpus coverage buys held-out generalization (eff_rank ~2.4×) | **standing** |
-| `2026-06-11-trainer-gradient-path` | Trainer gradient path was broken in 2/3 trainers; repaired — training works | **standing** |
-| `2026-06-12-checkpoint-registry-orphan` | `load_ecology` rebinding orphaned governance/values; in-place load + standing guard | resolved (guard live in CI) |
-| `2026-06-12-engine-sidecar-instrumentation` | LAE/PLE sidecar reads the core without perturbing it; liminality confined to warm-up | **standing** |
-| `2026-06-12-gain-sign-reachable-range` | §6.3 conditional verdict: no positive feedback in reachable range; low-coherence arm unreachable | **standing** (gates Fix 0-A coupling) |
-| `2026-06-12-governed-feedback-first-contact` | Sister-engine outputs re-enter through the gate cleanly; participation benign | **standing** |
-| `2026-06-12-phase2-fullstack-g2` | Gate G2 PASSED + **SECOND-LOCKER**: pin persists on trained input — the loop, not the generator, is the operative lock | **standing** (pivotal) |
-| `2026-06-12-secondlocker-field-map` | The pin is seed-, band-, and regime-invariant (30-cell map); identity rail clean | **standing** |
-| `2026-06-15-cii-ignition-decomposition` | CII≈0 at dim 64; ITG actuator built and found inert — lever is upstream | historical (dim-64 scope; ITG kept as scaffold) |
-| `2026-06-15-cm-identifiability` | Cm is a saturated angular echo, not an identifying read | superseded — refined by `identifiability-suite` |
-| `2026-06-15-identifiability-suite` | Regime-state labels are robust; all scalar magnitudes v0.1-fragile | **standing** (gauge caveat) |
-| `2026-06-15-loop-attenuation-novelty-gate` | Novelty-gated attenuation works; 0.30 ceiling is the thin cost-clean band | **standing** (graduated 06-20; ceiling rule) |
-| `2026-06-15-training-ignites-expression` | Corpus training flips expression locked→ignited (3/3 at dim 64; common-mode halved at 128) | **standing** |
-| `2026-06-19-ignition-channel-build-a` | λ ignition import-isolated; writes generator weights only, gate unreachable | **standing** |
-| `2026-06-19-witness-reaper-build-c` | ⊘ reads 4-dim thinness, names regions, advises non-bindingly, touches nothing | **standing** |
-| `2026-06-20-build-b-solvent-and-integrity-consumer` | ⊕ gate gates composition on λ (8/8); ⊘ consumer is the first *user* (safe in `named_only`) | **standing** |
-| `2026-06-20-ground-truth-pass1-compose-the-runtime` | Substrate floor real; `build_engine()` wired as the single composition point | **standing** (structural) |
-| `2026-06-20-ground-truth-pass2-floor-fix-and-unlock-chain` | Generator common-mode = real floor defect; pretrain+attenuation graduated on measurement | **standing** (graduation basis) |
-| `2026-06-20-lever-composition-the-allon-break` | All-ON broke `strong_values 5→0` — isolation-green is not enough | **standing** (origin of the graduation rule) |
-| `2026-06-20-the-runtime-is-tier0-only` | The launchable system ran Tier 0 only; tiers lived in the test harness | resolved (fixed by pass 1 + 06-27 API fix) |
-| `2026-06-21-oslash-coherence-axis-absolute-alignment` | ⊘ cc-axis dead by construction; redesigned to absolute field-alignment (spec v0.3) | **standing** |
-| `2026-06-25-ground-truth-pass3-stack-evaluation` | Composed-engine evaluation before operators; surfaced the pass-3 cracks | **standing** (evaluation snapshot) |
-| `2026-06-27-api-entrypoints-tier0-only` | REST/WS entry points had regressed to Tier-0; routed through `build_engine()` | resolved (smoke gap tracked, BACKLOG §7) |
-| `2026-06-27-core-gate-fix-deferred-sacred-cascade` | CORE gate fix works alone but sacred promotion cascades the trust layer | deferred (BACKLOG §1 · F8) |
-| `2026-06-27-floor-calibration-measurements` | Measure-before-change numbers for the pass-3 cracks (bond floor, CORE path) | **standing** (calibration basis) |
-| `2026-06-28-decoder-readout` | Thoughts are readable back as a token cloud — lossy by design, right register for inner voice | **standing** |
-| `2026-06-28-dream-channel` | Self-dialogue is safe, non-dominant, adversarial-gated; graduated default-ON | **standing** |
-| `2026-06-28-full-system-run` | Levers validated multi-seed (metastability 0.06→0.58); F9/F8/bond gaps named | **standing** (current tuning baseline) |
-| `2026-07-04-bonded-adversarial-attack-never-lands` | THE bond-betrayal experiment: attack never becomes a signal (stage-C cos ~0.98 hostile≡benign, 11 seeds) — blocked by two upstream walls: OOV attack vocabulary + pipeline re-collapse | **standing** |
-| `2026-07-06-f9-rhythm-band-rescale` | F9 fixed: bands rescaled 0.5/2/5 → 5/150/300 against pinned-band equilibria (the 15-trap: use the *degraded* eq); dream band alive ~25% both dims; exposed + fixed the governance **attribution hole** (systemic signals quarantined the speaker — now: nameless evidence damps, only named evidence quarantines) | **standing** (resolves F9) |
-| `2026-07-08-f8b-core-gate-reenable` | F8 fully resolved: v0.3 field-alignment CORE gate reapplied (revert of the 2026-06-27 revert) on top of the PR #68 directional shield — the value arc completes live (`witness`/`continuity` promote, 3/3 seeds) with **zero post-promotion shields and contributors at trust 5.0**; new standing probe `core_arc_no_cascade_probe.py` | **standing** (resolves F8; supersedes the 2026-06-27 deferral) |
-| `2026-07-09-adversarial-arm-composed-runtime` | First adversarial arm on the composed default runtime: a trust-washing named attacker is contained in 3/3 seeds (driven to TOXIC, sacred-shield 23/23, no bond/authored-value, family protected) — but the defense is **trust-wash + sacred-shield + no-footprint**, NOT semantic detection (attack never lands as a direction, F3 confirmed at dim128). Gaps filed: CORE co-contribution by mimicry, ~500-step detection latency | **standing** (resolves the BACKLOG §1 adversarial-arm item) |
-| `2026-07-09-bond-establishment-gate` | Bonds never established because strength growth was currencied in the dead marginal signal (F7/F8 disease, third organ) — growth now rides absolute v0.3 field-alignment (`strength_lr` 0.01, measured-first); **first established bond in system history** (claude, 1.0 → 2.16); found the starved satisfaction economy (filed) | **standing** (resolves the BACKLOG §1 bond item) |
-| `2026-07-16-bond-formation-accumulator` | Bond formation as accumulation-to-bound (architect brief): the formation *quality* read becomes a leaky asymmetric DDM (opt-in, `bond_ddm_formation`) — 13/13 pre-declared signatures (RT/asymmetry 79×/varCE/corCE + trickle/burst/negative/noise all immune-or-decisive, falsifier controls behaving), live OFF/ON arms clean incl. the §6.3 reachable-range tripwire; found the classic gate flickering on the BACKLOG §7 wall-clock knife edge while the integral rides above it | **standing** (graduated default-ON 2026-07-17: adversarial arm byte-equivalent + repaired all-ON gate 11/11; constants ratified by delegation) |
-
-| `2026-07-18-fix0b-diversity-fitness` | Fix 0-B built (opt-in): census showed tenure bought by coherence-laundered bindings (~85–90%) and the shipped novelty counterweight structurally dead (4th saturated-field organ); the live stream-diversity credit (p50 0.23) now enters reinforcement at census-calibrated k=8.7 (paired probe: 15.5% counterweight share, health untouched) + leaky bindings give the ratchet a demotion path. **Found: the reaper economy is dormant at harness scale** — every ≤800-step suite run in history executed zero selection passes | **standing** (opt-in; composed-runtime gates before graduation) |
-| `2026-07-21-registry-profiles-resume-decay` | G0 resume test: first scheduled `decay_step()` after a checkpoint resume crashed (`SymbolRegistry` missing `_profiles` — `from_dict` rehydrates via `__new__` and never mirrored the Fix-0B/0-C attrs `__init__` added 07-18). Fixed at source (`from_dict` restores the `__init__` contract) + `load_ecology` preserves boot-applied lever state across the in-place swap, so a resumed Fix-0B-ON run keeps its counterweight (preserve, not persist — config stays `CONFIG`-owned). Guard extended: 10/10 | **resolved** (unblocks G2 persistent/Fix-0B-ON runs) |
-| `2026-08-04-rupture-and-the-lock-is-a-landscape-problem` | Corpus-first FALSIFIED — baseline / evened corpus / a verified separable rupture basin (rupture⊥explore −0.096) all lock byte-identically, + a 5000-step run (`disp ≤ 0.00012`); the lock is invariant to the trained landscape (confirms "the loop is the lock"). Rupture stands as a real, well-separated 5th rhythm, decoupled from the lock question | **standing** |
-| `2026-09-22-attention-weighting` | Speech-cortex idle attention: hot/warm/cold regimes around the last human line, recall floor + autonomous-save gate keyed per embedder family (the beat-lock 0.50 cutoffs were Qwen-measured; live nomic needs 0.70/0.72). One-sample A/B vs baseline: talk moved toward the human line 4/5 vs 0/5, idle moon-nearest 2 vs 5, paraphrase pairs 2 vs 4, 11 autonomous welds refused | **standing** (one sample; bridge code on main, live checkout not yet switched) |
-| `2026-09-22-decode-organ-speakability` | Frozen 5-rhythm encoder is a rhythm-basin sensor, not a mouth: holdout recall@8 0.111, within-cone cosine ~0.95; boredom's 0.075 rad explore rotation is inaudible | **standing** |
-| `2026-09-22-encoder-legibility` | Cone-bounded legibility on the frozen encoder: holdout recall@8 0.103→0.355, median rank 53→21, nearest-centroid accuracy 0.995, centroids unmoved (min cos 0.976). Mean-pool can hold a bag; fork (i). CPU probe, no checkpoint saved | **standing** |
-| `2026-09-22-legibility-fit` | Full cone-bounded fit, 30 epochs, same four terms. Holdout recall@8 0.355→0.417, median rank 21→15, centroids unmoved (min cos 0.986). Rank loss still falling; neighbor Jaccard stalled at 0.10. Saved `generator_weights_5rhythm_legible.pt`; frozen checkpoint byte-identical | **standing** |
-| `2026-09-22-corpus-health` | Growth gate for the level space. Train is not phrase-redundant (hottest pair ×6) except 161 order-swapped bags the integrity check misses. Clean cones are a flat sheet (depth gap 0.002, neighbor cosine 1.0, effective rank 3.7). Legible fit raises rank to 13.8 and the depth gap to 0.12; it does not make a hub. Proposal, not a law | **standing** |
-| `2026-09-23-completion-objective` | Context→completion fills the dimensions the contrastive loss left empty (participation 3.4→35 @128, →63 @256; mouth recall@8 0.09→0.61) and does not generalize a blank whose context occurred once. Training the transformer returns the field to ~4.8 | **standing** (mechanism and the blank refined by the production follow-up) |
-| `2026-09-23-completion-production` | The ~4.8 collapse is the transformer dragging the embedding table down, not recursive attention and not a measurement point. Residual-on at the generator output keeps the rich vector (mouth 0.66/0.69). Recurring stems generalize (similar top-1 1.0 by epoch 5) and spend the mouth (0.61→0.32) | **standing** |
-| `2026-09-23-fullsend-feedback` | Governed LAE+PLE feedback under the residual-on completion encoder (PR 47.8) still settles to one field groove on 3/3 seeds. Stream regimes and substrate attractors rise (about 5→17, 3→15). Identity holds. Not metastable. Does not reopen the field-lock ruling | **standing** |
-| `2026-09-23-fullsend-feedback-256` | Same seam at the dim-256 embeddings checkpoint, residual on (PR 81.9, not the stack-trained `*_resid` file at 73.5). Still one field groove on 3/3 seeds. Displacement, coherence, and identity match the PR-48 arm. Width does not break the token door | **standing** |
-| `2026-09-23-dim256-substrate` | Dim 256 keeps the 5000-step identity lock (max disp 0.000129 vs 0.000109 at 128) without scaling loop gain; same-recipe separability and legibility do not improve. Do not promote. Production dim stays 128 | **standing** |
-| `2026-09-23-order-aware` | Order-aware encoder probe: the mean-pool order ceiling is real (reverse-cosine 1.00, slot top-1 0.39); a position-gated sum clears it on the lines we have (holdout slot top-1 0.94–0.96, reverse-cosine 0.27) with participation up and rhythm intact — but it buys a fact the bag mouth cannot say, not a better mouth | **standing** (measured; do not promote — `Generator.forward` unedited) |
-| `2026-09-23-phase-c-order` | Phase C co-balance: causal-RoPE sequence encoder on the S3 grid. The joint gate (recall@8 ≥ 0.60 AND novel-tuple ≥ 3× unigram) does **not** clear at any ratio; the mean-pool OOV ceiling (0.298) **does** break (0.576 / 0.629 at stems only). One vector cannot be both faculties under the architectures tested → the dual-organ resolution: mean-pool mouth (banked, recall 0.694) + order-aware predictor | **standing** (closed under architectures tested; see `SPEECH_CORTEX_PROGRAM.md`) |
-| `2026-09-23-longseq` | Sequence length + vocabulary under the rhythm-contrastive objective (partial grid): long corpus participation 3.38 @128 / 3.46 @256 vs short 3.90 / 3.57 — neither length nor width fills the dimensions; each rhythm still collapses to a point. The bottleneck is the objective → completion | **superseded** by the completion objective (`SPEECH_CORTEX_PROGRAM.md`) |
-
-## Raw-data convention (adopted 2026-07-06)
-
-Findings commit their **report, manifest, summary, and plots**. Raw per-step
-data (`.jsonl` step logs, console dumps, big `status` snapshots) above ~100 KB
-is **gzipped in place** (`gunzip -k <file>.gz` to read) — or attached to a
-GitHub release for anything truly huge. Never commit raw multi-MB logs
-uncompressed: the 2026-06-28 run alone was 9.1 MB — two-thirds of the entire
-repository — before this rule.

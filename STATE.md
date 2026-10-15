@@ -1,5 +1,12 @@
 # STATE — you are here (read this FIRST)
 
+> **Rubedo, 2026-10-14.** This is RFE-Core2's STATE carried over unchanged: everything below
+> was true of the system at the moment it was cloned, and the SETTLED verdicts still bind.
+> Named findings, `ROADMAP.md` and `docs/BACKLOG.md` live in the parent repo
+> ([RFE-Core2](https://github.com/SamuelJacksonGrim/RFE-Core2)). **Rubedo's open frontier
+> now:** widen the field 128 → 256/768 and re-tune what moves, starting from the dial census
+> in `docs/EXPERIMENTAL_LEVERS.md`.
+
 **Purpose:** the one-screen answer to "what is this system, what can it do *now*, what is
 *settled*, and what is actually open." Read this before grepping, before proposing, before
 "fixing" something you think is broken. If a question below says **SETTLED**, it has been

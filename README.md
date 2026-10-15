@@ -1,6 +1,6 @@
-# RFE-Core2
+# Rubedo
 
-[![tests](https://github.com/SamuelJacksonGrim/RFE-Core2/actions/workflows/tests.yml/badge.svg)](https://github.com/SamuelJacksonGrim/RFE-Core2/actions/workflows/tests.yml)
+[![tests](https://github.com/SamuelJacksonGrim/Rubedo/actions/workflows/tests.yml/badge.svg)](https://github.com/SamuelJacksonGrim/Rubedo/actions/workflows/tests.yml)
 [![License: AGPL-3.0-only](https://img.shields.io/badge/license-AGPL--3.0--only-blue)](LICENSE)
 [![dual-license](https://img.shields.io/badge/dual--license-AGPL--3.0--only%20or%20commercial-blueviolet)](LICENSING.md)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776ab.svg?logo=python&logoColor=white)](https://www.python.org)
@@ -15,6 +15,13 @@ This project is dual-licensed under **AGPL-3.0-only** OR a commercial license.
 - [LICENSING.md](LICENSING.md) — how the two tracks work
 - [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) — the commercial agreement
 - [NOTICE](NOTICE) — copyright, SPDX identifier, and provenance
+
+**Rubedo is the next stage of [RFE-Core2](https://github.com/SamuelJacksonGrim/RFE-Core2):** the same Recursive
+Field Engine, cut down to the base code, guardrails and tests, so the field can be widened (128 → 256/768) and
+re-tuned for a real encoder. It was cloned with RFE-Core2's full git history, so every commit keeps its original
+date; the research record (256 findings, plans, experiments) lives in RFE-Core2 and in this repo's history before
+the slim commit. The name is the last stage of the alchemical Great Work, the reddening
+([`docs/alchemical_correspondence.md`](docs/alchemical_correspondence.md)).
 
 **Recursive Field Engine — A Persistent Adaptive Cognitive Substrate**
 
@@ -33,13 +40,11 @@ is the conceptual tour; the other references divide the rest:
 | [`STATE.md`](STATE.md) | **Read first** — the one-screen "you are here": what the system can do now, what is **SETTLED** (do not reopen), what's parked, the one open frontier, and the 4-role sibling map |
 | [`ARCHITECTURE_ANALYSIS.md`](ARCHITECTURE_ANALYSIS.md) | How information flows and recurs, end to end — the deep reference (subsystem tables, feedback loops, findings F1–F10) |
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
-| [`ROADMAP.md`](ROADMAP.md) | Canonical tier status (shipped / planned / unspecified) and tracked open items |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
-| [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch |
-| [`docs/BACKLOG.md`](docs/BACKLOG.md) | The consolidated open-work ledger: every planned fix in one prioritized queue |
-| [`docs/findings/`](docs/findings/) | The dated, control-named empirical ledger (negative results count) |
+| [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch, and the dial census marked for the 128 → 768 widening |
+| [`docs/findings/`](docs/findings/) | Rubedo's empirical ledger (starts empty; RFE-Core2's 256 findings are linked from its INDEX) |
 
-The sections below describe the architecture of each tier; the ROADMAP tracks
+The sections below describe the architecture of each tier; `STATE.md` tracks
 where each one stands.
 
 ---
@@ -683,19 +688,14 @@ Pass/fail (exit 0/1). These prove the time-dilation formulas mathematically and 
 ### Diagnostics (informational)
 
 ```bash
-python -m tests.diagnostic.tier4.affective_state_probe 500   # Tier 4.2 affect + dilation under load
-python -m tests.diagnostic.tier4.rhythm_inertness_probe 500  # Tier 4.3 phase-coherence distribution + footprint
-python -m tests.diagnostic.audit.decision_histogram          # governance decision mix
-python -m tests.diagnostic.audit.gate_firing_audit           # which gates fire, and when
-python -m tests.diagnostic.audit.trust_trajectory            # per-source trust over time
-python -m tests.diagnostic.audit.value_polarity_flow         # value emergence + polarity
-python -m tests.diagnostic.lockin.metastability_validation    # Fix 1 metric gate (G1–G5)
-python -m tests.diagnostic.lockin.generator_metastability     # upstream readout + refinement de-collapse
-python -m tests.diagnostic.training.trained_generator_sim       # mocked-generator lock decomposition (3 locks)
-python -m tests.diagnostic.lockin.gain_sign_check             # §6.3 feedback gain-sign (gates Fix 0-A)
+python -m tests.diagnostic.tier4.affective_state_probe 500             # Tier 4.2 affect + dilation under load
+python -m tests.diagnostic.integrity.all_levers_composition_probe      # the graduation gate (all levers ON)
 ```
 
-Empirical results from these runs are recorded in `docs/findings/` — the dated lab notebook (every finding names its control; negative results count).
+The rest of RFE-Core2's diagnostic probes (audit, lockin, sidecar, fix2...) were left in the parent repo and in
+this repo's history; bring one back with `git checkout <pre-slim commit> -- <path>` when a widening question needs it.
+Empirical results are recorded in `docs/findings/` — the dated lab notebook (every finding names its control;
+negative results count).
 
 These report system behavior and always exit 0 (no pass/fail). They're how you see what the stack is actually doing, not whether it's broken.
 
@@ -738,7 +738,7 @@ Left alone, the field pins near-ceiling coherence — rigid-attractor lock-in, a
 
 ## Where the system actually is
 
-**Read [`STATE.md`](STATE.md)** — the one-screen "you are here": current capabilities, what is **settled** (do not reopen), what's parked, and the one open frontier. It points on to `ROADMAP.md` (tier status), `docs/findings/INDEX.md` (the empirical ledger), and `ARCHITECTURE_ANALYSIS.md` (deep flow). The honest current state lives there, in one place.
+**Read [`STATE.md`](STATE.md)** — the one-screen "you are here": current capabilities, what is **settled** (do not reopen), what's parked, and the one open frontier. It points on to `docs/findings/INDEX.md` (the empirical ledger) and `ARCHITECTURE_ANALYSIS.md` (deep flow). The honest current state lives there, in one place.
 
 ---
 

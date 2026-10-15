@@ -1,10 +1,27 @@
 # CLAUDE.md
 
-Operational guide for AI-assisted contributors. RFE-Core2 has uncommon
-architecture and invariants that look optional but aren't — read this before
-editing. For the project overview, structural tour, and conceptual walkthrough,
-read `README.md` first. This file covers only what you can't infer from reading
-the tree.
+Operational guide for AI-assisted contributors. **Rubedo is RFE-Core2's next stage**
+(cloned 2026-10-14 with full history, slimmed to base code + guardrails + tests). The
+system inside is still the Recursive Field Engine, and the docs below still call it
+RFE-Core2 where they describe it. It has uncommon architecture and invariants that look
+optional but aren't — read this before editing. For the project overview, structural
+tour, and conceptual walkthrough, read `README.md` first. This file covers only what you
+can't infer from reading the tree.
+
+**What Rubedo is for:** widening the field from 128 to 256/768 so a real encoder (the
+corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, then
+re-tuning what the widening moves. **Start at the dial census** in
+`docs/EXPERIMENTAL_LEVERS.md` ("Priority for 128 → 768"): measure each width-sensitive
+dial at 128 vs the new width BEFORE changing it. `tests.doc_accuracy.hardcoded_dim`
+fails on any field-dim literal that isn't listed. Old 128 checkpoints won't load into a
+wider field: that is a new body, not an upgrade.
+
+**What was left in RFE-Core2** (and in this repo's history before the slim commit):
+`ROADMAP.md`, `docs/BACKLOG.md`, the 256 findings, `docs/training/`, the lock-in /
+Two-Operator / tier-validation plans, the encoder research tools (`tools/completion`,
+`order`, `longseq`, `corpus_v2`), `visualization/`, and most diagnostic probes. Their
+standing verdicts still bind; `STATE.md` lists the settled ones. Paths below that point
+at those files refer to the parent repo.
 
 **Documentation map.** Keep these in sync when you change behavior (the README
 project-structure tree is enforced by `tests/doc_accuracy/verify_docs.py`):
@@ -20,27 +37,14 @@ project-structure tree is enforced by `tests/doc_accuracy/verify_docs.py`):
   speech / inner monologue / symbolic dreaming), and the rung-by-rung arc.
   Course-corrections are measured against it; collaborating instances may amend
   it with justification.
-- `ROADMAP.md` — tier status and the lock-in remediation direction (shipped vs
-  planned).
-- `docs/BACKLOG.md` — **the queue**: every open item, planned fix, and shelved
-  decision from across the repo, consolidated and prioritized. Check it before
-  starting new work; check items off there in the same commit that lands them;
-  add newly discovered open items there first instead of chasing them
-  mid-task (the anti-sidetrack rule).
 - `ARCHITECTURE_ANALYSIS.md` — end-to-end recursion + information-flow
-  reference; `docs/lock_in_remediation_plan.md` — the curated remediation plan;
-  `docs/tier4_2_validation.md` / `tier4_3_validation.md` — tier validation;
-  `docs/build_b_plan.md` / `two_operator_todo.md` — the Two-Operator program;
-  `docs/local_model_integration/` — framing a local LLM as sensory/speech cortex.
-- `docs/training/` — the generator training path: viability assessment, phased
-  plan, data curation, Tier 5 readiness (proposed direction, not committed).
-- `docs/findings/` — the dated, control-named **empirical ledger** (lab
-  notebook). **Start at `INDEX.md`** — one line per finding with its verdict
-  and standing/superseded status (CI-enforced complete). Read `README.md` for
+  reference.
+- `docs/findings/` — Rubedo's **empirical ledger** (lab notebook), starting
+  empty; its `INDEX.md` links RFE-Core2's 256 findings. Read `README.md` for
   the schema and discipline before recording a result; every finding names its
-  control, and negative results count. NB: raw run data >~100 KB under
-  `findings/logs/` is **gzipped** — plain grep silently skips `.gz`; use
-  `zgrep`/`zcat` (see `logs/README.md`). Summaries and reports stay readable.
+  control, and negative results count. Raw run data over ~100 KB is gzipped
+  (plain grep skips `.gz`; use `zgrep`/`zcat`). Open work is tracked in the
+  findings' Open items and the dial census until a queue is needed.
 - `tests/README.md` — what each test/probe is for and how the suite is gated.
 - `docs/EXPERIMENTAL_LEVERS.md` — **the control panel**: every lever and
   instrument, its default, and the exact way to toggle it. A validated few have
@@ -384,7 +388,7 @@ README tree entry in the same commit or CI goes red.
   `@dataclass(frozen=True)` for inviolable state, `Enum` for closed sets.
 - Per-file license headers are not required — `LICENSE` and `NOTICE` at the
   repo root state the AGPL-3.0-only OR commercial dual license.
-- Git: remote `origin` → `SamuelJacksonGrim/RFE-Core2`. Commit messages are
+- Git: remote `origin` → `SamuelJacksonGrim/Rubedo` (parent: `SamuelJacksonGrim/RFE-Core2`). Commit messages are
   imperative, terse, one line, often naming files or classes. Stage specific
   files, not `git add -A`. Feature branches preferred; do not push to `main`
   without explicit approval.
