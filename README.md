@@ -40,6 +40,7 @@ is the conceptual tour; the other references divide the rest:
 | [`STATE.md`](STATE.md) | **Read first** — the one-screen "you are here": what the system can do now, what is **SETTLED** (do not reopen), what's parked, the one open frontier, and the 4-role sibling map |
 | [`ARCHITECTURE_ANALYSIS.md`](ARCHITECTURE_ANALYSIS.md) | How information flows and recurs, end to end — the deep reference (subsystem tables, feedback loops, findings F1–F10) |
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
+| [`docs/WIDENING_PLAN.md`](docs/WIDENING_PLAN.md) | **Rubedo's job:** why the field widens 128 → 256/768, the steps, and what "done" means |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
 | [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch, and the dial census marked for the 128 → 768 widening |
 | [`docs/findings/`](docs/findings/) | Rubedo's empirical ledger (starts empty; RFE-Core2's 256 findings are linked from its INDEX) |

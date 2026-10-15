@@ -119,6 +119,7 @@ Rubedo/
 │   ├── ARCHITECT_RULINGS_2026-07-06.md  Standing ruling: trust posture — raised, not suspected (sources start TRUSTED)
 │   ├── ARCHITECT_RULINGS_2026-07-08.md  Standing rulings: explain-then-ask decision process; chambered governance adopted
 │   ├── EXPERIMENTAL_LEVERS.md           Control panel — every lever, its default, exact how-to-toggle
+│   ├── WIDENING_PLAN.md                 Rubedo's job: field 128 → 256/768, the steps, what "done" means
 │   ├── alchemical_correspondence.md     The Magnum Opus map — RFE as an alchemical process (a lens, not a spec)
 │   ├── self_model_thesis.md             The theory of mind RFE instantiates — self as smithable emergent attractor
 │   └── findings/                        Dated empirical findings ledger (lab notebook)
