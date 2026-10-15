@@ -568,11 +568,23 @@ trust, or values.
 
 ## What the code does not make clear
 
-These are holes a reader will hit. They are not cleaned up here.
+These are holes a reader will hit. They are not cleaned up here. **Unwired is not the same as dead:**
+several of these are parked hooks the architect built for a reason (Samuel, 2026-10-14). Don't delete any of
+them without asking; find out what it was for first.
 
+- **Only four of the six rhythms can be acted on.** The field's rhythm is one number (energy) cut into four
+  bands, so `_rhythm_behavior` can only ever dispatch stabilize / dream / reflect / explore. The generator is
+  *trained* on five labels (`training/corpus.py` `RHYTHMS` adds rupture), so it can recognize rupture-like input,
+  but the loop never routes to it: `_rupture_behavior` exists and fires only through the opt-in
+  `rupture_on_lock` lever (default off). **Witness** (the sixth, the receptive pole) appears nowhere in this
+  tree as a rhythm, only as the identity anchor `agents/witness.py`; the six-rhythm corpus lives in the
+  separate encoder project. Rupture and witness aren't energy levels (one is an event, one is receiving
+  without acting), so they can't be added as more bands; the selector needs a second input. Downstream,
+  sovereign_manifold's `rfe_bridge.py` maps only the four band names too.
 - `agents/rhythm_config.json` looks like the rhythm controller. The
   controller is `ResonanceField.current_rhythm` plus the branches in
-  `_generate` and `_rhythm_behavior`. The JSON's modifiers are unused.
+  `_generate` and `_rhythm_behavior`. The JSON's modifiers are unused: it was left unloaded on purpose
+  while it was still being changed (Samuel).
 - `_explore_behavior`'s docstring says it applies phase noise. The body
   calls `inject_ambiguity(..., mode="rotational")`. `PhaseNoise` has no
   caller.
@@ -580,7 +592,9 @@ These are holes a reader will hit. They are not cleaned up here.
   the caller that does.
 - `EmotionalGradient.dream_pressure` and `crystal_pressure` are computed
   and, for dream pressure, copied onto `StepState`. No branch reads them
-  to decide anything. `CrystalStore` does not take `crystal_pressure`.
+  to decide anything. `CrystalStore` does not take `crystal_pressure`. Possibly meant for the
+  sovereign_manifold / e8-eea emotion link (Samuel); sovereign's current bridge reads the rhythm band, the
+  dominant emotion label, field energy and crystal/attractor counts, not these.
 - `SystemRights` is never consulted by `step` or `arbitrate`.
 - The bridge and the autonomous loop are different boots (see
   [Boot](#boot-what-is-actually-wired)). Comparing a `repl_qwen` session
