@@ -35,9 +35,9 @@ is still recorded on the SourceRecord; distrust is learned from behavior.)
 from __future__ import annotations
 
 import collections
-import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, TYPE_CHECKING
+from substrate import determinism
 
 if TYPE_CHECKING:
     from agents.governance_constants import GovernanceConstants
@@ -244,7 +244,7 @@ class EthicalBoundarySystem:
         """Record this injection timestamp for rate tracking."""
         if source_id not in self._injection_log:
             self._injection_log[source_id] = collections.deque()
-        self._injection_log[source_id].append(time.time())
+        self._injection_log[source_id].append(determinism.now())
 
     def _is_flooding(self, source_id: str, origin_type: str = "user") -> bool:
         """
@@ -257,7 +257,7 @@ class EthicalBoundarySystem:
             return False
 
         log    = self._injection_log[source_id]
-        cutoff = time.time() - self.config["flood_window_seconds"]
+        cutoff = determinism.now() - self.config["flood_window_seconds"]
 
         # Evict stale timestamps
         while log and log[0] < cutoff:

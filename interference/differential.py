@@ -18,6 +18,7 @@ All modes return a unit-normalized vector.
 """
 
 import numpy as np
+from substrate import determinism
 
 
 def inject_ambiguity(
@@ -46,7 +47,7 @@ def inject_ambiguity(
     np.ndarray, shape (dim,), L2-normalized
     """
     if rng is None:
-        rng = np.random.default_rng()
+        rng = determinism.make_rng()
 
     if mode == "gaussian":
         return _gaussian(vec, scale, rng)

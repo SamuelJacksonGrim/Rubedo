@@ -25,6 +25,7 @@ from __future__ import annotations
 from typing import List, Optional
 
 import numpy as np
+from substrate import determinism
 
 
 class HarmonicMutator:
@@ -73,7 +74,7 @@ class HarmonicMutator:
         Returns L2-normalized mutated vector.
         """
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
 
         freqs      = np.fft.rfft(vec.astype(np.float64))
         n_bins     = len(freqs)
@@ -132,7 +133,7 @@ class HarmonicMutator:
         Returns L2-normalized hybrid vector.
         """
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
 
         fade = blend if blend is not None else self.cross_fade
 
@@ -169,7 +170,7 @@ class HarmonicMutator:
     ) -> List[np.ndarray]:
         """Apply mutation to each vector in a list."""
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
         return [self.mutate(v, rng) for v in vectors]
 
     def harmonic_series(
@@ -183,7 +184,7 @@ class HarmonicMutator:
         each derived from the previous. Forms an evolutionary trajectory.
         """
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
         series  = [vec.copy()]
         current = vec
         for _ in range(n - 1):

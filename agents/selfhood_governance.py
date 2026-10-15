@@ -62,6 +62,7 @@ CORE_ALIGNMENT_MIN = 0.5
 # ---------------------------------------------------------------------------
 
 from dataclasses import dataclass as _dc
+from substrate import determinism
 
 @_dc(frozen=True)
 class SystemRights:
@@ -460,7 +461,7 @@ class SelfhoodGovernance:
             stable_ids      = stable_ids,
             decision        = decision.value,
             coherence_delta = coherence_delta,
-            timestamp       = time.time(),
+            timestamp       = determinism.now(),
             outcome_metrics = outcome_metrics,
         )
 
@@ -630,7 +631,7 @@ class SelfhoodGovernance:
     ):
         """Append to bounded audit log."""
         entry = {
-            "timestamp":   time.time(),
+            "timestamp":   determinism.now(),
             "decision":    decision.value,
             "source_id":   source_id,
             "gates_fired": ethical_result.hard_gates_fired,

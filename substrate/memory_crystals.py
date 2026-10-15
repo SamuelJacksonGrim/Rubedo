@@ -26,6 +26,7 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
 import numpy as np
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -53,15 +54,15 @@ class MemoryCrystal:
     stability:     float
     coherence:     float
     activation_count: int   = 0
-    created_at:    float    = field(default_factory=time.time)
-    last_activated: float   = field(default_factory=time.time)
+    created_at:    float    = field(default_factory=determinism.now)
+    last_activated: float   = field(default_factory=determinism.now)
     usage:         float    = 1.0        # decays over time like SymbolState
 
     def reinforce(self, amount: float = 0.02):
         """Strengthen on re-activation."""
         self.stability        = min(self.stability * (1.0 + amount), 10.0)
         self.activation_count += 1
-        self.last_activated   = time.time()
+        self.last_activated   = determinism.now()
         self.usage            += 1.0
 
     def decay(self, rate: float = 0.9995):
@@ -70,7 +71,7 @@ class MemoryCrystal:
 
     def age(self) -> float:
         """Seconds since last activation."""
-        return time.time() - self.last_activated
+        return determinism.now() - self.last_activated
 
     def is_viable(self, min_usage: float = 0.01) -> bool:
         return self.usage >= min_usage

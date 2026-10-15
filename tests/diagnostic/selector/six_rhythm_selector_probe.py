@@ -62,11 +62,22 @@ def workload(n, rng):
 _ORIG = np.random.default_rng
 
 
+_CTX = []
+
+
 def pin(seed):
-    random.seed(seed)
-    np.random.seed(seed)
-    seq = itertools.count(seed * 100000)
-    np.random.default_rng = lambda seed=None, *a, **k: _ORIG(next(seq) if seed is None else seed, *a, **k)
+    """Enter substrate.determinism's replay mode (SimClock + seeded generators).
+    Replaced the old default_rng monkeypatch, which missed the wall clock."""
+    from substrate import determinism
+    unpin()
+    cm = determinism.deterministic(seed)
+    cm.__enter__()
+    _CTX.append(cm)
+
+
+def unpin():
+    while _CTX:
+        _CTX.pop().__exit__(None, None, None)
 
 
 ONLY = None   # set from argv: "witness" / "rupture" to allow only that selector mode
@@ -110,7 +121,7 @@ def run_arm(ckpt_dir, selector, seed, steps):
                              margin=s.extras.get("read_margin")))
         return rows, decisions, cycle
     finally:
-        np.random.default_rng = _ORIG
+        unpin()
 
 
 def main():
@@ -126,7 +137,7 @@ def main():
     print(f"pretraining one production generator (dim {cfg['dim']}, corpus 1.4.0)...")
     pin(1188)
     base_gen, _, _, _ = r.build_engine(cfg)
-    np.random.default_rng = _ORIG
+    unpin()
     ckpt = Path(tempfile.mkdtemp(prefix="selector_probe_"))
     base_gen.save_checkpoint(str(ckpt / "generator_weights.pt"), str(ckpt / "ecology.json"))
 

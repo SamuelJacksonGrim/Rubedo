@@ -41,6 +41,7 @@ from interference.wave_collapse import collapse_wave
 from interference.differential import inject_ambiguity
 from interference.bifurcation import BifurcationEngine
 from agents.symbolic_memory import TokenClass
+from substrate import determinism
 
 
 @dataclass
@@ -92,7 +93,7 @@ class Chorus:
         self.dreamer_mutation = dreamer_mutation
 
         self._bifurcator = BifurcationEngine(n_branches=2, divergence=0.15, mode="orthogonal")
-        self._rng        = np.random.default_rng()
+        self._rng        = determinism.make_rng()
 
     # ------------------------------------------------------------------
     # Harmonize

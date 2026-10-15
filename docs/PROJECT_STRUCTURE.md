@@ -37,6 +37,7 @@ Rubedo/
 ├── substrate/
 │   ├── __init__.py                        Package marker
 │   ├── dims.py                            FIELD_DIM: the field's width, in one place
+│   ├── determinism.py                     Model time + randomness in one place; replay mode for experiments
 │   ├── resonance_field.py                 Superposition field, tanh, decay, FFT rhythm
 │   ├── vector_space.py                    Keyed semantic vector store
 │   ├── memory_crystals.py                 Crystallize, reinforce, decay, soft-inject
@@ -230,7 +231,8 @@ Rubedo/
 │   │   ├── config_loading_neutrality.py   configs/*.yaml load + day-one behavioral neutrality
 │   │   ├── bond_ddm_invariants.py         Bond-DDM gate (OFF parity, ACCEPT-only commit, asymmetry)
 │   │   ├── fix0b_invariants.py            Fix 0-B gate (OFF parity, observe-only, leaky credit)
-│   │   └── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
+│   │   ├── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
+│   │   └── determinism_replay.py          Exact replay in/across processes; production clock untouched; guard
 │   │
 │   ├── adversarial/
 │   │   ├── sacred_shield.py               SACRED_SHIELD fires at all trust levels

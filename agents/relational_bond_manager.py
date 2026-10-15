@@ -34,7 +34,6 @@ Effect on SelfhoodGovernance
 
 from __future__ import annotations
 
-import time
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Dict, List, Literal, Optional, Tuple, TYPE_CHECKING
@@ -42,6 +41,7 @@ from typing import Dict, List, Literal, Optional, Tuple, TYPE_CHECKING
 import numpy as np
 
 from agents.bond_accumulator import AccumulatorOutcome, BondFormationAccumulator
+from substrate import determinism
 
 if TYPE_CHECKING:
     from agents.trust_ledger import GovernanceFeedback
@@ -80,8 +80,8 @@ class RelationalBond:
     crystal_count:      int   = 0        # crystals containing this source's symbols
     attractor_count:    int   = 0        # attractor centers seeded by this source
     entity_signal:      float = 0.0      # fraction of interactions touching ENTITY symbols
-    formed_at:          float = field(default_factory=time.time)
-    last_reinforced:    float = field(default_factory=time.time)
+    formed_at:          float = field(default_factory=determinism.now)
+    last_reinforced:    float = field(default_factory=determinism.now)
 
     @property
     def trust_floor(self) -> float:
@@ -252,7 +252,7 @@ class RelationalBondManager:
                 delta = -0.15 * abs(trust_impact)
 
             bond.bond_strength = float(np.clip(bond.bond_strength + delta, 0.0, 5.0))
-            bond.last_reinforced = time.time()
+            bond.last_reinforced = determinism.now()
 
             # Re-infer bond type after update
             bond.bond_type, bond.bond_confidence = self._infer_bond_type(bond)

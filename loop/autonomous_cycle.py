@@ -55,7 +55,6 @@ Data flow per step
 from __future__ import annotations
 
 import time
-import uuid
 import logging
 from collections import deque
 from dataclasses import dataclass, field
@@ -88,6 +87,7 @@ from cognition.stream_metastability import StreamMetastabilityMonitor
 
 from interference.differential import inject_ambiguity
 from substrate.dims import FIELD_DIM
+from substrate import determinism
 
 logger = logging.getLogger(__name__)
 
@@ -379,8 +379,9 @@ class AutonomousCycle:
         -------
         StepState
         """
-        t0    = time.perf_counter()
-        key   = uuid.uuid4().hex[:8]
+        determinism.on_step()          # model time: no-op on the real clock, +dt on a SimClock
+        t0    = time.perf_counter()    # telemetry only (elapsed_ms), always real
+        key   = determinism.new_key(8)
 
         # ------------------------------------------------------------------
         # 0. Subjective time tick (Tier 4.1)

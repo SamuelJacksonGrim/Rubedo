@@ -18,10 +18,10 @@ Capabilities
   - Subgraph extraction around a focal node
 """
 
-import time
 from typing import Any, Dict, List, Optional, Tuple
 
 import networkx as nx
+from substrate import determinism
 
 
 class TopologicalLog:
@@ -70,7 +70,7 @@ class TopologicalLog:
         """
         self.graph.add_node(
             key,
-            timestamp=time.time(),
+            timestamp=determinism.now(),
             metadata=metadata or {},
         )
 

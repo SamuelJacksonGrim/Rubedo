@@ -49,7 +49,7 @@ from pathlib import Path
 import numpy as np
 
 from loop import recursion1188 as r
-from tests.diagnostic.selector.six_rhythm_selector_probe import pin, workload, _ORIG
+from tests.diagnostic.selector.six_rhythm_selector_probe import pin, unpin, workload
 
 
 def unit(v):
@@ -104,7 +104,7 @@ def run(ckpt, arm, seed, steps):
                              else np.array(cycle._rupture_target, dtype=float)))
         return rows, decisions
     finally:
-        np.random.default_rng = _ORIG
+        unpin()
 
 
 def med(xs):
@@ -145,7 +145,7 @@ def main():
     print(f"pretraining one production generator (dim {r.CONFIG['dim']}, corpus 1.4.0)...")
     pin(1188)
     base, _, _, _ = r.build_engine(dict(r.CONFIG))
-    np.random.default_rng = _ORIG
+    unpin()
     ckpt = Path(tempfile.mkdtemp(prefix="aftermath_probe_"))
     base.save_checkpoint(str(ckpt / "generator_weights.pt"), str(ckpt / "ecology.json"))
 

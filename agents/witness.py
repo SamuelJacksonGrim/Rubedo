@@ -43,13 +43,13 @@ Conceptual role
   and narrative stabilizer.
 """
 
-import time
 import collections
 from dataclasses import dataclass, field
 from typing import Optional, List
 
 import numpy as np
 from substrate.dims import FIELD_DIM
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -300,7 +300,7 @@ class Witness:
             long         = self._long.copy(),
             coherence    = coherence,
             field_energy = field_energy,
-            timestamp    = time.time(),
+            timestamp    = determinism.now(),
             step         = self._step,
         )
         self.identity_trace.append(entry)
@@ -431,7 +431,7 @@ class Witness:
             anchor    = self._anchor.copy(),
             reason    = reason,
             coherence = coherence,
-            timestamp = time.time(),
+            timestamp = determinism.now(),
             step      = self._step,
         )
         self.snapshots.append(snap)
@@ -449,7 +449,7 @@ class Witness:
             coherence     = coherence,
             long_relation = long_relation,
             stability     = stability,
-            timestamp     = time.time(),
+            timestamp     = determinism.now(),
             step          = self._step,
         )
         self.crystallization_candidates.append(candidate)

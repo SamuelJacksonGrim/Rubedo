@@ -43,7 +43,7 @@ from __future__ import annotations
 import json
 import logging
 import time
-import uuid
+from substrate import determinism
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, TYPE_CHECKING
@@ -398,7 +398,7 @@ class ValueEmergenceEngine:
             value_id = self.symbol_to_value[stable_id]
             value    = self.values[value_id]
         else:
-            value_id = f"val_{uuid.uuid4().hex[:12]}"
+            value_id = f"val_{determinism.new_key(12)}"
             value    = EmergentValue(
                 value_id         = value_id,
                 symbol_stable_id = stable_id,

@@ -28,12 +28,12 @@ Feedback loop
 from __future__ import annotations
 
 import collections
-import time
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional
 
 import numpy as np
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -100,7 +100,7 @@ class SourceRecord:
     # 3.0 arms the trust-wash (build-then-betray) detector from first
     # contact (its prior-mean requirement is 3.0).
     trust_score:       float = 3.0
-    last_updated:      float = field(default_factory=time.time)
+    last_updated:      float = field(default_factory=determinism.now)
     reliability_history: collections.deque = field(
         default_factory=lambda: collections.deque(maxlen=64)
     )
@@ -125,7 +125,7 @@ class SymbolTrustRecord:
     symbol_trust:    float   = 3.0   # inherits from source at birth, diverges thereafter
     field_impact_ema: float  = 0.0   # EMA of coherence_delta values
     violation_count: int     = 0
-    last_updated:    float   = field(default_factory=time.time)
+    last_updated:    float   = field(default_factory=determinism.now)
     coherence_history: collections.deque = field(
         default_factory=lambda: collections.deque(maxlen=32)
     )
@@ -225,7 +225,7 @@ class TrustLedger:
         # 1. Source record
         source = self._get_or_create_source(source_id, origin_type)
         source.interaction_count += 1
-        source.last_updated       = time.time()
+        source.last_updated       = determinism.now()
         source.trust_score        = self._decay_source(source)
 
         # 2. Symbol records
@@ -237,7 +237,7 @@ class TrustLedger:
                 (1.0 - self.symbol_ema_alpha) * record.field_impact_ema
                 + self.symbol_ema_alpha * coherence_delta
             )
-            record.last_updated = time.time()
+            record.last_updated = determinism.now()
             symbol_trusts[sid]  = record.symbol_trust
 
         # 3. Recommendation (advisory)
@@ -364,7 +364,7 @@ class TrustLedger:
             self.sources[source_id] = SourceRecord(
                 source_id   = source_id,
                 origin_type = origin_type,
-                first_seen  = time.time(),
+                first_seen  = determinism.now(),
             )
         return self.sources[source_id]
 

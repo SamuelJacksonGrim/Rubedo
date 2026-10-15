@@ -23,6 +23,7 @@ Modes
 from __future__ import annotations
 
 import numpy as np
+from substrate import determinism
 
 
 class PhaseNoise:
@@ -60,7 +61,7 @@ class PhaseNoise:
         Returns a unit-normalized vector with perturbed phase structure.
         """
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
 
         if self.mode == "spectral":
             return self._spectral(vec, rng)

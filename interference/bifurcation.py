@@ -28,6 +28,7 @@ from __future__ import annotations
 from typing import List
 
 import numpy as np
+from substrate import determinism
 
 
 class BifurcationEngine:
@@ -79,7 +80,7 @@ class BifurcationEngine:
         List of np.ndarray, each shape (dim,), normalized
         """
         if rng is None:
-            rng = np.random.default_rng()
+            rng = determinism.make_rng()
 
         n = n_branches or self.n_branches
 

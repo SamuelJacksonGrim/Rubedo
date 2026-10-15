@@ -386,6 +386,11 @@ README tree entry in the same commit or CI goes red.
 - Compose a new entry point by hand — build through `build_engine()`, or it
   will silently run Tier 0 only.
 - `print` from library code — use the module logger.
+- Read the wall clock, draw unseeded randomness, or mint `uuid4` keys anywhere but
+  `substrate/determinism.py` (`now()`, `make_rng()`, `new_key()`). Model time and
+  randomness live there so experiments replay exactly under `deterministic(seed)`;
+  `tests.integration.determinism_replay` guards it. Elapsed-time telemetry
+  (`perf_counter`) is the one exception: it measures the machine, not the mind.
 
 ## Conventions & workflow
 

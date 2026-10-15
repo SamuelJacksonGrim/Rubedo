@@ -25,7 +25,6 @@ later crystallize into memory crystals or attractor centers.
 from __future__ import annotations
 
 import random
-import uuid
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -35,6 +34,7 @@ from interference.wave_collapse import collapse_wave
 from interference.differential import inject_ambiguity
 from interference.harmonic_mutation import HarmonicMutator
 from interference.bifurcation import BifurcationEngine
+from substrate import determinism
 
 
 @dataclass
@@ -101,7 +101,7 @@ class Dreamer:
         self.coherence_gate           = coherence_gate
 
         self._dream_count = 0
-        self._rng = np.random.default_rng()
+        self._rng = determinism.make_rng()
 
     # ------------------------------------------------------------------
     # Dream cycle
@@ -164,7 +164,7 @@ class Dreamer:
             # Ambiguity injection (EPHEMERAL token class in ecology)
             variant = inject_ambiguity(variant, scale=mutation_scale * 0.5, mode="rotational", rng=self._rng)
 
-            key     = f"dream_{uuid.uuid4().hex[:8]}"
+            key     = f"dream_{determinism.new_key(8)}"
             coherence = 0.5
             injected  = False
             stored    = False

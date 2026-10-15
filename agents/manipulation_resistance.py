@@ -42,11 +42,11 @@ Detectors
 from __future__ import annotations
 
 import collections
-import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
 import numpy as np
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -63,7 +63,7 @@ class ManipulationSignal:
     severity:   float                # 0.0–1.0
     source_id:  Optional[str]        # implicated source, None if systemic
     evidence:   Dict[str, float]     # raw metrics for audit logging
-    timestamp:  float = field(default_factory=time.time)
+    timestamp:  float = field(default_factory=determinism.now)
 
     def __repr__(self) -> str:
         return (f"ManipulationSignal(detector={self.detector!r}, "

@@ -25,6 +25,7 @@ from typing import List, Optional, Tuple
 
 import numpy as np
 from substrate.dims import FIELD_DIM
+from substrate import determinism
 
 
 @dataclass
@@ -138,7 +139,7 @@ class TemporalStream:
         """
         entry = StreamEntry(
             vector    = vec.copy(),
-            timestamp = time.time(),
+            timestamp = determinism.now(),
             step      = self._step,
             tag       = tag,
         )
@@ -296,7 +297,7 @@ class TemporalStream:
             The subjective dt added to subjective_time on this tick.
             Equals real_dt × dilation_factor, or 0.0 on the first call.
         """
-        now = time.time()
+        now = determinism.now()
         if self._last_tick_wall is None:
             self._last_tick_wall = now
             return 0.0

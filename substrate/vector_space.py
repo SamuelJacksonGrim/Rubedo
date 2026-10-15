@@ -13,12 +13,12 @@ Beyond flat key→vector storage:
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 from substrate.dims import FIELD_DIM
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -39,7 +39,7 @@ class VectorEntry:
 
     def touch(self):
         self.access_count += 1
-        self.timestamp = time.time()
+        self.timestamp = determinism.now()
 
 
 # ---------------------------------------------------------------------------
@@ -76,7 +76,7 @@ class VectorSpace:
         entry = VectorEntry(
             key       = key,
             vector    = vector.astype(np.float32).copy(),
-            timestamp = time.time(),
+            timestamp = determinism.now(),
             tags      = tags or [],
         )
         self._store[key] = entry
@@ -215,7 +215,7 @@ class VectorSpace:
         vectors = np.stack([self._store[k].vector for k in keys])
 
         # Random init
-        rng      = np.random.default_rng()
+        rng      = determinism.make_rng()
         centers  = vectors[rng.choice(len(vectors), n_clusters, replace=False)]
 
         labels = np.zeros(len(vectors), dtype=int)
@@ -276,6 +276,6 @@ class VectorSpace:
         return {
             "size":       len(self._store),
             "dim":        self.dim,
-            "oldest_age": round(time.time() - min(timestamps), 2),
-            "newest_age": round(time.time() - max(timestamps), 2),
+            "oldest_age": round(determinism.now() - min(timestamps), 2),
+            "newest_age": round(determinism.now() - max(timestamps), 2),
         }

@@ -22,11 +22,11 @@ Lifecycle
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
 import numpy as np
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -43,14 +43,14 @@ class AttractorCenter:
     origin_tokens:  List[str]
     strength:       float = 1.0       # grows on reinforcement
     activation_count: int = 0
-    created_at:     float = field(default_factory=time.time)
-    last_activated: float = field(default_factory=time.time)
+    created_at:     float = field(default_factory=determinism.now)
+    last_activated: float = field(default_factory=determinism.now)
     usage:          float = 1.0       # decays when inactive
 
     def reinforce(self, amount: float = 0.05):
         self.strength          = min(self.strength + amount, 20.0)
         self.activation_count += 1
-        self.last_activated    = time.time()
+        self.last_activated    = determinism.now()
         self.usage            += 1.0
 
     def decay(self, rate: float = 0.998):

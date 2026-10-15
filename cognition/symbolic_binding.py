@@ -26,11 +26,11 @@ Architecture
 
 from __future__ import annotations
 
-import time
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+from substrate import determinism
 
 
 # ---------------------------------------------------------------------------
@@ -51,8 +51,8 @@ class ConceptBinding:
     activation_count: int   = 0
     stability:        float = 1.0
     origin_tokens:    List[str] = field(default_factory=list)
-    created_at:       float = field(default_factory=time.time)
-    last_activated:   float = field(default_factory=time.time)
+    created_at:       float = field(default_factory=determinism.now)
+    last_activated:   float = field(default_factory=determinism.now)
 
     def update(self, vec: np.ndarray, lr: float = 0.1):
         """EMA update of the concept centroid."""
@@ -67,7 +67,7 @@ class ConceptBinding:
         self.stability = 0.9 * self.stability + 0.1 * max(sim, 0.0)
 
         self.activation_count += 1
-        self.last_activated    = time.time()
+        self.last_activated    = determinism.now()
 
 
 # ---------------------------------------------------------------------------
