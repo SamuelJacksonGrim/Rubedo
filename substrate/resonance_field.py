@@ -34,6 +34,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 
 # ---------------------------------------------------------------------------
@@ -133,7 +134,7 @@ class ResonanceField:
 
     def __init__(
         self,
-        dim: int = 128,
+        dim: int = FIELD_DIM,
         decay: float = 0.995,
         history_len: int = 256,
         rhythm_thresholds: Optional[dict] = None,

@@ -27,6 +27,7 @@ sys.path.insert(0, ".")
 
 from tests._common import build_full_stack          # noqa: E402
 from tools.voice.state_card import render_card, voice_from_card  # noqa: E402
+from substrate.dims import FIELD_DIM
 
 
 def main() -> int:
@@ -39,7 +40,7 @@ def main() -> int:
                     help="source id your input is attributed to (default: you)")
     args = ap.parse_args()
 
-    gen, cycle, gov, ve = build_full_stack()
+    gen, cycle, gov, ve = build_full_stack(dim=FIELD_DIM)
     if args.free:
         cycle.reflector.novelty_attenuation = True
 

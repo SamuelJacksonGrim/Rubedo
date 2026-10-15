@@ -34,6 +34,7 @@ from agents.value_emergence import ValueEmergenceEngine
 from loop.autonomous_cycle import AutonomousCycle
 from loop.dream_cycle import DreamCycle
 from configs.loader import load_config, section
+from substrate.dims import FIELD_DIM
 
 logging.basicConfig(
     level  = logging.INFO,
@@ -47,7 +48,7 @@ logger = logging.getLogger("recursion1188")
 # ---------------------------------------------------------------------------
 
 CONFIG = {
-    "dim":                  128,
+    "dim":                  FIELD_DIM,
     "vocab_size":           8192,
     "depth":                4,
     "heads":                4,

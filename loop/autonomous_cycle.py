@@ -87,6 +87,7 @@ from cognition.symbolic_binding import SymbolicBinding
 from cognition.stream_metastability import StreamMetastabilityMonitor
 
 from interference.differential import inject_ambiguity
+from substrate.dims import FIELD_DIM
 
 logger = logging.getLogger(__name__)
 
@@ -179,7 +180,7 @@ class AutonomousCycle:
     def __init__(
         self,
         generator:                    Generator,
-        dim:                          int   = 128,
+        dim:                          int   = FIELD_DIM,
         use_chorus:                   bool  = True,
         maintenance_interval:         int   = 200,
         attractor_formation_threshold: float = 0.88,

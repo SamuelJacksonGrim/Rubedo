@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 
 # ---------------------------------------------------------------------------
@@ -57,7 +58,7 @@ class VectorSpace:
         Maximum number of entries. LRU eviction when exceeded.
     """
 
-    def __init__(self, dim: int = 128, max_size: Optional[int] = None):
+    def __init__(self, dim: int = FIELD_DIM, max_size: Optional[int] = None):
         self.dim      = dim
         self.max_size = max_size
         self._store:  Dict[str, VectorEntry] = {}

@@ -32,13 +32,14 @@ field the first time took weeks because things kept being missed. The census exi
 ## The steps
 
 1. **Census. DONE 2026-10-14.** Every dial in `EXPERIMENTAL_LEVERS.md`, marked width-sensitive / not / unsure.
-   Guard: `tests.doc_accuracy.hardcoded_dim` fails on any field-dim literal that isn't listed (16 known sites, all
-   must equal `CONFIG["dim"]`). Known traps it found: `tools/voice/repl_qwen.py` hardcodes `dim=128` and
+   It found 16 duplicated field-dim literals. Known traps it found: `tools/voice/repl_qwen.py` hardcodes `dim=128` and
    `qwen_perception.py` has its own `PROJ_DIM = 128`; `tools/voice/repl.py` boots at 64; Witness, Dreamer, the five
    detectors, ethics/trust and value `DEFAULT_CONFIG` are not YAML-wired (a YAML-only retune misses them);
    `ReflectiveLoop.attractor_blend` is stored but never applied.
-2. **Single source of truth for width.** Make every field-dim site read `CONFIG["dim"]` (or receive it from
-   `build_engine()`), so the width changes in one place. The guard test then shrinks its list to one.
+2. **Single source of truth for width. DONE 2026-10-14.** `FIELD_DIM` in `substrate/dims.py`; `CONFIG["dim"]`,
+   every constructor default, `PROJ_DIM` and both voice REPLs read it; the inert YAML `dim:` keys are gone. Guard:
+   `tests.doc_accuracy.hardcoded_dim` fails on any field-dim literal elsewhere (verified by reintroducing one).
+   Full gate green at 128, so behavior is unchanged. Side fix: `tools/voice/repl.py` used to boot at 64.
 3. **Measure before changing.** For each width-sensitive dial: run the same seeded workload at 128 and at the new width,
    record the dial's operating values (how often a detector fires, where cosines sit, field coherence, rhythm band
    occupancy). Pre-declare what "unchanged" and "moved" look like before running (discipline: a clean confirming
@@ -60,6 +61,6 @@ the generator and expression streams. Governance gates every voice, including th
 
 ## Done means
 
-The guard lists one dim site; every width-sensitive dial has a recorded 128-vs-wide measurement and either "unchanged"
+Width lives only in `FIELD_DIM` (done); every width-sensitive dial has a recorded 128-vs-wide measurement and either "unchanged"
 or a retune with its finding; the full gate (`run_all_tests.sh`) passes at the new width; the coupling and decode tests
 pass with at least one 768 perception.

@@ -20,7 +20,7 @@ levers:
 
 generator:
   vocab_size: 8192
-  dim: 128
+  # dim: set ONLY in substrate/dims.py (FIELD_DIM); a dim here is ignored
   depth: 4
   heads: 4
   ff_mult: 4

@@ -139,6 +139,7 @@ DRIVES = [
 ]
 
 import urllib.request
+from substrate.dims import FIELD_DIM
 
 
 def ask_qwen(url, system, user, temperature, max_tokens=200):
@@ -496,7 +497,7 @@ def main() -> int:
     def log(s=""):
         logf.write(s + "\n")
 
-    gen, cycle, gov, ve = build_full_stack(vocab_size=8192, dim=128, depth=4, heads=4)
+    gen, cycle, gov, ve = build_full_stack(vocab_size=8192, dim=FIELD_DIM, depth=4, heads=4)
     # Load Samuel's TRAINED 5-rhythm encoder (perception on real weights, not random init).
     try:
         gen.load_checkpoint("data/checkpoints/generator_weights_5rhythm.pt",

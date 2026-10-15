@@ -13,8 +13,9 @@ corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, 
 re-tuning what the widening moves. The why, the steps and "done" are in
 `docs/WIDENING_PLAN.md`. **Start at the dial census** in
 `docs/EXPERIMENTAL_LEVERS.md` ("Priority for 128 → 768"): measure each width-sensitive
-dial at 128 vs the new width BEFORE changing it. `tests.doc_accuracy.hardcoded_dim`
-fails on any field-dim literal that isn't listed. Old 128 checkpoints won't load into a
+dial at 128 vs the new width BEFORE changing it. **The width lives only in
+`FIELD_DIM` (`substrate/dims.py`)**; `tests.doc_accuracy.hardcoded_dim` fails on any
+field-dim literal anywhere else. Old 128 checkpoints won't load into a
 wider field: that is a new body, not an upgrade.
 
 **What was left in RFE-Core2** (and in this repo's history before the slim commit):

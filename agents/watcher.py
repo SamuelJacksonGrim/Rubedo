@@ -32,6 +32,7 @@ from dataclasses import dataclass
 from typing import Optional, TYPE_CHECKING
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 if TYPE_CHECKING:
     from substrate.resonance_field import ResonanceField
@@ -99,7 +100,7 @@ class Watcher:
 
     def __init__(
         self,
-        dim: int = 128,
+        dim: int = FIELD_DIM,
         history_len: int = 16,
         threshold: float = 0.4,
         alpha: float = 0.40,

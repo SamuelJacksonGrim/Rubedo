@@ -84,6 +84,7 @@ from agents.symbolic_memory import (
     SymbolTable,
     TokenClass,
 )
+from substrate.dims import FIELD_DIM
 
 logger = logging.getLogger(__name__)
 
@@ -162,7 +163,7 @@ class Generator(nn.Module):
     def __init__(
         self,
         vocab_size:                int   = 8_192,
-        dim:                       int   = 128,
+        dim:                       int   = FIELD_DIM,
         depth:                     int   = 4,
         heads:                     int   = 4,
         ff_mult:                   int   = 4,

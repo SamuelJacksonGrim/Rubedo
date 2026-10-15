@@ -261,10 +261,9 @@ no kwarg/YAML yet.
 
 Do these first. Everything else can wait on a measurement.
 
-1. **Shape.** `CONFIG["dim"]`, YAML `dim`, every constructor default in the
-   [guard allowlist](#canonical-field-dim-sites), `PROJ_DIM` in
-   `tools/voice/qwen_perception.py`, `repl_qwen.py`'s `build_full_stack(dim=128)`,
-   then regenerate `perception_W.npy` (`W ~ N(0, 1/√dim)`, shape `(dim, 1024)`).
+1. **Shape.** One edit since 2026-10-14: `FIELD_DIM` in `substrate/dims.py`
+   ([field-dim sites](#canonical-field-dim-sites)). Then regenerate
+   `perception_W.npy` (`W ~ N(0, 1/√dim)`, shape `(dim, 1024)`).
 2. **Embedding init.** `Generator._init_weights` std `0.035` was raised so
    token identity survives the √dim PE mix and lands pairwise cosine ~0.55.
    Re-check at 768; resize-row init is still `0.02`.
@@ -291,10 +290,16 @@ ticks 12/28, vocab size, boolean flags, intervals.
 
 ### Canonical field-dim sites
 
-These currently all say 128. The guard test fails if any of them disagrees
-with `CONFIG["dim"]`, or if a new production site appears.
+**Since 2026-10-14 the width has one home: `FIELD_DIM` in `substrate/dims.py`.**
+Every site in the table below now reads it (`CONFIG["dim"] = FIELD_DIM`, each
+constructor default `dim: int = FIELD_DIM`, `PROJ_DIM = FIELD_DIM`, the two voice
+REPLs pass `dim=FIELD_DIM`), and the three YAML `dim:` keys were removed (they were
+inert: the cycle drops them and CONFIG overrides the generator's). The guard
+`tests.doc_accuracy.hardcoded_dim` fails on any field-dim literal anywhere in
+production. The table is kept as the record of where width enters. `repl.py` now
+boots at production width instead of the test helper's 64.
 
-| Where | Kind | Value | Width | Retune |
+| Where (as of the census, before 2026-10-14) | Kind | Value | Width | Retune |
 |-------|------|------:|-------|--------|
 | `loop/recursion1188.py:50` `CONFIG["dim"]` | canonical | 128 | **yes** (is the width) | CONFIG |
 | `configs/recursion.yaml:23` `generator.dim` | YAML leftover | 128 | **yes** | YAML; CONFIG overrides at boot |

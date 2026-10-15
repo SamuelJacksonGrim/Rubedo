@@ -24,6 +24,7 @@ from typing import List, Optional, Sequence, Tuple
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from substrate.dims import FIELD_DIM
 
 
 class TokenDecoder(nn.Module):
@@ -41,7 +42,7 @@ class TokenDecoder(nn.Module):
         linear "lookup table with opinions".
     """
 
-    def __init__(self, vocab: Sequence[str], dim: int = 128, hidden: int = 256,
+    def __init__(self, vocab: Sequence[str], dim: int = FIELD_DIM, hidden: int = 256,
                  device: Optional[str] = None):
         super().__init__()
         self.tokens: List[str] = list(vocab)

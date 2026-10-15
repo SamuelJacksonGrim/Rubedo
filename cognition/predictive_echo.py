@@ -34,6 +34,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 
 @dataclass
@@ -66,7 +67,7 @@ class PredictiveEcho:
 
     def __init__(
         self,
-        dim:                int   = 128,
+        dim:                int   = FIELD_DIM,
         history_len:        int   = 8,
         lr:                 float = 0.05,
         surprise_threshold: float = 2.5,

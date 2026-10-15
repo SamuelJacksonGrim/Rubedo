@@ -36,6 +36,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from substrate.dims import FIELD_DIM
 
 
 class RecursiveAttention(nn.Module):
@@ -59,7 +60,7 @@ class RecursiveAttention(nn.Module):
 
     def __init__(
         self,
-        dim:             int   = 128,
+        dim:             int   = FIELD_DIM,
         heads:           int   = 4,
         history_len:     int   = 16,
         recursion_depth: int   = 3,

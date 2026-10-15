@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 
 @dataclass
@@ -47,7 +48,7 @@ class TemporalStream:
         Vector dimensionality (required for incremental centroid tracking).
     """
 
-    def __init__(self, maxlen: int = 128, dim: int = 128):
+    def __init__(self, maxlen: int = 128, dim: int = FIELD_DIM):
         self.maxlen = maxlen
         self.dim    = dim
 

@@ -49,6 +49,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 
 # ---------------------------------------------------------------------------
@@ -169,7 +170,7 @@ class Witness:
 
     def __init__(
         self,
-        dim: int = 128,
+        dim: int = FIELD_DIM,
         short_decay: float = 0.85,
         mid_decay:   float = 0.97,
         long_decay:  float = 0.995,

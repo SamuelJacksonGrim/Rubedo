@@ -36,6 +36,7 @@ Rubedo/
 │
 ├── substrate/
 │   ├── __init__.py                        Package marker
+│   ├── dims.py                            FIELD_DIM: the field's width, in one place
 │   ├── resonance_field.py                 Superposition field, tanh, decay, FFT rhythm
 │   ├── vector_space.py                    Keyed semantic vector store
 │   ├── memory_crystals.py                 Crystallize, reinforce, decay, soft-inject

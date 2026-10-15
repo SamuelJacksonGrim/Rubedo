@@ -1,14 +1,15 @@
 """
 tests/doc_accuracy/hardcoded_dim.py
 
-Guard: field width has one canonical home, and leftover dim literals
-outside that home (or disagreeing with it) fail.
+Guard: field width has one home, and any field-dim literal anywhere else fails.
 
-Canonical production dim is CONFIG["dim"] in loop/recursion1188.py.
-YAML `dim:` keys and production constructor defaults `dim: int = N` are
-leftovers that currently duplicate it. When CONFIG is widened (128 → 768)
-this script fails until those leftovers are updated. When a new production
-`dim` default appears that the census does not know about, it also fails.
+The home is FIELD_DIM in substrate/dims.py (2026-10-14; before that the census
+tracked 16 duplicated literals). CONFIG["dim"] must be the name FIELD_DIM, every
+production constructor default reads it, the speech bridge's PROJ_DIM reads it,
+and the YAML files carry no `dim:` key. A new literal `dim: int = N`, a literal
+PROJ_DIM, a literal `build_full_stack(dim=N)` in production, or a YAML `dim:`
+fails until it is made to read FIELD_DIM (or, if it is genuinely not field width,
+listed in KNOWN_SITES with a reason).
 
 This is an inventory lock, not a pytest suite. Run:
 
@@ -35,7 +36,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 # Canonical dim
 # ---------------------------------------------------------------------------
 
-CANONICAL_FILE = "loop/recursion1188.py"
+CANONICAL_FILE = "substrate/dims.py"
+CONFIG_FILE = "loop/recursion1188.py"
 
 # Production Python whose `dim` constructor defaults / PROJ_DIM / explicit
 # dim= kwargs are field width. Relative to repo root.
@@ -69,30 +71,13 @@ FIELD_DIM_ARG_NAMES = frozenset({"dim"})
 FIELD_DIM_CALL_FUNCS = frozenset({"build_full_stack", "Generator", "AutonomousCycle"})
 
 
-# Census of known leftover field-dim sites. New sites fail until added here
-# (and to docs/EXPERIMENTAL_LEVERS.md). Values are not stored — they must
-# equal CONFIG["dim"].
+# Literal field-dim sites that are allowed to exist. Empty since 2026-10-14:
+# all 16 census sites now read FIELD_DIM. A literal that is genuinely NOT field
+# width (and that the visitor misreads as one) may be listed here with a reason;
+# a listed site must still equal FIELD_DIM.
 #
 # kind: arg | assign | call | yaml
-KNOWN_SITES: Tuple[Tuple[str, str, str], ...] = (
-    # file, kind, qualifier
-    ("loop/recursion1188.py", "config", "CONFIG.dim"),
-    ("configs/field.yaml", "yaml", "field.dim"),
-    ("configs/field.yaml", "yaml", "watcher.dim"),
-    ("configs/recursion.yaml", "yaml", "generator.dim"),
-    ("agents/generator.py", "arg", "Generator.__init__.dim"),
-    ("agents/decoder.py", "arg", "TokenDecoder.__init__.dim"),
-    ("agents/watcher.py", "arg", "Watcher.__init__.dim"),
-    ("agents/witness.py", "arg", "Witness.__init__.dim"),
-    ("substrate/resonance_field.py", "arg", "ResonanceField.__init__.dim"),
-    ("substrate/temporal_stream.py", "arg", "TemporalStream.__init__.dim"),
-    ("substrate/vector_space.py", "arg", "VectorSpace.__init__.dim"),
-    ("cognition/recursive_attention.py", "arg", "RecursiveAttention.__init__.dim"),
-    ("cognition/predictive_echo.py", "arg", "PredictiveEcho.__init__.dim"),
-    ("loop/autonomous_cycle.py", "arg", "AutonomousCycle.__init__.dim"),
-    ("tools/voice/qwen_perception.py", "assign", "PROJ_DIM"),
-    ("tools/voice/repl_qwen.py", "call", "build_full_stack.dim"),
-)
+KNOWN_SITES: Tuple[Tuple[str, str, str], ...] = ()
 
 
 @dataclass
@@ -223,8 +208,22 @@ def _call_name(node: ast.Call) -> str:
     return ""
 
 
-def parse_config_dim() -> Tuple[int, int]:
+def parse_field_dim() -> Tuple[int, int]:
     path = REPO_ROOT / CANONICAL_FILE
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    for node in tree.body:
+        if (isinstance(node, ast.Assign)
+                and any(isinstance(t, ast.Name) and t.id == "FIELD_DIM" for t in node.targets)):
+            val = _const_int(node.value)
+            if val is None:
+                raise SystemExit(f"FIELD_DIM is not an int literal in {CANONICAL_FILE}")
+            return val, node.lineno
+    raise SystemExit(f"FIELD_DIM not found in {CANONICAL_FILE}")
+
+
+def config_dim_reads_field_dim() -> Tuple[bool, int, str]:
+    """CONFIG['dim'] must be the bare name FIELD_DIM, not its own number."""
+    path = REPO_ROOT / CONFIG_FILE
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     for node in tree.body:
         if not isinstance(node, ast.Assign):
@@ -235,11 +234,9 @@ def parse_config_dim() -> Tuple[int, int]:
             continue
         for k, v in zip(node.value.keys, node.value.values):
             if isinstance(k, ast.Constant) and k.value == "dim":
-                val = _const_int(v)
-                if val is None:
-                    raise SystemExit(f"CONFIG['dim'] is not an int literal in {CANONICAL_FILE}")
-                return val, node.lineno
-    raise SystemExit(f"CONFIG['dim'] not found in {CANONICAL_FILE}")
+                ok = isinstance(v, ast.Name) and v.id == "FIELD_DIM"
+                return ok, v.lineno, ast.unparse(v)
+    raise SystemExit(f"CONFIG['dim'] not found in {CONFIG_FILE}")
 
 
 def scan_python(relpath: str) -> List[Hit]:
@@ -340,14 +337,17 @@ def coincidental_128_report(canonical: int) -> List[str]:
 
 
 def main() -> int:
-    canonical, canon_line = parse_config_dim()
-    print(f"canonical field dim: {canonical}  ({CANONICAL_FILE}:{canon_line} CONFIG['dim'])")
+    canonical, canon_line = parse_field_dim()
+    print(f"canonical field dim: {canonical}  ({CANONICAL_FILE}:{canon_line} FIELD_DIM)")
     print()
 
-    hits: List[Hit] = [
-        Hit(file=CANONICAL_FILE, line=canon_line, kind="config",
-            qualifier="CONFIG.dim", value=canonical),
-    ]
+    failures: List[str] = []
+    cfg_ok, cfg_line, cfg_src = config_dim_reads_field_dim()
+    print(f"  {'OK' if cfg_ok else 'FAIL':8} {CONFIG_FILE}:{cfg_line}  CONFIG['dim'] = {cfg_src}")
+    if not cfg_ok:
+        failures.append(f"  CONFIG['dim'] at {CONFIG_FILE}:{cfg_line} is {cfg_src}; it must be FIELD_DIM")
+
+    hits: List[Hit] = []
     for rel in production_py_files():
         hits.extend(scan_python(rel))
     for rel in YAML_FILES:
@@ -368,9 +368,7 @@ def main() -> int:
     known_keys = set(KNOWN_SITES)
     found_keys = {h.key() for h in hits}
 
-    failures: List[str] = []
-
-    print("known field-dim sites:")
+    print("allowed literal field-dim sites:" + ("" if KNOWN_SITES else " none (every site reads FIELD_DIM)"))
     for file, kind, qualifier in KNOWN_SITES:
         hit = next((h for h in hits if h.key() == (file, kind, qualifier)), None)
         if hit is None:
@@ -396,9 +394,9 @@ def main() -> int:
             hit = next(h for h in hits if h.key() == key)
             print(f"  {hit.file}:{hit.line}  {hit.kind} {hit.qualifier} = {hit.value}")
             failures.append(
-                f"  NEW field-dim leftover {hit.file}:{hit.line} "
-                f"{hit.kind} {hit.qualifier}={hit.value} — add it to "
-                f"KNOWN_SITES in this test and to docs/EXPERIMENTAL_LEVERS.md"
+                f"  field-dim literal {hit.file}:{hit.line} "
+                f"{hit.kind} {hit.qualifier}={hit.value} — make it read FIELD_DIM "
+                f"(substrate/dims.py)"
             )
 
     print()
@@ -415,7 +413,8 @@ def main() -> int:
         for f in failures:
             print(f)
         return 1
-    print(f"PASS: {len(KNOWN_SITES)} field-dim sites all equal CONFIG dim={canonical}; no unknowns.")
+    print(f"PASS: field width lives only in {CANONICAL_FILE} (FIELD_DIM={canonical}); "
+          f"CONFIG reads it; no field-dim literals elsewhere.")
     return 0
 
 

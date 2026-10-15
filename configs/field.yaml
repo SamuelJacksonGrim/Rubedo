@@ -7,7 +7,7 @@
 # is byte-identical to the defaults. See docs/EXPERIMENTAL_LEVERS.md.
 
 field:
-  dim: 128
+  # dim: set ONLY in substrate/dims.py (FIELD_DIM); a dim here is ignored
   decay: 0.995
   history_len: 256
   harmonic_bins: 4
@@ -32,7 +32,7 @@ field:
   diffuse_on_stabilize: true
 
 watcher:
-  dim: 128
+  # dim: set ONLY in substrate/dims.py (FIELD_DIM); a dim here is ignored
   history_len: 16
   threshold: 0.40
   # Layer weights (must sum to 1.0)

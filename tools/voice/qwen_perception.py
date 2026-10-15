@@ -20,13 +20,14 @@ import urllib.request
 from collections import Counter, OrderedDict
 
 import numpy as np
+from substrate.dims import FIELD_DIM
 
 EMB_URL = os.environ.get("QWEN_EMB_URL", "http://localhost:8081/v1/embeddings")
 EMB_MODELS_URL = os.environ.get(
     "QWEN_EMB_MODELS_URL", "http://localhost:8081/v1/models"
 )
 EMB_DIM = 1024
-PROJ_DIM = 128
+PROJ_DIM = FIELD_DIM
 PROJ_SEED = 1234
 LRU_MAX = 1024
 W_FILENAME = "perception_W.npy"
