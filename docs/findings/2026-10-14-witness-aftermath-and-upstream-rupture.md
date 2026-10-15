@@ -78,6 +78,27 @@ not grow across the run, so not (b), a lasting shift). Not (c): 94–100% of pul
 did not separate costly pulses from cheap ones; pulse length barely correlates with cost (−0.20 … +0.19). Seed 2 is the
 costliest of the three, not a different mechanism.
 
+## Follow-up 2 (same day): witness over 1,200 steps (`witness_long_probe.py`, 3 seeds, one invocation)
+
+| pre-declared criterion | seed 1 | seed 2 | seed 3 | verdict |
+|---|---|---|---|---|
+| plateau: matched gap, last third vs middle third (bar: not > 0.01 lower) | −0.024 vs −0.030 | −0.033 vs −0.041 | −0.032 vs −0.035 | **PASS 3/3** |
+| receptive: late retention ≥ 50% of early, and above OFF late | 27% (vs OFF 2×) | 40% (4×) | 41% (4×) | **FAIL 3/3** (absolute bar) |
+| accumulated: cos(field_end, mean witnessed direction), ON vs OFF | .476 vs .326 | .404 vs .357 | .456 vs .402 | **PASS 3/3** |
+
+The cost **levels off** at about −0.02 to −0.04 matched coherence (a dip around steps 300–400 recovers) and does not
+keep falling. The field ends up leaning measurably toward what it witnessed.
+
+Receptivity, with context measured on a rerun (added after the first run; the verdict above stands as written):
+retention early → late is 0.0060 → 0.0025 with witness (keeps **41–42%**) and 0.0043 → 0.0008 without (keeps
+**16–21%**). The whole field stiffens over a long run (the identity integrator at work, by design); witness does not
+wear out, it keeps the field about **twice as receptive** as the ordinary path. The receptive criterion was
+mis-specified: an absolute 50% bar did not anticipate field-wide stiffening. Next time declare it relative to OFF.
+
+**Witness, overall:** a real, recoverable update; its coherence cost plateaus; it is the one path found so far that
+holds the field open against its own long-run stiffening. Candidate for graduation once identity is re-checked with
+the steadier measures and the all-ON composition gate passes.
+
 ## Open items (order agreed with Samuel + GPT/Raphael: 1, then 2, then 3)
 0. **Reproducibility:** give the time-reading components an injectable clock so a seeded run replays exactly. Until
    then, compare arms only within one invocation and on matched trajectories, never on snapshots across runs.
@@ -85,7 +106,7 @@ costliest of the three, not a different mechanism.
    OFF (OFF's own end-of-run coherence ranges 0.81–0.85, so final numbers alone can mislead), and tell apart three
    failure modes, each pointing to a different fix: (a) a temporary, recoverable disturbance; (b) a lasting shift in
    identity representation; (c) a consequence of the state the field was in when the rupture landed.
-2. Witness accumulation: does the drift level off over a longer run (1,000+ steps), or keep falling? Track coherence
+2. → DONE (same day, section above): plateaus; receptivity 2× OFF's under field-wide stiffening. Original item: Witness accumulation: does the drift level off over a longer run (1,000+ steps), or keep falling? Track coherence
    **and** the field's accumulated alignment with what it witnessed, together: a field that stops changing can look
    stable only because it has stopped being receptive. A bound on witness strength is the fallback if it keeps falling.
 3. Re-run identity with the steadier measures above, declared first; more seeds.
