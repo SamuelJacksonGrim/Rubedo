@@ -69,6 +69,9 @@ def pin(seed):
     np.random.default_rng = lambda seed=None, *a, **k: _ORIG(next(seq) if seed is None else seed, *a, **k)
 
 
+ONLY = None   # set from argv: "witness" / "rupture" to allow only that selector mode
+
+
 def run_arm(ckpt_dir, selector, seed, steps):
     """Both arms resume the same pretrained checkpoint through build_engine's
     guarded session-resume path, so they start from identical weights + ecology."""
@@ -85,6 +88,15 @@ def run_arm(ckpt_dir, selector, seed, steps):
             decisions[d.name] += 1
             return d, s
         cycle._governance_gate = counted
+        if selector and ONLY and cycle.rhythm_reader is not None:
+            from cognition.rhythm_reader import RhythmRead
+            real_read = cycle.rhythm_reader.read
+            def masked(g, t):
+                rd = real_read(g, t)
+                if rd.rhythm in ("witness", "rupture") and rd.rhythm != ONLY:
+                    return RhythmRead(rd.rhythm, 0.0, rd.cosine)   # below margin: mode suppressed
+                return rd
+            cycle.rhythm_reader.read = masked
         rows = []
         for kind, toks, src in workload(steps, random.Random(seed)):
             before = cycle.field.field.copy()
@@ -102,8 +114,12 @@ def run_arm(ckpt_dir, selector, seed, steps):
 
 
 def main():
+    global ONLY
     steps = int(sys.argv[1]) if len(sys.argv) > 1 else 300
     seeds = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    ONLY = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] in ("witness", "rupture") else None
+    if ONLY:
+        print(f"selector restricted to {ONLY} only")
     import tempfile
     from pathlib import Path
     cfg = dict(r.CONFIG)

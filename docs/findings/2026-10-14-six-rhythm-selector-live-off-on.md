@@ -38,8 +38,22 @@ gate; every witness and rupture phrase was read as its own rhythm.
 - **Something lowers field coherence 0.04–0.13.** Candidates: witness injecting the raw, un-pulled input; rupture's
   held novel direction. Not yet separated.
 
+## Split run: which mode does what (`six_rhythm_selector_probe 300 3 witness|rupture`)
+
+| arm | field effect (vs OFF, same phrases) | final coherence vs OFF |
+|---|---|---|
+| witness only | move **less**, 3/3: 0.48 vs 0.84, 0.58 vs 0.91, 0.51 vs 0.86 | **−0.06, −0.09, −0.13** |
+| rupture only | turn **less**, 3/3: 5e-6 vs 1.6e-5, 1.1e-5 vs 1.5e-5, 1.0e-5 vs 1.5e-5 | +0.02, −0.03, +0.01 (noise) |
+
+**Witness owns the coherence drop; rupture owns the actuator failure.** Witness does what it was designed to do (the
+field moves 35–45% less on witness steps) and the price is self-coherence: the input enters without the pull toward
+the system's own basins or the refinement against its own history, so the field holds something it did not shape.
+Whether that is receptivity working as meant (the self making room for what it receives) or a cost to bound (e.g.
+witness injecting at reduced strength) is an architect question, not a tuning one. Note the coherence read here is
+the watcher composite of the field against the anchor, not the ~0.998 `internal_coherence` pin.
+
 ## Open items
-1. **Separate the coherence drop**: run witness-only and rupture-only arms.
+1. ~~Separate the coherence drop~~ → DONE (same day): witness causes it, rupture doesn't (table above).
 2. **Rupture needs a design decision, not a tweak.** An actuator that actually turns the field has to work against
    the integrator, and the field lock (~0.998) is by design (STATE.md, settled). A rupture that moves the field is in
    direct tension with that. This is the architect's call: what should a rupture do to an identity that is meant to
