@@ -63,7 +63,7 @@ from __future__ import annotations
 
 import logging
 import math
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -397,6 +397,43 @@ class Generator(nn.Module):
 
         x = torch.tensor(padded, dtype=torch.long).to(self.device)
         return self.forward(x).cpu().numpy()
+
+    @torch.no_grad()
+    def peek_batch(self, token_lists: List[List[str]]) -> Tuple[np.ndarray, np.ndarray]:
+        """Read-only encode: how the generator would see these sequences, with no side effects.
+
+        Unlike generate/encode_batch, this never registers a token: no usage bump, no new
+        symbol, no archive reactivation, no auto-maintenance. Only tokens already ACTIVE in
+        the registry are encoded (canonicalized the same way register() does); unknown tokens
+        are skipped. Runs in eval mode and restores the previous mode.
+
+        Returns (vectors (n, dim) float32, known (n,) bool). Rows with no known token are
+        zero vectors with known=False.
+        """
+        reg = self.registry
+        rows = []
+        for tl in token_lists:
+            ids = []
+            for t in tl:
+                st = reg.symbols.get(reg.pipeline.process(t).token)
+                if st is not None and st.address < self.embedding.num_embeddings:
+                    ids.append(st.address)
+            rows.append(ids)
+        known = np.array([bool(r) for r in rows])
+        out = np.zeros((len(rows), self.dim), dtype=np.float32)
+        if not known.any():
+            return out, known
+        live = [r for r in rows if r]
+        max_len = max(len(r) for r in live)
+        pad_id = self.address_space.pad_id
+        x = torch.tensor([r + [pad_id] * (max_len - len(r)) for r in live], dtype=torch.long).to(self.device)
+        was_training = self.training
+        self.eval()
+        try:
+            out[known] = self.forward(x).cpu().numpy()
+        finally:
+            self.train(was_training)
+        return out, known
 
     # ==========================================================================
     # Lifecycle management

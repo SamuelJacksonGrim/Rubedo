@@ -441,6 +441,7 @@ The tiers above describe the *parts*. This section traces how they *move togethe
 |---|-------|-----------|
 | 0 | **Subjective time tick** | `TemporalStream.tick()` advances `subjective_time` (Tier 4.1) |
 | 1 | **Observe rhythm** | `ResonanceField.observe()` → field energy → `stabilize / dream / reflect / explore` |
+| 1b | **Six-rhythm selector** (lever, default off) | `RhythmReader` reads the input (nearest of six rhythm centroids, read-only peek) before acting; a confident `witness` or `rupture` read sets the step's mode. Witness: no pull / refine / reflect / behavior inject, still gated into the field. Rupture: held-direction push through the reflective loop. Off = byte-identical |
 | 2 | **Generate** | rhythm-routed: `Generator.generate()` direct (stabilize), `EPHEMERAL` + ambiguity injection (dream), or `Chorus.harmonize()` collapsing 6 differentiated agents (reflect / explore) → latent `vec` |
 | 3 | **Attractor pull** | `Attractor.pull()` blends `vec` toward its nearest basin; pull strength scaled by `emotion.attractor_pull()` |
 | 4 | **Recursive attention** | `RecursiveAttention.refine()` attends `vec` over a rolling window of prior latent states; `diversity_blend` weights the raw vector back in so the untrained attention can't collapse the expression to its context centroid. The generator output (stage A, step 2) and this refined expression (stage C) feed the observe-only `StreamMetastabilityMonitor`s exposed in `status()`. |

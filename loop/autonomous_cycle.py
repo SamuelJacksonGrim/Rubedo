@@ -192,6 +192,8 @@ class AutonomousCycle:
         reflect_novelty_attenuation:  bool  = False,
         diversity_fitness:            bool  = False,
         binding_leak:                 float = 0.0,
+        six_rhythm_selector:          bool  = False,
+        rhythm_read_margin:           float = 0.10,
         config:                       Optional[dict] = None,
     ):
         # config: merged YAML dict (configs.loader.load_config()) or None. Used to
@@ -309,6 +311,16 @@ class AutonomousCycle:
         # sink like dilation_factor — never read by the cognitive/governance loop.
         self.stream_recorder = None
 
+        # Six-rhythm selector (lever, default OFF; byte-identical when off). Energy
+        # picks among the four stances; the generator's read of the INPUT (nearest
+        # rhythm centroid, cognition/rhythm_reader.py) adds the two rhythms that are
+        # not energy levels: witness (receive without acting) and rupture (a break:
+        # the held-direction push through the reflective loop, the rupture actuator
+        # the code shows can move a locked field). Needs attach_rhythm_reader().
+        self.six_rhythm_selector = six_rhythm_selector
+        self.rhythm_read_margin  = rhythm_read_margin
+        self.rhythm_reader       = None
+
         # ------------------------------------------------------------------
         # Config (Tier 2 behavioral knobs — Boredom Teeth, etc.)
         # ------------------------------------------------------------------
@@ -378,10 +390,15 @@ class AutonomousCycle:
         field_obs = self.field.observe()
         rhythm    = field_obs.rhythm
 
+        # 1b. Six-rhythm selector (lever): read the input before acting on it.
+        mode, rhythm_read = None, None
+        if self.six_rhythm_selector and self.rhythm_reader is not None:
+            mode, rhythm_read = self._select_mode(tokens)
+
         # ------------------------------------------------------------------
         # 2. Generate vector (rhythm-sensitive)
         # ------------------------------------------------------------------
-        vec = self._generate(tokens, rhythm)
+        vec = self._generate(tokens, mode or rhythm)
 
         # Stethoscope: record the raw generator output (stage A) for upstream
         # metastability — BEFORE attractor-pull and refinement, which homogenize
@@ -393,17 +410,20 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 3. Attractor pull (strength modulated by emotion)
         # ------------------------------------------------------------------
-        pull_modifier = self.emotion.attractor_pull()
-        # Temporarily adjust attractor blend
-        original_blend       = self.attractor.pull_blend
-        self.attractor.pull_blend = float(np.clip(original_blend * pull_modifier, 0.0, 0.5))
-        vec = self.attractor.pull(vec, generator=self.generator)
-        self.attractor.pull_blend = original_blend
+        # Witness perceives without transforming: no pull toward its own basins
+        # and no refinement against its own history (steps 3-4 skipped).
+        if mode != "witness":
+            pull_modifier = self.emotion.attractor_pull()
+            # Temporarily adjust attractor blend
+            original_blend       = self.attractor.pull_blend
+            self.attractor.pull_blend = float(np.clip(original_blend * pull_modifier, 0.0, 0.5))
+            vec = self.attractor.pull(vec, generator=self.generator)
+            self.attractor.pull_blend = original_blend
 
-        # ------------------------------------------------------------------
-        # 4. Recursive attention refinement
-        # ------------------------------------------------------------------
-        vec = self.rec_attn.refine(vec)
+            # --------------------------------------------------------------
+            # 4. Recursive attention refinement
+            # --------------------------------------------------------------
+            vec = self.rec_attn.refine(vec)
 
         # Stethoscope: record the refined EXPRESSION (stage C) — what is actually
         # injected into the field. Comparing this stream's metastability against
@@ -452,10 +472,11 @@ class AutonomousCycle:
             and report.stable
             and self.generator_metastability is not None
             and self.generator_metastability.report.regime_state == "locked"
-        )
-        if self.config.get("rupture_on_lock", False) and not rupture_now:
-            self._rupture_target = None          # release: fresh target next lock
-        if (rhythm in ("reflect", "explore") and report.stable) or rupture_now:
+        ) or mode == "rupture"
+        if (self.config.get("rupture_on_lock", False) or self.six_rhythm_selector) and not rupture_now:
+            self._rupture_target = None          # release: fresh target next pulse
+        reflect_now = rhythm in ("reflect", "explore") and report.stable and mode != "witness"
+        if reflect_now or rupture_now:
             if rupture_now:
                 tgt = getattr(self, "_rupture_target", None)
                 if tgt is None:                  # pick ONCE, on lock-onset
@@ -585,7 +606,8 @@ class AutonomousCycle:
             crystallization_pressure = report.crystallization_pressure,
             long_relation            = rel_profile.long,
             origin_tokens            = tokens,
-            field                    = self.field,
+            # Witness keeps the memory but does not replay a crystal into the field.
+            field                    = None if mode == "witness" else self.field,
             generator                = self.generator,
         )
         # Bond manager: notify only when a NEW crystal actually formed
@@ -707,11 +729,16 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 20. Rhythm-routed behavior
         # ------------------------------------------------------------------
-        # force_dream_flag overrides rhythm — governance-triggered rebalancing
+        # force_dream_flag overrides rhythm — governance-triggered rebalancing.
+        # Selector modes: witness adds no motion of its own; rupture's action was
+        # the held-direction push in step 6, so no second inject here.
         if self.governance is not None and self.governance.force_dream_flag:
             self._dream_behavior()
+            behavior = "dream (forced)"
+        elif mode is not None:
+            behavior = mode
         else:
-            self._rhythm_behavior(rhythm, tokens)
+            behavior = self._rhythm_behavior(rhythm, tokens)
 
         # ------------------------------------------------------------------
         # 21. Periodic maintenance
@@ -755,6 +782,12 @@ class AutonomousCycle:
             reflection_passes  = reflection_passes,
             elapsed_ms         = round(elapsed, 2),
         )
+        # Selector on: record what actually ran, and why (rhythm stays the energy
+        # band so four-band consumers are unchanged). Off: extras stay empty.
+        if self.six_rhythm_selector and rhythm_read is not None:
+            state.extras["behavior"]    = behavior
+            state.extras["rhythm_read"] = rhythm_read.rhythm
+            state.extras["read_margin"] = round(rhythm_read.margin, 4)
 
         # Census instrument: record what this step actually consumed (tokens,
         # source, rhythm) and what governance decided about it. Observe-only
@@ -840,6 +873,22 @@ class AutonomousCycle:
         identically.
         """
         self.stream_recorder = recorder
+
+    def attach_rhythm_reader(self, reader):
+        """Attach a RhythmReader (cognition/rhythm_reader.py) for the six-rhythm
+        selector. Inert unless six_rhythm_selector is on."""
+        self.rhythm_reader = reader
+
+    def _select_mode(self, tokens: List[str]):
+        """Six-rhythm selection before generation, from the read of the input only.
+        Returns (mode, read): mode is "witness", "rupture" or None (None = the
+        energy stance runs exactly as before). Lock-triggered rupture stays its own
+        lever (rupture_on_lock) so each change is measurable on its own."""
+        read = self.rhythm_reader.read(self.generator, tokens)
+        sure = read.rhythm is not None and read.margin >= self.rhythm_read_margin
+        if sure and read.rhythm in ("witness", "rupture"):
+            return read.rhythm, read
+        return None, read
 
     def attach_integrity_consumer(self, consumer):
         """
@@ -943,6 +992,8 @@ class AutonomousCycle:
 
         elif rhythm == "explore":
             self._explore_behavior(tokens)
+
+        return rhythm   # what actually ran (boredom may have overridden the band)
 
     def _stabilize_behavior(self):
         """

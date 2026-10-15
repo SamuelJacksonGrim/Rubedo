@@ -54,6 +54,7 @@ Rubedo/
 │   ├── symbolic_binding.py                Recurring vectors become named concepts
 │   ├── stream_metastability.py           Online stethoscope (stage A generator, stage C expression)
 │   ├── stream_recorder.py                 Observe-only token/source/rhythm/decision ring (opt-in)
+│   ├── rhythm_reader.py                   Reads an input's rhythm (nearest of six centroids) for the selector lever
 │   ├── dream_channel.py                   Decode _last_expressed; the driver steps source_dream
 │   ├── dream_session.py                   Offline symbolic dream + markdown consolidation
 │   └── integrity_read.py                  ⊘ thinness read and the opt-in decay consumer
@@ -227,7 +228,8 @@ Rubedo/
 │   │   ├── checkpoint_registry_identity.py  Checkpoint load preserves registry object
 │   │   ├── config_loading_neutrality.py   configs/*.yaml load + day-one behavioral neutrality
 │   │   ├── bond_ddm_invariants.py         Bond-DDM gate (OFF parity, ACCEPT-only commit, asymmetry)
-│   │   └── fix0b_invariants.py            Fix 0-B gate (OFF parity, observe-only, leaky credit)
+│   │   ├── fix0b_invariants.py            Fix 0-B gate (OFF parity, observe-only, leaky credit)
+│   │   └── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
 │   │
 │   ├── adversarial/
 │   │   ├── sacred_shield.py               SACRED_SHIELD fires at all trust levels

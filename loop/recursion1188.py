@@ -144,6 +144,14 @@ CONFIG = {
     # (docs/EXPERIMENTAL_LEVERS.md; finding 2026-07-18).
     "fix0b_diversity_fitness":      False,
     "fix0b_binding_leak":           0.0,    # suggested 0.10/decay-pass when ON
+    # Six-rhythm selector (Rubedo, 2026-10-14): energy picks among the four
+    # stances; the generator's read of the input (nearest rhythm centroid from
+    # corpus 1.4.0, cognition/rhythm_reader.py) adds witness (receive without
+    # acting) and rupture (held-direction push through the reflective loop).
+    # OPT-IN pending the off/on measurement + the all-ON composition gate.
+    # rhythm_read_margin: act only when the read beats the runner-up by this much.
+    "six_rhythm_selector":          False,
+    "rhythm_read_margin":           0.10,
 }
 
 # Default token sequences — replace with your own input pipeline
@@ -294,6 +302,8 @@ def build_engine(config: dict = None):
         reflect_novelty_attenuation   = config["reflect_novelty_attenuation"],
         diversity_fitness             = config.get("fix0b_diversity_fitness", False),
         binding_leak                  = config.get("fix0b_binding_leak", 0.0),
+        six_rhythm_selector           = config.get("six_rhythm_selector", False),
+        rhythm_read_margin            = config.get("rhythm_read_margin", 0.10),
         attractor_formation_threshold = cyc.get("attractor_formation_threshold", 0.88),
         merge_interval                = cyc.get("merge_interval", 50),
         lattice_emit_interval         = cyc.get("lattice_emit_interval", 100),
@@ -337,6 +347,15 @@ def build_engine(config: dict = None):
         generator.eval()   # loading must not disturb the operating regime
         logger.info("Session resumed: weights + ecology + emergent values "
                     "restored from previous run.")
+
+    # Six-rhythm selector: centroids belong to the final weights, so build the
+    # reader after pretraining AND after any session resume.
+    if config.get("six_rhythm_selector"):
+        from cognition.rhythm_reader import RhythmReader
+        from training.corpus import load_corpus, TRAIN_PATH, RHYTHMS
+        cycle.attach_rhythm_reader(
+            RhythmReader.from_corpus(generator, load_corpus(TRAIN_PATH), RHYTHMS))
+        logger.info("Six-rhythm selector ON (read margin %.2f).", config["rhythm_read_margin"])
 
     # Optional instrument: observe-only stream recorder — the operational-
     # vocabulary coverage census (data_curation.md §5). Terminal sink; the
