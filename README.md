@@ -42,6 +42,7 @@ is the conceptual tour; the other references divide the rest:
 | [`docs/FLOW.md`](docs/FLOW.md) | Movement and time — what each piece of state reads and writes, the clocks, one symbol's life, and what a change reaches |
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
 | [`docs/WIDENING_PLAN.md`](docs/WIDENING_PLAN.md) | **Rubedo's job:** why the field widens 128 → 256/768, the steps, and what "done" means |
+| [`docs/EMOTION_CALIBRATION.md`](docs/EMOTION_CALIBRATION.md) | The emotion names are hypotheses: what each dimension computes today, and how to test it against behavior and self-report |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
 | [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch, and the dial census marked for the 128 → 768 widening |
 | [`docs/findings/`](docs/findings/) | Rubedo's empirical ledger (starts empty; RFE-Core2's 256 findings are linked from its INDEX) |
