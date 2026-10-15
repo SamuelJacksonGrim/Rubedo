@@ -3,7 +3,8 @@
 How the code is wired today. Written from the tree, not carried over from
 `ARCHITECTURE_ANALYSIS.md` (retired by this file). Where a number already
 lives in the [dial census](docs/EXPERIMENTAL_LEVERS.md#dial-census--every-numeric-lever),
-this page names the dial and points there instead of copying it.
+this page names the dial and points there instead of copying it. What a
+change reaches, and on which clock, is [docs/FLOW.md](docs/FLOW.md).
 
 The heartbeat is `AutonomousCycle.step()` in `loop/autonomous_cycle.py`.
 Everything else is either called by that function, attached to the cycle

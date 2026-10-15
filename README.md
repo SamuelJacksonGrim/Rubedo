@@ -39,6 +39,7 @@ is the conceptual tour; the other references divide the rest:
 |------|-----|
 | [`STATE.md`](STATE.md) | **Read first** — the one-screen "you are here": what the system can do now, what is **SETTLED** (do not reopen), what's parked, the one open frontier, and the 4-role sibling map |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | How information flows and recurs, end to end — module index, the step in source order, the speech-cortex bridge |
+| [`docs/FLOW.md`](docs/FLOW.md) | Movement and time — what each piece of state reads and writes, the clocks, one symbol's life, and what a change reaches |
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
 | [`docs/WIDENING_PLAN.md`](docs/WIDENING_PLAN.md) | **Rubedo's job:** why the field widens 128 → 256/768, the steps, and what "done" means |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
