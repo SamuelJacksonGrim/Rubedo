@@ -96,6 +96,7 @@ def run(ckpt, arm, seed, steps):
             vecs, known = gen.peek_batch([toks])
             s = cycle.step(tokens=toks, source_id=src, origin_type="internal")
             rows.append(dict(kind=kind, behavior=s.extras.get("behavior", s.rhythm),
+                             band=s.rhythm, energy=s.field_energy,
                              field=cycle.field.field.copy(), coh=field_coh(cycle),
                              expr=np.array(cycle._last_expressed, dtype=float),
                              u=vecs[0] if known[0] else None,

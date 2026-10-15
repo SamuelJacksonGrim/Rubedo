@@ -56,8 +56,32 @@ of the pre-declared bar (mean over seeds) identity fails. The bar is not being m
   run should declare a steadier one in advance (mean over the last 50 steps, and the identity measures the repo
   already trusts: witness anchor drift, the field-lock displacement).
 
+## Follow-up 1 (same day): seed 2 traced on matched trajectories (`rupture_trace.py`)
+
+Replaying the aftermath run's own checkpoint did **not** reproduce it exactly: OFF's end-of-run coherence came out
+0.813 (seed 2) vs 0.853 in the original run, 0.828 vs 0.813 (seed 3). RNG pinning is not enough: several parts of
+the system read the wall clock (`EthicalBoundary` flood window, crystal age, bond `last_reinforced`, the temporal
+stream). **Runs vary between invocations, so an end-of-run snapshot is not a stable measure**, and the original
+"−0.119" was largely that snapshot noise on top of a real but small cost.
+
+Matched step by step (ON − OFF coherence, 30-step window means):
+
+| seed | windows | run mean | mean per-pulse cost | sustained divergence (10-step mean < −0.05) |
+|---|---|---|---|---|
+| 1 | −0.002 … −0.016 | ≈ −0.009 | −0.013 | none |
+| 2 | −0.014 … −0.031 | ≈ −0.020 | −0.024 | none |
+| 3 | −0.001 … −0.026 | ≈ −0.014 | −0.016 | none |
+
+**Verdict: failure mode (a), a temporary, recoverable disturbance.** Each pulse costs ~0.01–0.02 of coherence and
+mostly recovers; while ruptures keep arriving the field holds a slightly lower but **steady** coherence (the gap does
+not grow across the run, so not (b), a lasting shift). Not (c): 94–100% of pulses started in the dream band, and band
+did not separate costly pulses from cheap ones; pulse length barely correlates with cost (−0.20 … +0.19). Seed 2 is the
+costliest of the three, not a different mechanism.
+
 ## Open items (order agreed with Samuel + GPT/Raphael: 1, then 2, then 3)
-1. Seed 2: what made upstream rupture cost 0.12 there? Judge it on **matched step-by-step trajectories** against
+0. **Reproducibility:** give the time-reading components an injectable clock so a seeded run replays exactly. Until
+   then, compare arms only within one invocation and on matched trajectories, never on snapshots across runs.
+1. → DONE (same day, section above): mode (a), steady small per-pulse cost. Original item: Seed 2: what made upstream rupture cost 0.12 there? Judge it on **matched step-by-step trajectories** against
    OFF (OFF's own end-of-run coherence ranges 0.81–0.85, so final numbers alone can mislead), and tell apart three
    failure modes, each pointing to a different fix: (a) a temporary, recoverable disturbance; (b) a lasting shift in
    identity representation; (c) a consequence of the state the field was in when the rupture landed.

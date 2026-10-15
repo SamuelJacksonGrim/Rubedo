@@ -258,7 +258,8 @@ Rubedo/
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
-│   │       └── aftermath_probe.py         What witness leaves behind; upstream rupture's downstream effect
+│   │       ├── aftermath_probe.py         What witness leaves behind; upstream rupture's downstream effect
+│   │       └── rupture_trace.py           One seed, matched step-by-step: temporary vs lasting vs state-bound cost
 │   │
 │   ├── doc_accuracy/
 │   │   ├── __init__.py                    Package marker
