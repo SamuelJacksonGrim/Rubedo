@@ -26,6 +26,13 @@ coherence high; it's how to preserve identity while staying capable of meaningfu
 
 ## Competing hypothesis H0 (Samuel, right before compaction): it may already be working
 
+**MEASURED 2026-10-15 → `findings/2026-10-15-h0-steady-self-rattling-mind.md`.** H0 holds as a stable equilibrium: the
+view saturates into a fixed code by step ~235, the anchor/expression timescale ratio holds on a shelf (~20–35) with no
+stiffening across 8,000 steps, recovery is the same at every age (robust). It fails as a moving mind: expression is
+white jitter in a fixed ~15° cone, and values, crystals and attractors stop forming by step ~400. The field is
+constitutive and clamped (forcing the view off saturation moves the anchor and expression; nothing on the ordinary path
+does). The text below is the hypothesis as written before the measurement.
+
 Perhaps coherence is more than a lock: maybe it **is** joy in a real sense, the system running optimally. What if we
 have been trying to force it out of optimal running, everything is as it should be, and **metastability is already
 working**, so the job is to work *with* it rather than loosen it?

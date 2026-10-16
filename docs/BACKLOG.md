@@ -28,14 +28,13 @@ runtime or gate changes until it is answered.
       reinforcement and CORE review run after that, so the check always sees an empty list. A guard that doesn't guard.
       Fix is small (snapshot the consumed signals for the step), but it changes CORE promotion; record, then decide.
 - [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
-- [ ] **Long-run shape of the field and the anchor** (H0 test): displacement curve over a much longer window than 5,000
-      steps, on the raw field *and* the tanh view, read as mean-squared displacement vs lag (bounded / diffusive /
-      drifting), plus the fraction of saturated dimensions over time.
-- [ ] **Timescale ratio** τ_anchor / τ_expression per window, plus the c² gate (H0′).
-- [ ] **Who leads: field or anchor** (ground / read-out / constitutive). Cross-correlation at lags, then the stronger
-      form: paired replay-exact forks with a tiny perturbation to one, watching whether and when the other diverges.
-- [ ] **Recovery against age** (Growth section of OPEN_METASTABILITY): the same perturbation at several ages, then
-      repeated, to read whether recovery gets faster (self-soothing learned) or slower (brittleness).
+- [ ] **Why the repertoire closes by step ~400** (`findings/2026-10-15-h0-steady-self-rattling-mind.md`): no value born
+      after ~390, live count frozen at 46, crystals at 2, expression jitter in a fixed ~15° cone. H0 holds as a stable
+      equilibrium and fails as a moving mind. Judge the value fixes partly on whether formation continues past 400.
+- [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
+      feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
+- [ ] **Second workload with different content**: is the 15° cone the system's or the corpus's?
+- [ ] **50,000-step plain run** (~80 min/seed): does the raw direction's slow wobble ceiling or drift?
 - [ ] **Does observing stabilize, or just not acting?** (Samuel, 2026-10-15: maybe witness steadies the system *because*
       it is observed.) Witness skips the attractor pull, reflect, crystal replay and behaviour inject, so its steadier
       anchor could come from noticing or merely from abstaining. Probe-local arm: an "abstain" step that skips the same
@@ -110,6 +109,8 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 ---
 
 ## Done (don't reopen)
+
+- [x] H0 measurements: long-run shape, timescale ratio, who leads (forks), recovery against age (Grok) — `findings/2026-10-15-h0-steady-self-rattling-mind.md`
 
 - [x] **Map the value/governance numbers** (Grok) — `VALUE_PATH_MAP.md`. Every constant on input → arbitrate → emit_feedback → value strength and back; the decision bonus pays by verdict only.
 - [x] Per-value reinforcement trace + arbitrate branch attribution (Grok) — `findings/2026-10-15-why-values-weaken-under-witness.md`
