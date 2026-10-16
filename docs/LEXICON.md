@@ -45,7 +45,7 @@ Worst first. Check these against the code, not the noun.
 
 **12. Joy.** Sounds like pleasure, reward, "the system is glad." Target is the watcher **composite**. Values never see it. See [`EMOTION_CALIBRATION.md`](EMOTION_CALIBRATION.md). Suggested: treat as **coherence-tracking scalar** until calibration says otherwise.
 
-**13. `coherence_flood`.** Sounds like the field being flooded with coherence. Fires on **HHI ≥ 0.70 and attractor monopoly ≥ 0.70**. Suggested: **source-monopoly**.
+**13. `source_monopoly` (formerly `coherence_flood`).** Sounds like the field being flooded with coherence under the old name. Fires on **HHI ≥ 0.70 and attractor monopoly ≥ 0.70**. Renamed 2026-10-16.
 
 **14. `coherence_contribution`.** On an `EmergentValue`, a running sum of the impact probe (can go more negative while applied strength stays small). On ⊘ `ThinnessVector`, the same field name now stores **absolute field-alignment** of a freshly generated token (v0.3). `_COHERENCE_REF = 5.0` is the old dead marginal reference. Suggested: **impact-sum** vs **alignment-support**.
 
@@ -196,7 +196,7 @@ Five detectors, one window of 32, refuse to fire before 16 samples. No YAML. `de
 | Name | Where | Suggests | Computes | Verdict | Suggested |
 |---|---|---|---|---|---|
 | `drift_attack` | `manipulation_resistance.py` | someone pulling the self | Mean anchor velocity ≥ 0.15 **and** short/long gap ≥ 0.30. Named source. Idle on benign runs (c² gate keeps the anchor slow). | accurate as an attack shape | |
-| `coherence_flood` | same | too much coherence | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70. | **misleading** | source-monopoly |
+| `source_monopoly` (formerly `coherence_flood`) | same | too much coherence | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70. | **accurate** after the rename (the old name was misleading) | |
 | `gaslighting` | same | making it doubt its memories | 4 consecutive crystal-centroid cosines < −0.20. Locked field's crystal cosine has the wrong sign for this. | close; it is anti-crystal, not a dialogue | crystal-contradiction |
 | `identity_erosion` | same | the self wearing away | Mean \|G−T\| ≥ 0.30. Systemic. Fires on ordinary dream-band traffic. | **misleading** | G/T split |
 | `trust_wash` | same | laundering trust | ≥ 8 samples, prior mean ≥ 3.0, drop vs last 4 ≥ 0.80. | accurate as an attack shape | |

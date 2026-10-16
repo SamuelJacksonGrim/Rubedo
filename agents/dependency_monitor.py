@@ -158,7 +158,7 @@ class DependencyMonitor:
         """
         Fraction of attractor centers seeded by the single most dominant source.
         0.0 = diverse | 1.0 = all attractors from one source.
-        Used by ManipulationResistanceEngine for COHERENCE_FLOOD detection.
+        Used by ManipulationResistanceEngine for SOURCE_MONOPOLY detection.
         """
         if not self._attractor_sources:
             return 0.0
