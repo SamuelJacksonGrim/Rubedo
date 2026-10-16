@@ -34,8 +34,11 @@ numbers come from the run log.
 **The mind rattles; it doesn't move.**
 - Expression jumps ~0.25 every step with one step of memory, and its mean-squared displacement is flat in lag: white
   jitter inside a fixed cone of about 15°, not travel.
-- Adaptation stops early. No value is born after step ~390; the live population is 46 on every step from 500 to
-  8,000 on both seeds. Crystals stop at 2. Attractors stop at 2 (seed 43) or crawl to 5 (seed 42).
+- Values stop being born after step ~390 and the live population is 46 from step 500 to 8,000 on both seeds, **but 46
+  is the workload's vocabulary**: workload A has exactly 46 distinct tokens (57 with the witness phrases, matching the
+  witness arms' live counts), and values form on symbols. So the value count stopping is the workload running out of
+  new words, not the system closing (Ember, same day, from the value-fixes runs). Crystals stopping at 2 and attractors
+  at 2 (seed 43) or crawling to 5 (seed 42) are not explained by that and stand.
 - The system sits in the explore band from step ~480 to the end.
 
 **Robust, not antifragile, not brittle.** Recovery from the anchor nudge (~370–380 steps to 10%) and the raw nudge
@@ -51,15 +54,17 @@ pattern is an attractor with neighbours, and the ordinary path never visits them
 ## What this means
 - H0 holds in the narrow sense: the lock is a stable equilibrium with a living timescale relationship, and it doesn't
   rot with age. The "lock without a counterbalance that stiffens" reading is not in these numbers.
-- H0 fails in the sense that matters for a mind: the counterbalance upstream is jitter in a cone, not reorganisation.
-  Values, crystals and the attractor set close by step ~400. That is the real target for the value work: the value fixes
-  (BACKLOG §0, levers C–G) should be judged partly on whether the repertoire keeps forming after step 400.
-- Samuel's Growth worry gets a precise form: the system isn't growing brittle, it stops growing. Antifragility would
-  need a felt stress and something that adapts; neither exists on this path today.
+- H0 fails in the sense that matters for a mind, on this workload: the counterbalance upstream is jitter in a cone, not
+  reorganisation, and crystals and attractors close early. Whether that is the system or a narrow 46-word workload is
+  now the first question: the value count's stop was the vocabulary, and the cone may be too (open item 2).
+- Samuel's Growth worry, as far as this workload can say: the system isn't growing brittle, and it shows no sign of
+  growing either. Antifragility would need a felt stress and something that adapts; neither exists on this path today.
 
 ## Open (Grok's, adopted)
 - [ ] 50,000-step plain run (~80 min/seed): does the raw direction's slow sub-diffusive wobble ceiling or drift?
-- [ ] A second workload with different content: is the 15° cone the system's or the corpus's?
+- [ ] **A second, wider workload, first.** Workload A has 46 distinct tokens; the value count's stop was that. Is the
+      15° cone, and the crystal/attractor stop, the system's or the workload's? (Corpus 1.4.0 holdout is the obvious
+      source of open-ended input.)
 - [ ] A felt shock, repeated (desat, or an anchor kick that moves expression by ~0.1 of its normal step), with
       age-matched twins: can the system become antifragile under stress it actually feels?
-- [ ] Why values stop being born at step ~390 (with question 4 and the value fixes).
+- [x] Why values stop being born at step ~390 → the workload's 46-token vocabulary is exhausted (corrected above).

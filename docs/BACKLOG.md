@@ -28,9 +28,10 @@ runtime or gate changes until it is answered.
       reinforcement and CORE review run after that, so the check always sees an empty list. A guard that doesn't guard.
       Fix is small (snapshot the consumed signals for the step), but it changes CORE promotion; record, then decide.
 - [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
-- [ ] **Why the repertoire closes by step ~400** (`findings/2026-10-15-h0-steady-self-rattling-mind.md`): no value born
-      after ~390, live count frozen at 46, crystals at 2, expression jitter in a fixed ~15° cone. H0 holds as a stable
-      equilibrium and fails as a moving mind. Judge the value fixes partly on whether formation continues past 400.
+- [ ] **Run H0 and the value levers on a wider workload** (`findings/2026-10-15-h0-steady-self-rattling-mind.md`). The
+      value count freezing at 46 was workload A's 46-token vocabulary, not the system closing. Crystals stuck at 2,
+      attractors mostly stuck, and expression jitter in a fixed ~15° cone may be the workload too. Every gate and probe
+      so far runs on that one 46-word workload; a wider one (corpus 1.4.0 holdout) is the next control for everything.
 - [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
       feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
 - [ ] **Second workload with different content**: is the 15° cone the system's or the corpus's?
