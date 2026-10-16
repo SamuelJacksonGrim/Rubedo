@@ -24,6 +24,11 @@ runtime or gate changes until it is answered.
       form: paired replay-exact forks with a tiny perturbation to one, watching whether and when the other diverges.
 - [ ] **Recovery against age** (Growth section of OPEN_METASTABILITY): the same perturbation at several ages, then
       repeated, to read whether recovery gets faster (self-soothing learned) or slower (brittleness).
+- [ ] **Does observing stabilize, or just not acting?** (Samuel, 2026-10-15: maybe witness steadies the system *because*
+      it is observed.) Witness skips the attractor pull, reflect, crystal replay and behaviour inject, so its steadier
+      anchor could come from noticing or merely from abstaining. Probe-local arm: an "abstain" step that skips the same
+      actions with ordinary content and no witness reading, vs witness, vs REF, plus the c² confound from the trace.
+      Witness beats abstain → observation itself does something. Abstain matches witness → it's the not-acting.
 - [ ] Questions 1–5 in OPEN_METASTABILITY, including recovering Samuel's ~1,000-step rupture result from RFE-Core2 history,
       and whether option (b) is a mathematical no-op.
 
