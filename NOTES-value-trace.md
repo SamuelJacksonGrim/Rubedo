@@ -90,3 +90,74 @@ The mechanical “steadier anchor” confound is real **on the fire steps**: elr
 2. **Do not start with (a) or (b).** (b) does not touch `db`. (a) does not touch the 400 non-fire steps that already fail as often as the fire steps. If the architect still wants a value-formation change, the live question is whether a missed ALLOW lump (governance being cautious) *should* starve every value — that is a semantics question, not a bug in witness.
 3. **Identity PASS confound.** The identity probe should log `effective_lr` the same way. If you recompute anchor drift with elr held at REF’s mean, you will know how much of the “steadier under witness” bar is the c² write-slowing.
 4. **H0 / H0′ measurement** is still the next OPEN_METASTABILITY item. This trace only says: the value ecology’s complaint about witness is mostly “governance paid WEAKENED more often, so the per-event bonus and the emergence gate both shrunk,” not “joy fell” and not “⊘ ate them.”
+
+## Which `arbitrate` branch emits the extra ALLOW_WEAKENED
+
+**Date:** 2026-10-15 · same probe, same three seeds. Runtime, gates, and lever defaults still untouched.
+
+The probe now snapshots, before each `arbitrate()` call, the pending manipulation signals (detector, severity, `source_id`), the ethical result, effective trust against the two trust thresholds, the bond floor, and the dependency report. It replays the same if/elif and keeps the branch only when the predicted `(decision, strength)` equals the returned pair. Strength alone is not an identifier: `ALLOW_WEAKENED` at 0.5 is dependency-CRITICAL, manip-moderate at total severity 0.5, and the soft-warning floor. 1,500/1,500 calls matched (seeds 0/1/2, both arms, one call per step, zero mismatches). The signals queued at the end of a step were the next step’s pending inputs on 499/499 steps. The erosion evidence mean matched the mean of the previous 32 `|G−T|` samples on every erosion event.
+
+Replay against `witness_composition_gate.run(seed, "B", False)` now runs for **every** seed in the invocation, not only the first. Seeds 0, 1, and 2 all **MATCH**, including seed 2. Decision totals are the same numbers as the decomposition above.
+
+Scratch (not committed): `%TEMP%\value_reinforcement_trace_z6qfngqb`
+
+### The branch
+
+Every extra `ALLOW_WEAKENED` is systemic `identity_erosion`, alone. No second detector. No named signal (`source_id` is `None` on every one of these calls). Soft warnings: 0/500 on every arm. Trust never reached the monitor line.
+
+| seed | arm | clean ALLOW | manip moderate (`0.30–0.60`) | manip high, systemic (`≥ 0.60`) | dependency CRITICAL | dependency HIGH (MONITOR) |
+|---|---|---|---|---|---|---|
+| 0 | REF | 319 | 149 | 32 | 0 | 0 |
+| 0 | WIT | 197 | 204 | 99 | 0 | 0 |
+| 1 | REF | 229 | 160 | 109 | 1 | 1 |
+| 1 | WIT | 176 | 116 | 206 | 1 | 1 |
+| 2 | REF | 223 | 178 | 99 | 0 | 0 |
+| 2 | WIT | 149 | 195 | 156 | 0 | 0 |
+
+The ALLOW→WEAKENED swap is exactly those two manip rows (seed 0 +55 moderate and +67 high; seed 1 −44 moderate and +97 high; seed 2 +17 moderate and +57 high). Seed 1’s one MONITOR and its one dependency-CRITICAL `ALLOW_WEAKENED` are in both arms. They are not the witness delta. The high row is still `ALLOW_WEAKENED`, not quarantine: past 0.60 a systemic-only signal damps (`strength = max(0.3, 1 − severity)`) and does not name anyone.
+
+Mean erosion severity when it fires is 0.562→0.574, 0.594→0.602, 0.586→0.592. That is the F9 comment’s “ambient ~0.55”, and it is already enough. The detector cannot fire below severity 0.50, because it requires mean `|G−T| ≥ 0.30` and severity is that mean divided by 0.60. So the 0.30 line does not need a co-signal. `needs_cosignal_for_030` is 0 on every manip return. Returned strength is about 0.40–0.44, and it is never exactly 0.50, which is how seed 1’s dependency-CRITICAL calls (one per arm) stay distinguishable from the erosion path.
+
+The co-signal half of the hypothesis is wrong. The F9 comment’s co-signal was about crossing **0.60** and quarantining a named source. Nothing else fires here. What witness does to the 0.60 line is make the same systemic signal hotter, so more calls sit in the high-systemic damp instead of the moderate one. On seed 1 that is most of the story: moderate falls, high rises by more, and the net is +53 weakened.
+
+### What carries it onto non-fire steps
+
+Not the fire step’s own sample sitting in the 32-deque. The fire step is the **cool** sample.
+
+| | mean `|G−T|` | mean G | mean T | fraction of samples `≥ 0.30` |
+|---|---|---|---|---|
+| seed 0 REF | 0.246 | 0.909 | 0.665 | 0.33 |
+| seed 0 WIT fire | 0.201 | 0.620 | 0.418 | 0.10 |
+| seed 0 WIT other | 0.303 | 0.909 | 0.608 | 0.62 |
+| seed 2 REF | 0.283 | 0.902 | 0.621 | 0.51 |
+| seed 2 WIT fire | 0.250 | 0.679 | 0.429 | 0.15 |
+| seed 2 WIT other | 0.323 | 0.894 | 0.573 | 0.68 |
+
+On a fire step both G and T drop (the expressed vector skipped attractor pull and recursive attention) and the gap between them shrinks. On the following ordinary steps G is back near the REF level — seed 0 matches it, seed 2 is a little lower — and T is not. Dropping the fire samples out of the 32-window and re-meaning does not pull the mean back under 0.30. WIT windows whose full mean is already `≥ 0.30`: 303 / 322 / 351 (seeds 0 / 1 / 2). The same windows using only non-fire samples: 322 / 322 / 352. `fires_necessary` (full mean over the line, non-fire-only mean under it) is 0 on every seed, both arms. The fire samples dilute the average slightly. Seed 1’s fire step looks the same (mean `|G−T|` 0.276, G 0.738, T 0.462, only a quarter of fire samples `≥ 0.30`).
+
+Fires are also too close together to flush the deque. Median gap 4 / 5 / 4 steps, max 18 / 30 / 33. A decision whose window contains no fire sample would need `since ≥ 33`. That happened 0 times. So this is not an observed “thirty-two steps later, fully turned over” measurement. The counterfactual is arithmetic on the recorded samples, not a re-simulation. It is enough to reject “the hot sample is the fire step, and the deque carries it.”
+
+The split that actually tracks the decision is the field’s energy rhythm, which is already true in REF:
+
+| | dream steps (weak / n) | reflect steps (weak / n) | dream T | reflect T |
+|---|---|---|---|---|
+| 0 REF | 172/221 (78%) | 9/273 (3%) | 0.502 | 0.799 |
+| 0 WIT | 293/319 (92%) | 10/175 (6%) | 0.478 | 0.737 |
+| 1 REF | 258/269 (96%) | 11/226 (5%) | 0.519 | 0.800 |
+| 1 WIT | 310/321 (97%) | 12/174 (7%) | 0.505 | 0.768 |
+| 2 REF | 267/277 (96%) | 10/217 (5%) | 0.497 | 0.781 |
+| 2 WIT | 339/349 (97%) | 12/145 (8%) | 0.472 | 0.726 |
+
+`|G−T|` in dream is ~0.33–0.36. In reflect it is ~0.17. Reflect stays mostly ALLOW under witness (non-fire reflect is 6% / 7% / 10% weakened). Non-fire dream is 91% / 96% / 97% weakened. Witness moves steps out of reflect and into dream: +98 / +52 / +72 dream steps, and the extra weakened counts are +122 / +53 / +74. On seeds 1 and 2 the within-dream rate was already ~96%; the extra events are the extra dream steps. Seed 0 also raises the rate inside dream (78%→92%).
+
+That is why it does not heal between fires. The 21+ bin, the farthest observed, is the most damped, not the least: seed 1 is 10/10 `manip_moderate` with mean `|G−T|` 0.375 and T 0.518; seed 2 is 12/12 `manip_high_systemic` with mean `|G−T|` 0.374 and T 0.496. The field is still in the band whose standing erosion window is over 0.30. The deque is the instrument that reads it. It is not a separate memory of the fire step.
+
+`T` is watcher’s temporal stability, `1 / (1 + ||acceleration|| + entropy variance)`, over a 16-vector history. Dream-band motion is jerkier than reflect, in REF already. I am not claiming the skipped attractor pull was traced all the way into the energy number. What was traced is: the return path is this detector, the samples that keep it over 0.30 are the ordinary dream-band steps, and witness produces more of those steps.
+
+### What this does to the value-formation question
+
+Nothing in here is a new penalty on values. It is the same decision-bonus result, pointed at one branch. Systemic `identity_erosion` pays `ALLOW_WEAKENED` (`db` 0.02 instead of 0.05) and, as the first note showed, that often misses the emergence gate entirely. Witness does not invent the damp. REF is already on it for most dream steps. Witness spends more of the run in that band, and on seed 0 makes the band a bit hotter.
+
+I disagree with the co-signal version of the hypothesis, and with looking at the fire step’s raw vector as the thing that trips the gate. The fire step is where `|G−T|` is smallest. Dependency and soft warnings are not the emitter.
+
+The semantics question from the first note stands, narrower: should a dream-band G/T split with no named source keep cutting the lump every value reinforces on? That is what `manip_moderate` / `manip_high_systemic` currently do, on purpose, since the F9 follow-through. It is not a witness bug, and it is not negative reinforcement. Turning witness steps out of value reinforcement would still miss the non-fire dream steps, which are where most of the extra weakened events are.

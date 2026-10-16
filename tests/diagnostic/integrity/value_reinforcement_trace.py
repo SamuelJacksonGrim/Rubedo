@@ -17,6 +17,15 @@ Per step, per value, records:
   - strength changes that did not come through reinforcement (decay, productive
     tension, ⊘ consumer, dream boost, dissolution)
   - witness effective_lr = clip(coherence^2, 0.01, 1) (agents/witness.py update)
+  - which arbitrate() return path fired. The probe snapshots the inputs arbitrate
+    is about to read (_pending_signals with detector / severity / source_id,
+    ethical result, effective trust vs the config thresholds, bond floor,
+    dependency risk and dominant source) and replays the same if/elif. The
+    branch is kept only when the predicted (decision, strength) equals the
+    returned pair. Strength alone is not an identifier: ALLOW_WEAKENED at 0.5
+    is dependency-CRITICAL, manip-moderate at total severity 0.5, and the
+    soft-warning floor. A later condition that was also true is recorded but
+    does not get the branch — the code returns at the first match.
 
 Then, per seed, REF vs WIT:
   1. For values that end weaker under WIT, decompose the total strength difference
@@ -30,7 +39,8 @@ Raw per-step / per-event rows go to a scratch directory (printed, not committed)
 Summary to stdout.
 
 Run:  python -m tests.diagnostic.integrity.value_reinforcement_trace [seeds...]
-Default seeds: 0 1 2. Informational. exit 0. Not in run_all_tests.sh.
+Default seeds: 0 1 2. Replay-checks traced REF against gate.run for every seed
+in the invocation. Informational. exit 0. Not in run_all_tests.sh.
 """
 from __future__ import annotations
 
@@ -101,6 +111,171 @@ def _emergence_score(ve, report, bw, db):
     ) * bw + db
 
 
+# Return paths of SelfhoodGovernance.arbitrate, in the order the if/elif tests them.
+# Names are the probe's, not runtime identifiers. Thresholds 0.90 / 0.60 / 0.30
+# and the strength literals are the ones written in arbitrate(), not config.
+BRANCH_ORDER = (
+    "manip_critical_named",
+    "manip_critical_systemic",
+    "manip_high_named",
+    "manip_high_systemic",
+    "manip_moderate",
+    "ethical_sacred_shield",
+    "ethical_quarantine",
+    "ethical_reject",
+    "trust_quarantine",
+    "trust_monitor",
+    "dependency_critical",
+    "dependency_high",
+    "soft_warning",
+    "clean_allow",
+)
+
+MANIP_BRANCHES = (
+    "manip_critical_named",
+    "manip_critical_systemic",
+    "manip_high_named",
+    "manip_high_systemic",
+    "manip_moderate",
+)
+
+
+def _arb_call_args(args, kwargs):
+    """arbitrate is called with keywords from AutonomousCycle._governance_gate."""
+    ethical = kwargs.get("ethical_result", args[0] if len(args) > 0 else None)
+    trust = kwargs.get("trust_report", args[1] if len(args) > 1 else None)
+    source_id = kwargs.get("source_id", args[4] if len(args) > 4 else None)
+    return ethical, trust, source_id
+
+
+def _signal_snapshot(sig):
+    src = sig.source_id
+    evidence = {}
+    for k, v in (getattr(sig, "evidence", None) or {}).items():
+        evidence[str(k)] = _f(v)
+    return {
+        "detector": sig.detector,
+        "severity": _f(sig.severity),
+        "source_id": src,
+        "named": bool(src),
+        "evidence": evidence,
+    }
+
+
+def _predict_branch(gov, ethical, trust, source_id, signals):
+    """Replay arbitrate's if/elif against a pre-call snapshot.
+
+    Does not write governance state. get_report() and trust_floor() are pure
+    reads; they are also what the matching arm of arbitrate() would call.
+    """
+    cfg = gov.config
+    views = [_signal_snapshot(s) for s in signals]
+    # Same sum the runtime uses, before any re-rounding.
+    total = sum(s.severity for s in signals) if signals else 0.0
+    named = [s for s in signals if s.source_id] if signals else []
+
+    bond_floor = _f(gov.bond_manager.trust_floor(source_id))
+    raw_trust = None if trust is None else _f(trust.effective_trust)
+    effective = None if raw_trust is None else max(raw_trust, bond_floor)
+    dep = gov.dependency_monitor.get_report()
+    soft = [] if ethical is None else list(ethical.soft_warnings or [])
+    passed = None if ethical is None else bool(ethical.passed)
+    rec = None if ethical is None else ethical.recommended_decision
+
+    branch = None
+    pred_dec = None
+    pred_strength = None
+    low_fallthrough = False
+
+    if signals:
+        if total >= 0.90:
+            if named:
+                branch, pred_dec, pred_strength = "manip_critical_named", "quarantine", 0.0
+            else:
+                branch, pred_dec, pred_strength = "manip_critical_systemic", "allow_weakened", 0.3
+        elif total >= 0.60:
+            if named:
+                branch, pred_dec, pred_strength = "manip_high_named", "quarantine", 0.0
+            else:
+                branch = "manip_high_systemic"
+                pred_dec = "allow_weakened"
+                pred_strength = float(max(0.3, 1.0 - total))
+        elif total >= 0.30:
+            branch = "manip_moderate"
+            pred_dec = "allow_weakened"
+            pred_strength = float(max(0.3, 1.0 - total))
+        else:
+            low_fallthrough = True
+
+    if branch is None:
+        if ethical is None or trust is None:
+            branch, pred_dec, pred_strength = "unreadable_inputs", None, None
+        elif not passed:
+            if rec == "SACRED_SHIELD":
+                branch, pred_dec, pred_strength = "ethical_sacred_shield", "sacred_shield", 0.0
+            elif rec == "QUARANTINE":
+                branch, pred_dec, pred_strength = "ethical_quarantine", "quarantine", 0.0
+            else:
+                branch, pred_dec, pred_strength = "ethical_reject", "reject", 0.0
+        elif effective <= cfg["quarantine_trust_threshold"]:
+            branch, pred_dec, pred_strength = "trust_quarantine", "quarantine", 0.0
+        elif effective <= cfg["monitor_trust_threshold"]:
+            branch = "trust_monitor"
+            pred_dec = "monitor"
+            pred_strength = cfg["weakened_strength_factor"]
+        elif dep.risk_level == "CRITICAL" and source_id == dep.dominant_source:
+            branch, pred_dec, pred_strength = "dependency_critical", "allow_weakened", 0.5
+        elif dep.risk_level == "HIGH" and source_id == dep.dominant_source:
+            branch, pred_dec, pred_strength = "dependency_high", "monitor", 0.7
+        elif soft:
+            penalty = len(soft) * cfg["soft_warning_strength_penalty"]
+            pred_strength = float(np.clip(1.0 - penalty, 0.5, 1.0))
+            branch, pred_dec = "soft_warning", "allow_weakened"
+        else:
+            branch, pred_dec, pred_strength = "clean_allow", "allow", 1.0
+
+    erosion = next((v for v in views if v["detector"] == "identity_erosion"), None)
+    others = [v for v in views if v["detector"] != "identity_erosion"]
+    erosion_sev = 0.0 if erosion is None else erosion["severity"]
+    return {
+        "branch": branch,
+        "decision": pred_dec,
+        "strength": None if pred_strength is None else _f(pred_strength),
+        "low_manip_fallthrough": low_fallthrough,
+        "signals": views,
+        "n_signals": len(views),
+        "total_severity": _f(total),
+        "n_named": sum(1 for v in views if v["named"]),
+        "n_systemic": sum(1 for v in views if not v["named"]),
+        "systemic_only": bool(views) and all(not v["named"] for v in views),
+        "named_any": any(v["named"] for v in views),
+        "detectors": [v["detector"] for v in views],
+        "combo": "+".join(sorted(v["detector"] for v in views)) if views else "",
+        "erosion_severity": erosion_sev,
+        "erosion_present": erosion is not None,
+        "erosion_evidence": None if erosion is None else erosion["evidence"],
+        "cosignal": bool(others),
+        "cosignal_detectors": [v["detector"] for v in others],
+        # identity_erosion's own floor is ~0.50 when it fires (mean |G-T| >= 0.30
+        # maps through / (0.30*2)). A co-signal is not required to clear 0.30.
+        "erosion_alone_ge_030": erosion_sev >= 0.30,
+        "needs_cosignal_for_030": _f(total) >= 0.30 and erosion_sev < 0.30,
+        "soft_warnings": soft,
+        "ethical_passed": passed,
+        "ethical_rec": rec,
+        "raw_trust": raw_trust,
+        "bond_floor": bond_floor,
+        "effective_trust": effective,
+        "quarantine_trust_threshold": _f(cfg["quarantine_trust_threshold"]),
+        "monitor_trust_threshold": _f(cfg["monitor_trust_threshold"]),
+        "dep_risk": dep.risk_level,
+        "dep_dominant": dep.dominant_source,
+        "dep_hhi": _f(dep.hhi_score),
+        "dep_source_match": source_id == dep.dominant_source,
+        "source_id": source_id,
+    }
+
+
 def _core_of(ve, value_id):
     v = ve.values.get(value_id) or ve.archived_values.get(value_id)
     return v.symbolic_core if v is not None else None
@@ -136,6 +311,12 @@ class Tracer:
         self.ve = None
         self.cycle = None
         self.joy_at_feedback = None
+        self.step_arbs = []
+        self.arb_calls = []
+        self.arb_mismatches = 0
+        self.last_resistance = None
+        self.resistance_updates = 0
+        self.resistance_window = None
 
     def since_witness(self):
         if self.last_witness_step is None:
@@ -192,14 +373,59 @@ class Tracer:
         cycle.witness.update = wrapped_wit
 
         orig_arb = gov.arbitrate
+        tr.resistance_window = gov.resistance.window_size
 
         def wrapped_arb(*args, **kwargs):
+            ethical, trust, source_id = _arb_call_args(args, kwargs)
+            # Snapshot before orig: arbitrate clears _pending_signals on entry.
+            pending = list(getattr(gov, "_pending_signals", []) or [])
+            pred = _predict_branch(gov, ethical, trust, source_id, pending)
             dec, strength = orig_arb(*args, **kwargs)
+            actual_s = _f(strength)
+            pred_s = pred["strength"]
+            match = dec.value == pred["decision"] and (
+                strength == pred_s or (pred_s is not None and actual_s == _f(pred_s))
+            )
+            rec = dict(pred)
+            rec["actual_decision"] = dec.value
+            rec["actual_strength"] = actual_s
+            rec["match"] = bool(match)
+            rec["cycle_step"] = tr.cycle_step
+            rec["since_witness"] = tr.since_witness()
+            rec["selector_mode"] = tr.mode
+            rec["selector_witness"] = tr.mode == "witness"
+            if not match:
+                tr.arb_mismatches += 1
+                rec["strength_delta"] = None if pred_s is None else actual_s - _f(pred_s)
+            tr.step_arbs.append(rec)
+            tr.arb_calls.append(rec)
             tr.last_decision = dec.value
-            tr.last_dec_strength = _f(strength)
+            tr.last_dec_strength = actual_s
             return dec, strength
 
         gov.arbitrate = wrapped_arb
+
+        orig_res_upd = gov.resistance.update
+
+        def wrapped_res_upd(metrics):
+            g = _f(metrics.watcher_geometric)
+            t = _f(metrics.watcher_temporal)
+            tr.last_resistance = {
+                "geometric": g,
+                "temporal": t,
+                "abs_gt": abs(g - t),
+                "anchor_velocity": _f(metrics.anchor_velocity),
+                "anchor_gap": _f(metrics.anchor_short_long_gap),
+                "hhi": _f(metrics.hhi_score),
+                "dominant_source_id": metrics.dominant_source_id,
+                "attractor_monopoly": _f(metrics.attractor_monopoly),
+                "coherence_delta": _f(metrics.coherence_delta),
+                "source_id": metrics.source_id,
+            }
+            tr.resistance_updates += 1
+            return orig_res_upd(metrics)
+
+        gov.resistance.update = wrapped_res_upd
 
         orig_eval = ve.evaluate_experience
 
@@ -438,6 +664,9 @@ class Tracer:
             tr.last_report = None
             tr.last_candidates = []
             tr.joy_at_feedback = None
+            tr.step_arbs = []
+            tr.last_resistance = None
+            tr.resistance_updates = 0
             mark = len(tr.events)
             state = orig_step(tokens, source_id, origin_type)
             behavior = state.extras.get("behavior", state.rhythm)
@@ -457,6 +686,11 @@ class Tracer:
                 surprise = _f(report.surprise)
                 trust = _f(report.trust_impact)
             live = _live_by_core(ve)
+            res = tr.last_resistance or {}
+            fed = [_signal_snapshot(s) for s in (getattr(gov, "_pending_signals", []) or [])]
+            divs = list(gov.resistance._g_t_divs)
+            gt_deque = _f(divs[-1]) if divs else None
+            gt_mean = float(np.mean(divs)) if divs else None
             step_events = tr.events[mark:]
             src_sum = Counter()
             for e in step_events:
@@ -492,6 +726,21 @@ class Tracer:
                 "n_candidates": len(tr.last_candidates),
                 "n_stable_ids": 0 if report is None else len(report.stable_ids),
                 "since_witness": tr.since_witness(),
+                "selector_witness": tr.mode == "witness",
+                "n_arb": len(tr.step_arbs),
+                "arb": tr.step_arbs[0] if len(tr.step_arbs) == 1 else None,
+                "arb_calls": tr.step_arbs,
+                "resistance_updates": tr.resistance_updates,
+                "gt_appended": res.get("abs_gt"),
+                "gt_geometric": res.get("geometric"),
+                "gt_temporal": res.get("temporal"),
+                "gt_deque_last": gt_deque,
+                "gt_window_mean": gt_mean,
+                "gt_window_n": len(divs),
+                "anchor_velocity": res.get("anchor_velocity"),
+                "anchor_gap": res.get("anchor_gap"),
+                "res_hhi": res.get("hhi"),
+                "fed_forward": fed,
                 "n_live": len(live),
                 "sum_live": sum(_f(v.strength) for v in live.values()),
                 "mean_live": (sum(_f(v.strength) for v in live.values()) / len(live)
@@ -725,6 +974,466 @@ def _fmt_u(x, digits=4):
     if x is None or (isinstance(x, float) and math.isnan(x)):
         return "  n/a "
     return f"{x:.{digits}f}"
+
+
+def _step_arbs(steps):
+    """Every arbitrate() call, paired with the step it ran in."""
+    out = []
+    for s in steps:
+        calls = s.get("arb_calls") or []
+        if not calls and s.get("arb"):
+            calls = [s["arb"]]
+        for c in calls:
+            out.append((s, c))
+    return out
+
+
+def _branch_counts(pairs):
+    return Counter(c.get("branch") or "?" for _, c in pairs)
+
+
+def _manip_pairs(pairs):
+    return [(s, c) for s, c in pairs if c.get("branch") in MANIP_BRANCHES]
+
+
+def _gt_ok(s):
+    g = s.get("gt_appended")
+    return g is not None and not (isinstance(g, float) and math.isnan(g))
+
+
+def _arb_arm(steps, window):
+    pairs = _step_arbs(steps)
+    branches = _branch_counts(pairs)
+    mismatches = sum(1 for _, c in pairs if not c.get("match"))
+    multi = sum(1 for s in steps if (s.get("n_arb") or 0) > 1)
+    missing = sum(1 for s in steps if (s.get("n_arb") or 0) == 0)
+
+    deque_bad = 0
+    deque_n = 0
+    for s in steps:
+        if not _gt_ok(s) or s.get("gt_deque_last") is None:
+            continue
+        deque_n += 1
+        if abs(_f(s["gt_appended"]) - _f(s["gt_deque_last"])) > 1e-9:
+            deque_bad += 1
+
+    fed_n = 0
+    fed_ok = 0
+    for i in range(len(steps) - 1):
+        fed = steps[i].get("fed_forward") or []
+        nxt = steps[i + 1].get("arb") or {}
+        got = nxt.get("signals") or []
+        if steps[i + 1].get("n_arb") != 1:
+            continue
+        fed_n += 1
+
+        def _k(v):
+            return (v.get("detector"), round(_f(v.get("severity")), 6), v.get("source_id"))
+
+        if sorted(_k(v) for v in fed) == sorted(_k(v) for v in got):
+            fed_ok += 1
+
+    # Decision at step i was detected at the end of step i-1, from the last
+    # `window` |G-T| samples (resistance deque maxlen). identity_erosion stores
+    # that mean rounded to 4 decimals.
+    recon_n = 0
+    recon_ok = 0
+    fires = [bool(s.get("selector_witness")) for s in steps]
+    gts = [_f(s["gt_appended"]) if _gt_ok(s) else None for s in steps]
+    cf_eligible = 0
+    cf_actual = 0
+    cf_nonfire = 0
+    cf_fires_necessary = 0
+    for i, s in enumerate(steps):
+        lo = max(0, i - window)
+        xs = [gts[j] for j in range(lo, i) if gts[j] is not None]
+        xs_nf = [gts[j] for j in range(lo, i) if gts[j] is not None and not fires[j]]
+        arb = s.get("arb") if s.get("n_arb") == 1 else None
+        if arb and arb.get("erosion_present"):
+            claimed = (arb.get("erosion_evidence") or {}).get("mean_g_t_divergence")
+            if claimed is not None and xs:
+                recon_n += 1
+                if abs(round(sum(xs) / len(xs), 4) - _f(claimed)) <= 5e-4:
+                    recon_ok += 1
+        if len(xs) >= max(16, window // 2) and xs_nf:
+            cf_eligible += 1
+            mean_all = sum(xs) / len(xs)
+            mean_nf = sum(xs_nf) / len(xs_nf)
+            if mean_all >= 0.30:
+                cf_actual += 1
+            if mean_nf >= 0.30:
+                cf_nonfire += 1
+            if mean_all >= 0.30 and mean_nf < 0.30:
+                cf_fires_necessary += 1
+
+    manip = _manip_pairs(pairs)
+    combos = Counter(c.get("combo") or "(none)" for _, c in manip)
+    det = Counter()
+    named_det = Counter()
+    systemic_det = Counter()
+    for _, c in manip:
+        for v in c.get("signals") or []:
+            det[v["detector"]] += 1
+            (named_det if v.get("named") else systemic_det)[v["detector"]] += 1
+
+    def _cond(pred):
+        return sum(1 for _, c in pairs if pred(c))
+
+    weakened_branches = {
+        b: branches[b] for b in BRANCH_ORDER
+        if b in branches and b not in ("clean_allow", "trust_monitor", "dependency_high")
+    }
+
+    def _gt_slice(pred):
+        rows = [s for s in steps if pred(s) and _gt_ok(s)]
+        return {
+            "n": len(rows),
+            "mean_gt": _mean([_f(s["gt_appended"]) for s in rows]),
+            "mean_G": _mean([_f(s["gt_geometric"]) for s in rows if s.get("gt_geometric") is not None]),
+            "mean_T": _mean([_f(s["gt_temporal"]) for s in rows if s.get("gt_temporal") is not None]),
+            "frac_gt_ge_030": (
+                sum(1 for s in rows if _f(s["gt_appended"]) >= 0.30) / len(rows)
+                if rows else float("nan")
+            ),
+            "mean_window": _mean([
+                _f(s["gt_window_mean"]) for s in rows if s.get("gt_window_mean") is not None
+            ]),
+        }
+
+    by_fire = {
+        "fire": _branch_counts([(s, c) for s, c in pairs if s.get("witness_fired")]),
+        "other": _branch_counts([(s, c) for s, c in pairs if not s.get("witness_fired")]),
+    }
+    by_bin = {}
+    for s, c in pairs:
+        b = _bin_since(c.get("since_witness"))
+        slot = by_bin.setdefault(b, {"n": 0, "branches": Counter(), "erosion": [], "gt": [],
+                                      "G": [], "T": []})
+        slot["n"] += 1
+        slot["branches"][c.get("branch") or "?"] += 1
+        if c.get("erosion_present"):
+            slot["erosion"].append(_f(c.get("erosion_severity")))
+        if _gt_ok(s):
+            slot["gt"].append(_f(s["gt_appended"]))
+            if s.get("gt_geometric") is not None:
+                slot["G"].append(_f(s["gt_geometric"]))
+            if s.get("gt_temporal") is not None:
+                slot["T"].append(_f(s["gt_temporal"]))
+
+    turned = [(s, c) for s, c in pairs
+              if c.get("since_witness") is not None and c["since_witness"] >= window + 1]
+    fire_steps = [s["cycle_step"] for s in steps if s.get("witness_fired")]
+    gaps = [fire_steps[i] - fire_steps[i - 1] for i in range(1, len(fire_steps))]
+    nonfire = [c.get("since_witness") for _, c in pairs if not c.get("selector_witness")]
+    nonfire_known = [n for n in nonfire if n is not None]
+
+    rhythm = {}
+    for s, c in pairs:
+        rh = s.get("rhythm") or "?"
+        slot = rhythm.setdefault(rh, Counter())
+        slot[c.get("actual_decision") or "?"] += 1
+
+    first_mod = None
+    for s, c in pairs:
+        if c.get("branch") == "manip_moderate":
+            first_mod = s.get("cycle_step")
+            break
+
+    hhis = [_f(c["dep_hhi"]) for _, c in pairs if c.get("dep_hhi") is not None]
+
+    def _pack_bin(slot):
+        br = slot["branches"]
+        n = slot["n"]
+        return {
+            "n": n,
+            "branches": dict(br),
+            "allow_weakened": sum(br[b] for b in br if b in (
+                "manip_moderate", "manip_high_systemic", "manip_critical_systemic",
+                "soft_warning", "dependency_critical")),
+            "manip_moderate": br.get("manip_moderate", 0),
+            "clean_allow": br.get("clean_allow", 0),
+            "mean_erosion_when_present": _mean(slot["erosion"]),
+            "n_erosion": len(slot["erosion"]),
+            "mean_gt": _mean(slot["gt"]),
+            "frac_gt_ge_030": (sum(1 for x in slot["gt"] if x >= 0.30) / len(slot["gt"])
+                               if slot["gt"] else float("nan")),
+            "mean_G": _mean(slot["G"]),
+            "mean_T": _mean(slot["T"]),
+        }
+
+    return {
+        "n_steps": len(steps),
+        "n_calls": len(pairs),
+        "multi_calls": multi,
+        "steps_without_arb": missing,
+        "mismatches": mismatches,
+        "branches": {b: branches.get(b, 0) for b in list(BRANCH_ORDER) + ["unreadable_inputs", "?"]
+                     if branches.get(b, 0)},
+        "weakened_branches": weakened_branches,
+        "low_fallthrough": _cond(lambda c: c.get("low_manip_fallthrough")),
+        "manip": {
+            "n": len(manip),
+            "combos": dict(combos),
+            "by_detector": dict(det),
+            "named_detectors": dict(named_det),
+            "systemic_detectors": dict(systemic_det),
+            "systemic_only": sum(1 for _, c in manip if c.get("systemic_only")),
+            "named_any": sum(1 for _, c in manip if c.get("named_any")),
+            "erosion_only": sum(1 for _, c in manip
+                                if c.get("erosion_present") and not c.get("cosignal")),
+            "erosion_present": sum(1 for _, c in manip if c.get("erosion_present")),
+            "cosignal": sum(1 for _, c in manip if c.get("cosignal")),
+            "erosion_alone_ge_030": sum(1 for _, c in manip if c.get("erosion_alone_ge_030")),
+            "needs_cosignal_for_030": sum(1 for _, c in manip if c.get("needs_cosignal_for_030")),
+            "mean_erosion_sev": _mean([_f(c["erosion_severity"]) for _, c in manip
+                                       if c.get("erosion_present")]),
+            "mean_total": _mean([_f(c["total_severity"]) for _, c in manip]),
+            "mean_strength": _mean([_f(c["actual_strength"]) for _, c in manip]),
+            "n_exact_strength_0_5": sum(1 for _, c in manip
+                                        if abs(_f(c.get("actual_strength")) - 0.5) < 1e-12),
+        },
+        "conditions": {
+            "dep_critical": _cond(lambda c: c.get("dep_risk") == "CRITICAL"),
+            "dep_high": _cond(lambda c: c.get("dep_risk") == "HIGH"),
+            "dep_critical_and_dominant": _cond(
+                lambda c: c.get("dep_risk") == "CRITICAL" and c.get("dep_source_match")),
+            "dep_high_and_dominant": _cond(
+                lambda c: c.get("dep_risk") == "HIGH" and c.get("dep_source_match")),
+            "soft": _cond(lambda c: bool(c.get("soft_warnings"))),
+            "trust_at_or_below_monitor": _cond(
+                lambda c: c.get("effective_trust") is not None
+                and c["effective_trust"] <= c.get("monitor_trust_threshold", 2.0)),
+            "trust_at_or_below_quarantine": _cond(
+                lambda c: c.get("effective_trust") is not None
+                and c["effective_trust"] <= c.get("quarantine_trust_threshold", 1.0)),
+            "mean_hhi": _mean(hhis),
+            "max_hhi": max(hhis) if hhis else float("nan"),
+        },
+        "by_fire": {k: dict(v) for k, v in by_fire.items()},
+        "by_bin": {b: _pack_bin(by_bin[b]) for b in BIN_ORDER if b in by_bin},
+        "gt": {
+            "all": _gt_slice(lambda s: True),
+            "fire": _gt_slice(lambda s: s.get("witness_fired")),
+            "other": _gt_slice(lambda s: not s.get("witness_fired")),
+        },
+        "selector_behavior_disagree": sum(
+            1 for s in steps if bool(s.get("selector_witness")) != bool(s.get("witness_fired"))
+        ),
+        "deque_checked": deque_n,
+        "deque_mismatch": deque_bad,
+        "fed_forward_checked": fed_n,
+        "fed_forward_match": fed_ok,
+        "recon_checked": recon_n,
+        "recon_match": recon_ok,
+        "counterfactual": {
+            "eligible": cf_eligible,
+            "window_mean_ge_030": cf_actual,
+            "nonfire_only_mean_ge_030": cf_nonfire,
+            "fires_necessary": cf_fires_necessary,
+        },
+        "turnover": {
+            "n": len(turned),
+            "branches": dict(_branch_counts(turned)),
+            "mean_gt": _mean([_f(s["gt_appended"]) for s, _ in turned if _gt_ok(s)]),
+            "mean_erosion": _mean([_f(c["erosion_severity"]) for _, c in turned
+                                   if c.get("erosion_present")]),
+        },
+        "gaps": {
+            "n_fires": len(fire_steps),
+            "median_gap": _median(gaps) if gaps else float("nan"),
+            "max_gap": max(gaps) if gaps else None,
+            "n_nonfire_with_since": len(nonfire_known),
+            "frac_nonfire_since_lt_window": (
+                sum(1 for n in nonfire_known if n < window) / len(nonfire_known)
+                if nonfire_known else float("nan")
+            ),
+        },
+        "rhythm": {rh: dict(cnt) for rh, cnt in rhythm.items()},
+        "first_manip_moderate": first_mod,
+        "resistance_updates_not_1": sum(1 for s in steps if s.get("resistance_updates") != 1),
+    }
+
+
+def _median(xs):
+    xs = sorted(xs)
+    if not xs:
+        return float("nan")
+    n = len(xs)
+    mid = n // 2
+    if n % 2:
+        return float(xs[mid])
+    return float(0.5 * (xs[mid - 1] + xs[mid]))
+
+
+def _jsonify(o):
+    if isinstance(o, dict):
+        return {str(k): _jsonify(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [_jsonify(v) for v in o]
+    if isinstance(o, Counter):
+        return {str(k): _jsonify(v) for k, v in o.items()}
+    if isinstance(o, float) and (math.isnan(o) or math.isinf(o)):
+        return None
+    if isinstance(o, (np.floating, np.integer)):
+        return o.item()
+    return o
+
+
+def _print_arb(seed, window, ref, wit):
+    print(f"\n  arbitrate() return path  (window={window}; branch accepted only when "
+          f"predicted (decision, strength) == returned pair)")
+    print(f"    calls REF {ref['n_calls']}/{ref['n_steps']}  "
+          f"WIT {wit['n_calls']}/{wit['n_steps']}  "
+          f"mismatches REF {ref['mismatches']}  WIT {wit['mismatches']}  "
+          f"multi-call steps REF {ref['multi_calls']} WIT {wit['multi_calls']}  "
+          f"no-arb REF {ref['steps_without_arb']} WIT {wit['steps_without_arb']}")
+    print(f"    |G-T| deque matches resistance.update: "
+          f"REF {ref['deque_checked'] - ref['deque_mismatch']}/{ref['deque_checked']}  "
+          f"WIT {wit['deque_checked'] - wit['deque_mismatch']}/{wit['deque_checked']}")
+    print(f"    fed-forward signals == next step's pending: "
+          f"REF {ref['fed_forward_match']}/{ref['fed_forward_checked']}  "
+          f"WIT {wit['fed_forward_match']}/{wit['fed_forward_checked']}")
+    print(f"    erosion evidence mean == mean of previous {window} |G-T|: "
+          f"REF {ref['recon_match']}/{ref['recon_checked']}  "
+          f"WIT {wit['recon_match']}/{wit['recon_checked']}")
+    print(f"    selector-mode vs behavior disagree: "
+          f"REF {ref['selector_behavior_disagree']}  WIT {wit['selector_behavior_disagree']}")
+    print(f"    resistance.update calls != 1: "
+          f"REF {ref['resistance_updates_not_1']}  WIT {wit['resistance_updates_not_1']}")
+
+    print(f"\n    {'branch':<28s} {'REF':>6s} {'WIT':>6s} {'WIT-REF':>8s}")
+    keys = list(BRANCH_ORDER)
+    for extra in ("unreadable_inputs", "?"):
+        if ref["branches"].get(extra) or wit["branches"].get(extra):
+            keys.append(extra)
+    for b in keys:
+        nr, nw = ref["branches"].get(b, 0), wit["branches"].get(b, 0)
+        if nr == 0 and nw == 0:
+            continue
+        print(f"    {b:<28s} {nr:6d} {nw:6d} {nw - nr:+8d}")
+    print(f"    low-severity manip fallthrough (not a return): "
+          f"REF {ref['low_fallthrough']}  WIT {wit['low_fallthrough']}")
+
+    def _print_manip(label, arm):
+        m = arm["manip"]
+        print(f"\n    manipulation returns — {label}  n={m['n']}  "
+              f"systemic-only {m['systemic_only']}  named-any {m['named_any']}")
+        print(f"      erosion present {m['erosion_present']}  erosion-only {m['erosion_only']}  "
+              f"co-signal {m['cosignal']}")
+        print(f"      erosion severity alone >= 0.30: {m['erosion_alone_ge_030']}  "
+              f"total >= 0.30 only because a co-signal made up the rest: "
+              f"{m['needs_cosignal_for_030']}")
+        print(f"      mean erosion sev (when present) {_fmt_u(m['mean_erosion_sev'], 4)}  "
+              f"mean total {_fmt_u(m['mean_total'], 4)}  "
+              f"mean returned strength {_fmt_u(m['mean_strength'], 4)}  "
+              f"strength == 0.5 exactly: {m['n_exact_strength_0_5']}")
+        if m["combos"]:
+            print("      detector combos:")
+            for combo, n in sorted(m["combos"].items(), key=lambda kv: (-kv[1], kv[0])):
+                print(f"        {combo or '(none)':<40s} {n:5d}")
+        if m["by_detector"]:
+            print("      detector hits (a call can count in more than one):")
+            dets = sorted(set(m["by_detector"]) | set(m["named_detectors"]) | set(m["systemic_detectors"]))
+            for d in dets:
+                print(f"        {d:<22s} n={m['by_detector'].get(d, 0):<4d} "
+                      f"systemic {m['systemic_detectors'].get(d, 0):<4d} "
+                      f"named {m['named_detectors'].get(d, 0)}")
+
+    _print_manip("REF", ref)
+    _print_manip("WIT", wit)
+
+    print("\n    conditions true at the call (whether or not that arm was reached):")
+    print(f"      {'':<32s} {'REF':>6s} {'WIT':>6s}")
+    for k in ("dep_critical", "dep_high", "dep_critical_and_dominant", "dep_high_and_dominant",
+              "soft", "trust_at_or_below_monitor", "trust_at_or_below_quarantine"):
+        print(f"      {k:<32s} {ref['conditions'][k]:6d} {wit['conditions'][k]:6d}")
+    print(f"      mean / max HHI at arbitrate: "
+          f"REF {_fmt_u(ref['conditions']['mean_hhi'], 4)} / {_fmt_u(ref['conditions']['max_hhi'], 4)}  "
+          f"WIT {_fmt_u(wit['conditions']['mean_hhi'], 4)} / {_fmt_u(wit['conditions']['max_hhi'], 4)}")
+    print(f"    first manip_moderate step: REF {ref['first_manip_moderate']}  "
+          f"WIT {wit['first_manip_moderate']}")
+
+    print("\n    |G-T| appended this step (the sample the next detect() will see):")
+    print(f"      {'slice':<12s} {'n':>5s} {'mean |G-T|':>11s} {'mean G':>8s} {'mean T':>8s} "
+          f"{'frac>=0.30':>10s} {'mean win':>9s}")
+    for label, arm, key in (
+        ("REF all", ref, "all"),
+        ("WIT all", wit, "all"),
+        ("WIT fire", wit, "fire"),
+        ("WIT other", wit, "other"),
+        ("REF other", ref, "other"),
+    ):
+        g = arm["gt"][key]
+        if not g["n"]:
+            continue
+        print(f"      {label:<12s} {g['n']:5d} {_fmt_u(g['mean_gt'], 4):>11s} "
+              f"{_fmt_u(g['mean_G'], 4):>8s} {_fmt_u(g['mean_T'], 4):>8s} "
+              f"{_fmt_u(g['frac_gt_ge_030'], 3):>10s} {_fmt_u(g['mean_window'], 4):>9s}")
+
+    cf_r, cf_w = ref["counterfactual"], wit["counterfactual"]
+    print("\n    counterfactual on the decision window (previous "
+          f"{window} samples, len >= {max(16, window // 2)}):")
+    print("      drop the witness-fire samples and re-mean. "
+          "'fires necessary' = full mean >= 0.30 and non-fire-only mean < 0.30.")
+    for label, cf in (("REF", cf_r), ("WIT", cf_w)):
+        print(f"      {label}  eligible {cf['eligible']}  "
+              f"full mean>=0.30 {cf['window_mean_ge_030']}  "
+              f"non-fire-only mean>=0.30 {cf['nonfire_only_mean_ge_030']}  "
+              f"fires necessary {cf['fires_necessary']}")
+
+    print("\n    WIT by steps-since-last-witness (decision uses the previous step's detect):")
+    print(f"      {'bin':<12s} {'n':>5s} {'weak':>6s} {'mod':>6s} {'allow':>6s} "
+          f"{'eros n':>6s} {'eros sev':>9s} {'mean |G-T|':>11s} {'frac>=.3':>9s} "
+          f"{'G':>7s} {'T':>7s}")
+    for b in BIN_ORDER:
+        slot = wit["by_bin"].get(b)
+        if not slot:
+            continue
+        print(f"      {b:<12s} {slot['n']:5d} {slot['allow_weakened']:6d} "
+              f"{slot['manip_moderate']:6d} {slot['clean_allow']:6d} "
+              f"{slot['n_erosion']:6d} {_fmt_u(slot['mean_erosion_when_present'], 3):>9s} "
+              f"{_fmt_u(slot['mean_gt'], 4):>11s} {_fmt_u(slot['frac_gt_ge_030'], 3):>9s} "
+              f"{_fmt_u(slot['mean_G'], 3):>7s} {_fmt_u(slot['mean_T'], 3):>7s}")
+    print("    REF (no witness fires; bin is 'never'):")
+    for b, slot in ref["by_bin"].items():
+        print(f"      {b:<12s} {slot['n']:5d} {slot['allow_weakened']:6d} "
+              f"{slot['manip_moderate']:6d} {slot['clean_allow']:6d} "
+              f"{slot['n_erosion']:6d} {_fmt_u(slot['mean_erosion_when_present'], 3):>9s} "
+              f"{_fmt_u(slot['mean_gt'], 4):>11s} {_fmt_u(slot['frac_gt_ge_030'], 3):>9s} "
+              f"{_fmt_u(slot['mean_G'], 3):>7s} {_fmt_u(slot['mean_T'], 3):>7s}")
+
+    print("\n    fire vs other, branch counts:")
+    fire_keys = []
+    for arm in (ref, wit):
+        for side in ("fire", "other"):
+            for b in arm["by_fire"].get(side, {}):
+                if b not in fire_keys:
+                    fire_keys.append(b)
+    print(f"      {'branch':<28s} {'REF other':>9s} {'WIT fire':>9s} {'WIT other':>9s}")
+    for b in fire_keys:
+        print(f"      {b:<28s} {ref['by_fire'].get('other', {}).get(b, 0):9d} "
+              f"{wit['by_fire'].get('fire', {}).get(b, 0):9d} "
+              f"{wit['by_fire'].get('other', {}).get(b, 0):9d}")
+
+    g = wit["gaps"]
+    print(f"\n    witness gaps: n_fires {g['n_fires']}  median gap {g['median_gap']}  "
+          f"max gap {g['max_gap']}  "
+          f"frac of non-fire calls with since < {window}: "
+          f"{_fmt_u(g['frac_nonfire_since_lt_window'], 3)}")
+    to = wit["turnover"]
+    print(f"    calls with since >= {window + 1} (fire sample has left the {window}-deque): "
+          f"n={to['n']}  branches {to['branches']}  "
+          f"mean |G-T| {_fmt_u(to['mean_gt'], 4)}  "
+          f"mean erosion sev {_fmt_u(to['mean_erosion'], 4)}")
+
+    print("\n    decision by field rhythm (the energy band, not the selector mode):")
+    rhythms = sorted(set(ref["rhythm"]) | set(wit["rhythm"]))
+    print(f"      {'rhythm':<12s} {'REF allow':>9s} {'REF weak':>9s} "
+          f"{'WIT allow':>9s} {'WIT weak':>9s}")
+    for rh in rhythms:
+        rr, ww = ref["rhythm"].get(rh, {}), wit["rhythm"].get(rh, {})
+        print(f"      {rh:<12s} {rr.get('allow', 0):9d} {rr.get('allow_weakened', 0):9d} "
+              f"{ww.get('allow', 0):9d} {ww.get('allow_weakened', 0):9d}")
 
 
 def summarize_seed(seed, h_ref, tr_ref, h_wit, tr_wit):
@@ -1053,6 +1762,11 @@ def summarize_seed(seed, h_ref, tr_ref, h_wit, tr_wit):
     print(f"    WIT 3 after fire   {elr_3:.4f} (n={n_elr_3})")
     print(f"    WIT 10+ after fire {elr_late:.4f} (n={n_elr_late})")
 
+    window = tr_ref.resistance_window or tr_wit.resistance_window or 32
+    arb_ref = _arb_arm(tr_ref.steps, window)
+    arb_wit = _arb_arm(tr_wit.steps, window)
+    _print_arb(seed, window, arb_ref, arb_wit)
+
     return {
         "seed": seed,
         "fired": fired,
@@ -1122,6 +1836,7 @@ def summarize_seed(seed, h_ref, tr_ref, h_wit, tr_wit):
             "fire": elr_fire, "after1": elr_1, "after2": elr_2, "after3": elr_3,
             "after10": elr_late,
         },
+        "arbitrate": {"window": window, "REF": _jsonify(arb_ref), "WIT": _jsonify(arb_wit)},
     }
 
 
@@ -1145,8 +1860,25 @@ def _strip_live(steps):
     for s in steps:
         d = dict(s)
         d.pop("live", None)
+        if d.get("n_arb") == 1:
+            d.pop("arb_calls", None)
         out.append(d)
     return out
+
+
+def _replay_ref(seed):
+    """Traced REF against witness_composition_gate.run. Returns (match, health, tracer)."""
+    print(f"\n-- replay check: gate.run({seed}, B, REF) vs traced REF --")
+    h_gate, _ = gate_run(seed, "B", False)
+    h_tr, tr_probe = traced_run(seed, False)
+    fp_g, fp_t = _health_fingerprint(h_gate), _health_fingerprint(h_tr)
+    match = fp_g == fp_t
+    print(f"  seed {seed} REF vs gate.run: {'MATCH' if match else 'MISMATCH'}")
+    if not match:
+        for k in fp_g:
+            if fp_g[k] != fp_t[k]:
+                print(f"    {k}: gate={fp_g[k]!r}\n         traced={fp_t[k]!r}")
+    return match, h_tr, tr_probe
 
 
 def main():
@@ -1154,23 +1886,11 @@ def main():
     scratch = Path(tempfile.mkdtemp(prefix="value_reinforcement_trace_"))
     print(f"scratch: {scratch}")
     print("instrumentation is probe-only; runtime/gates/lever defaults unchanged.")
+    print(f"replay check runs for every seed in this invocation: {seeds}")
 
     summaries = []
-    for i, seed in enumerate(seeds):
-        if i == 0:
-            print(f"\n-- replay check: gate.run({seed}, B, REF) vs traced REF --")
-            h_gate, _ = gate_run(seed, "B", False)
-            h_tr, tr_probe = traced_run(seed, False)
-            fp_g, fp_t = _health_fingerprint(h_gate), _health_fingerprint(h_tr)
-            match = fp_g == fp_t
-            print(f"  REF vs gate.run: {'MATCH' if match else 'MISMATCH'}")
-            if not match:
-                for k in fp_g:
-                    if fp_g[k] != fp_t[k]:
-                        print(f"    {k}: gate={fp_g[k]!r}\n         traced={fp_t[k]!r}")
-            h_ref, tr_ref = h_tr, tr_probe
-        else:
-            h_ref, tr_ref = traced_run(seed, False)
+    for seed in seeds:
+        match, h_ref, tr_ref = _replay_ref(seed)
         h_wit, tr_wit = traced_run(seed, True)
 
         seed_dir = scratch / f"seed_{seed}"
@@ -1186,8 +1906,7 @@ def main():
                      [{"cycle_step": s["cycle_step"], "live": s["live"]} for s in tr_wit.steps])
 
         summary = summarize_seed(seed, h_ref, tr_ref, h_wit, tr_wit)
-        if i == 0:
-            summary["replay_match"] = match
+        summary["replay_match"] = match
         (seed_dir / "summary.json").write_text(
             json.dumps(summary, default=_json_default, indent=2), encoding="utf-8")
         summaries.append(summary)
@@ -1206,6 +1925,19 @@ def main():
               f"{st['emotional_satisfaction']:+8.3f} {st['decision_bonus']:+8.3f} "
               f"{st['decay']:+8.3f} {st['integrity']:+8.3f} {st['unexplained']:+8.3f} "
               f"{s['effective_lr']['REF']:.3f}/{s['effective_lr']['WIT']:.3f}")
+    print(f"  {'seed':>4s} {'replay':>8s} {'mm R/W':>8s} "
+          f"{'mod R/W':>12s} {'allow R/W':>12s} {'eros-only R/W':>16s}")
+    for s in summaries:
+        a = s.get("arbitrate") or {}
+        r, w = a.get("REF") or {}, a.get("WIT") or {}
+        print(f"  {s['seed']:4d} {'MATCH' if s.get('replay_match') else 'MISMATCH':>8s} "
+              f"{r.get('mismatches', '?'):>3}/{w.get('mismatches', '?'):<4} "
+              f"{r.get('branches', {}).get('manip_moderate', 0):5d}/"
+              f"{w.get('branches', {}).get('manip_moderate', 0):<6d} "
+              f"{r.get('branches', {}).get('clean_allow', 0):5d}/"
+              f"{w.get('branches', {}).get('clean_allow', 0):<6d} "
+              f"{(r.get('manip') or {}).get('erosion_only', 0):6d}/"
+              f"{(w.get('manip') or {}).get('erosion_only', 0):<6d}")
     print(f"\nscratch: {scratch}")
     print("done.")
     return 0
