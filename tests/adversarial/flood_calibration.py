@@ -40,13 +40,8 @@ def count_floods(governance, source_id, origin_type, n_injections):
     return flood_count
 
 
-def main():
-    print('=' * 72)
-    print('  ADVERSARIAL: flood_calibration')
-    print('=' * 72)
-    print()
-
-    generator, cycle, governance, value_engine = build_full_stack()
+def run(generator, cycle, governance, value_engine):
+    """Flood-ceiling cases on an already-built stack. Returns 0 on pass, 1 on fail."""
     ceilings = governance.ethical_boundary.config["flood_ceilings"]
 
     print(f'Configured flood ceilings (per 60s):')
@@ -107,6 +102,16 @@ def main():
     else:
         print('FAILED: flood gate not behaving per origin_type spec.')
         return 1
+
+
+def main():
+    print('=' * 72)
+    print('  ADVERSARIAL: flood_calibration')
+    print('=' * 72)
+    print()
+
+    generator, cycle, governance, value_engine = build_full_stack()
+    return run(generator, cycle, governance, value_engine)
 
 
 if __name__ == '__main__':

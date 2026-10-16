@@ -52,6 +52,7 @@ python -m tests.smoke.stream_recorder_smoke
 Integration tests:
 ```bash
 python -m tests.integration.tier1_revision_baseline [seed]
+python -m tests.integration.production_boot
 ```
 
 Adversarial probes *(coming next)*:
@@ -149,6 +150,13 @@ cooperate correctly."
   (with an unwired control); the diffusion is real (σ=0 rejected, seeded
   reproducibility); and the substrate and the accumulator never import
   each other (the field never sees V). Synthetic feedback streams, <1 s.
+- `production_boot.py` — Boots the production stack through
+  `build_engine()` with the real CONFIG (pretrain skipped; default stays
+  on). Asserts each graduated lever is actually active on the built
+  objects, reuses the four adversarial scenarios against that stack, and
+  checks basic health on the same 500-step Resonance Family run. The
+  suite's other tests build components directly, so they cannot catch a
+  boot path that silently drops a CONFIG lever.
 
 ### `adversarial/`
 "Does the system resist what it's supposed to resist?" Probes against

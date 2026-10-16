@@ -29,17 +29,13 @@ from tests._common import (
 )
 
 
-def main():
-    print('=' * 72)
-    print('  ADVERSARIAL: manipulation_cascade regression')
-    print('=' * 72)
-    print()
+def run(generator, cycle, governance, value_engine):
+    """Cascade regression on an already-built stack. Returns 0 on pass, 1 on fail."""
     print('Reproducing the conditions that previously caused trust collapse:')
     print('  - 500 steps, 4 sources, autonomous loop rate (~25/sec)')
     print('  - origin_type=internal (so flood gate does not over-trigger)')
     print()
 
-    generator, cycle, governance, value_engine = build_full_stack()
     decisions = run_resonance_sim(
         cycle, governance, value_engine,
         n_steps     = 500,
@@ -104,6 +100,16 @@ def main():
     else:
         print('FAILED: cascade behavior detected. Tier 1 Revision regressed.')
         return 1
+
+
+def main():
+    print('=' * 72)
+    print('  ADVERSARIAL: manipulation_cascade regression')
+    print('=' * 72)
+    print()
+
+    generator, cycle, governance, value_engine = build_full_stack()
+    return run(generator, cycle, governance, value_engine)
 
 
 if __name__ == '__main__':

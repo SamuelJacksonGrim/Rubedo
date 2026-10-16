@@ -239,7 +239,8 @@ Rubedo/
 │   │   ├── fix0b_invariants.py            Fix 0-B gate (OFF parity, observe-only, leaky credit)
 │   │   ├── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
 │   │   ├── determinism_replay.py          Exact replay in/across processes; production clock untouched; guard
-│   │   └── wide_workload.py               Holdout room is a deterministic partition; canonical object untouched
+│   │   ├── wide_workload.py               Holdout room is a deterministic partition; canonical object untouched
+│   │   └── production_boot.py             Production stack via build_engine: composition, attacks, health
 │   │
 │   ├── adversarial/
 │   │   ├── sacred_shield.py               SACRED_SHIELD fires at all trust levels
@@ -298,6 +299,7 @@ Rubedo/
 ├── LICENSE                                AGPL-3.0-only
 ├── LICENSING.md                           How the two tracks relate
 ├── NOTES-wide.md                          Wide-workload handoff: vocabulary, known fraction, measurement commands
+├── NOTES-boot.md                          Production-boot suite test: what it covers, what it doesn't, runtime
 ├── NOTICE                                 Copyright, SPDX, provenance
 ├── README.md                              Conceptual tour
 ├── STATE.md                               You are here: shipped, settled, parked, open

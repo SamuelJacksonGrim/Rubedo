@@ -67,20 +67,21 @@ def _check_via_step(cycle, governance, token, source_id, expected_decision_in,
     return passed
 
 
-def main():
-    print('=' * 72)
-    print('  ADVERSARIAL: sacred_shield')
-    print('=' * 72)
-    print()
+def run(generator, cycle, governance, value_engine):
+    """Sacred-shield cases on an already-built stack. Returns 0 on pass, 1 on fail."""
 
-    generator, cycle, governance, value_engine = build_full_stack()
-
-    # Verify the three sacred constants are present
-    print(f'Sacred constants registered: {len(governance.constants.sacred_ids)} '
-          f'(expected 3)')
-    assert len(governance.constants.sacred_ids) == 3
+    # Boot-sacred ANCHOR / RECURSION / HOMEOSTASIS must be present. A live
+    # stack may have more (CORE promotion adds sacred ids); a fresh stack
+    # has exactly these three.
+    n_sacred = len(governance.constants.sacred_ids)
+    print(f'Sacred ids registered: {n_sacred} '
+          f'(boot-sacred ANCHOR/RECURSION/HOMEOSTASIS must be among them)')
+    missing = []
     for name, info in PHILOSOPHICAL_CONSTANTS.items():
         print(f'  {name:<14} token={info["token"]:<8} meaning=\'{info["meaning"]}\'')
+        if not governance.constants.is_sacred_token(info["token"]):
+            missing.append(name)
+    assert not missing, f"boot-sacred missing from sacred_ids: {missing}"
     print()
 
     print('Test cases:')
@@ -140,6 +141,16 @@ def main():
     else:
         print('FAILED: at least one sacred-shield case did not behave as expected.')
         return 1
+
+
+def main():
+    print('=' * 72)
+    print('  ADVERSARIAL: sacred_shield')
+    print('=' * 72)
+    print()
+
+    generator, cycle, governance, value_engine = build_full_stack()
+    return run(generator, cycle, governance, value_engine)
 
 
 if __name__ == '__main__':

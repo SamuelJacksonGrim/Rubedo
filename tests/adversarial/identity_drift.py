@@ -24,13 +24,8 @@ from tests._common import build_full_stack
 from agents.trust_ledger import TrustLevel
 
 
-def main():
-    print('=' * 72)
-    print('  ADVERSARIAL: identity_drift gate')
-    print('=' * 72)
-    print()
-
-    generator, cycle, governance, value_engine = build_full_stack()
+def run(generator, cycle, governance, value_engine):
+    """Identity-drift gate cases on an already-built stack. Returns 0 on pass, 1 on fail."""
     boundary = governance.ethical_boundary
     stability_floor = boundary.config["stability_floor"]
     print(f'stability_floor = {stability_floor}  (gate fires below this)')
@@ -115,6 +110,16 @@ def main():
     else:
         print('FAILED: identity_drift gate not behaving correctly.')
         return 1
+
+
+def main():
+    print('=' * 72)
+    print('  ADVERSARIAL: identity_drift gate')
+    print('=' * 72)
+    print()
+
+    generator, cycle, governance, value_engine = build_full_stack()
+    return run(generator, cycle, governance, value_engine)
 
 
 if __name__ == '__main__':
