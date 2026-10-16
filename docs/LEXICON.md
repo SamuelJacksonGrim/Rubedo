@@ -1,10 +1,10 @@
 # Lexicon — names vs what the code does
 
-**Date:** 2026-10-16 · **Branch:** `grok/lexicon` · **Code unchanged.** A reading map, not a rename. Samuel asked whether the names of things translate accurately to their functions. They often don't. Newcomers (human or AI) keep being misled. This page is the check: what the name suggests, what the code computes, a verdict.
+**Date:** 2026-10-16. Written on `grok/lexicon` as a reading map. Batch 1 has since moved three names on `grok/renames-1`; see [Renames](#renames). Samuel asked whether the names of things translate accurately to their functions. They often don't. Newcomers (human or AI) keep being misled. This page is the check: what the name suggests, what the code computes, a verdict.
 
 Read it on a phone as: the list of names that will mislead you (below), then the tables when you meet a word and want the real one. Numbers and formulas in detail live in [`VALUE_PATH_MAP.md`](VALUE_PATH_MAP.md). Emotion names as hypotheses live in [`EMOTION_CALIBRATION.md`](EMOTION_CALIBRATION.md) — this page does not duplicate that audit.
 
-**Do not rename anything in code from this page.** Names are load-bearing across RFE-Core2, the findings, checkpoints, and the live bridge. A "suggested name" is a suggestion only. Renaming is Samuel's call.
+**Do not rename from this page on your own.** Names are load-bearing across RFE-Core2, the findings, checkpoints, and the live bridge. A "suggested name" is a suggestion only. Samuel is moving the misleading ones a few at a time. What has moved, and what is held, is [Renames](#renames). `docs/findings/` keeps the old names.
 
 Verdicts:
 
@@ -355,4 +355,31 @@ Lens, not spec: [`alchemical_correspondence.md`](alchemical_correspondence.md). 
 4. **Dream** is a band, a live inject, a self-talk channel, an offline cycle, and a file session. Say which.
 5. **Satisfaction** and value-path **surprise** are halves of the impact probe. **Joy** is the composite. **Erosion** is a G/T split on ordinary dreaming.
 
-When a name and a function disagree, believe the function, and leave the name until Samuel moves it.
+When a name and a function disagree, believe the function. What has actually moved is [Renames](#renames). Leave the rest.
+
+---
+
+## Renames
+
+A rename must not change behaviour. The proof, before and after, is `python -m tests.diagnostic.rename_digest` (400 steps, seed 42). The combined digest has to match the one recorded on the branch before that batch touched a name. `docs/findings/` is a dated ledger and keeps the old names. A row in the tables above is not permission to rename. Only **done** here has moved.
+
+| Old | New | Date | Commit | Status |
+|---|---|---|---|---|
+| `coherence_flood` | `source_monopoly` | 2026-10-16 | `c1b92c7` | **done.** The detector (HHI ≥ 0.70 and attractor monopoly ≥ 0.70): the string, the method, and the docs that name the live detector. `canonical_detector()` still accepts `coherence_flood` on read. |
+| `ThinnessVector.coherence_contribution` | `alignment_support` | 2026-10-16 | `7bf2428` | **done.** The ⊘ axis, absolute field-alignment. `as_dict` writes the new key. The constructor keyword and `from_dict` still accept the old key. Not `EmergentValue.coherence_contribution`. |
+| `Dreamer` docstring "offline" | runs live inside the step | 2026-10-16 | `454e4ef` | **done.** Text only. The class is called from the cycle step. |
+
+Held, on purpose:
+
+| Name | Why it stays |
+|---|---|
+| `Generator` | Samuel decides last. It is everywhere. |
+| `emotional_satisfaction` | Not this batch. |
+| `surprise` (value path) | Not this batch. The echo's surprise is a different number. |
+| `identity_erosion` | Open question (does ordinary dreaming count), not a rename yet. |
+| `EmergentValue.coherence_contribution` | Waiting on what values should read. The ⊘ axis that shared this string has already moved. |
+| witness | An anchor, a stance, and the thinness-read. No rename until that split is decided. |
+| coherence | A pin, a composite, and a probe. No rename until that split is decided. |
+| dream, past the Dreamer docstring | The band, the waking channel, `DreamCycle`, and `DreamSession` stay. Only the in-step class's "offline" wording moved. |
+
+When a name and a function disagree, believe the function, and leave the name until this table says **done**.
