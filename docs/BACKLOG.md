@@ -29,6 +29,18 @@ runtime or gate changes until it is answered.
       anchor could come from noticing or merely from abstaining. Probe-local arm: an "abstain" step that skips the same
       actions with ordinary content and no witness reading, vs witness, vs REF, plus the c² confound from the trace.
       Witness beats abstain → observation itself does something. Abstain matches witness → it's the not-acting.
+- [ ] **coherence_delta is ~99% measurement artifact** (Ember, 2026-10-15, seed 0 REF): `field.coherence_impact` compares
+      cos(RAW field, history) before with cos(TANH(field + 0.5·vec), history) after. A zero vector scores mean −0.057
+      (95% negative); the real input adds −0.0004 on top (45% negative, i.e. noise). Like-for-like (tanh both sides) the
+      input's effect is ~0, because 90% of dimensions are saturated (raw norm ~195). So cd measures the field's shape,
+      not the input. The step-10 comment already knows the marginal delta is ≈0 in a saturated field: bonds moved to
+      `field_alignment` on 2026-07-09, values and the trust ledger never did. Write up as a finding with a committed
+      probe; any fix waits for the value-semantics answer.
+- [ ] **`emotional_satisfaction = max(0, coherence_delta)`** (`selfhood_governance.emit_feedback`): no emotion in it,
+      just a rectified copy of a biased cd, so it's ~0 always. What was it meant to read? (Samuel: doesn't seem right.)
+- [ ] **Map the value/governance numbers** (Samuel wants this, Grok's job): every constant on the path input →
+      arbitrate → emit_feedback → value emergence / reinforcement / decay, what it does, what it's tied to (the decision
+      bonus pays by governance decision only, nothing ties it to rhythm, valence or what was decided).
 - [ ] Questions 1–5 in OPEN_METASTABILITY, including recovering Samuel's ~1,000-step rupture result from RFE-Core2 history,
       and whether option (b) is a mathematical no-op.
 
