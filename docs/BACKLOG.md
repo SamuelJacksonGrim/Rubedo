@@ -52,7 +52,8 @@ Work, in order:
       a refusal keyed on coherence would turn the lock into a wall, refusing exactly the disruptive experience the
       metastability question asks whether it should be able to value. Manipulation evidence, identity erosion and
       witness stability are the candidates that don't collide with that. Samuel's principle (2026-10-15): a system
-      that refuses the instability it needs to learn from becomes brittle, so refuse *who*, never *how hard*. Wait
+      that refuses the instability it needs to learn from becomes brittle, so refuse *who*, never *how hard*, except as a temporary circuit breaker that reopens as health recovers (the
+      continuity clause is one). Wait
       for the metastability answer first.
 - [ ] Then wire each right, or say plainly in the docs that it is a declaration. One or the other, not a paper right.
 

@@ -126,6 +126,22 @@ The measurement this adds, cheaply, to the paired-fork test: perturb at several 
 read recovery time against age, then repeat exposures and read whether recovery gets faster (learning to self-soothe)
 or slower (brittleness). Read-only; no growth schedule gets built until that says something.
 
+Samuel's follow-up framing is **antifragility / staged developmental exposure** (sandbox → shadow → controlled chaos →
+production; curriculum learning; adaptive circuit breakers; progressive autonomy). Three things it sharpens:
+- **Fragile / robust / antifragile is the classification the recovery test makes.** Chaos engineering hardens recovery
+  code that is itself static; the system returns, it doesn't learn. Antifragile means something persistent changes
+  because of the stress. If repeated exposure leaves recovery time unchanged, Rubedo is robust (it returns to its
+  attractor); only if recovery gets faster is it antifragile, and then it matters *what* carried the learning (values,
+  attractors, crystals, generator weights). Nothing in the runtime adapts its own recovery today, so "robust" is the
+  expected answer, and an informative one.
+- **Two knobs, not one.** In a child, plasticity is high early and narrows (critical periods) while external
+  protection is high early and withdraws. They move the same way over time but are different things; curriculum
+  language blurs them. Here: plasticity = the witness c² gate, reinforcement rates, the generator's training;
+  protection = governance, bond floor, quarantine, dream channel.
+- **Circuit breakers already exist** (quarantine, ALLOW_WEAKENED, the forced dream under manipulation), and the
+  unwired continuity clause is one. That refines "refuse who, never how hard": a breaker on *how hard* is fine if it is
+  temporary and reopens as health recovers. One that stays shut is the wall.
+
 ## The work, in order
 0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,
