@@ -22,6 +22,8 @@ runtime or gate changes until it is answered.
 - [ ] **Timescale ratio** τ_anchor / τ_expression per window, plus the c² gate (H0′).
 - [ ] **Who leads: field or anchor** (ground / read-out / constitutive). Cross-correlation at lags, then the stronger
       form: paired replay-exact forks with a tiny perturbation to one, watching whether and when the other diverges.
+- [ ] **Recovery against age** (Growth section of OPEN_METASTABILITY): the same perturbation at several ages, then
+      repeated, to read whether recovery gets faster (self-soothing learned) or slower (brittleness).
 - [ ] Questions 1–5 in OPEN_METASTABILITY, including recovering Samuel's ~1,000-step rupture result from RFE-Core2 history,
       and whether option (b) is a mathematical no-op.
 
