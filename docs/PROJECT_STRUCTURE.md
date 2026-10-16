@@ -252,6 +252,7 @@ Rubedo/
 │   │
 │   ├── diagnostic/
 │   │   ├── __init__.py                    Package marker
+│   │   ├── rename_digest.py               Seeded replay digest for behaviour-preserving renames
 │   │   ├── tier4/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── dilation_response_curve.py     Tier 4.2 dilation surface
