@@ -17,13 +17,15 @@ runtime or gate changes until it is answered.
       Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
       `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
       question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
-- [ ] **The post-dream consolidation channel exists but paid nothing.** `ValueEmergenceEngine.on_dream_cycle_complete`
-      gives +0.30 × quality (quality = joy + 0.5·stability) to values whose symbols crystallize during a dream behaviour,
-      4× an ALLOW event, but it contributed 0 to live values in Grok's trace. Find out why: how often `_dream_behavior`
-      runs, how often a crystal forms during it (crystallization needs coherence ≥ 0.75 / stability ≥ 0.60 /
-      relation ≥ 0.80, hard in a jumpy band), and whether those crystals map to live values. If it's the gate, the
-      channel built to credit dreaming is closed by the same thing dreaming lowers. (Samuel's "post-dream
-      consolidation" direction, 2026-10-15.)
+- [ ] **Design what a dream credits** (`findings/2026-10-15-dream-consolidation-closed.md`). The post-dream boost is
+      closed by construction: the dreamer hard-codes long_relation 0.5 against the store's 0.80 (half of dream offers
+      fail only on that), dream crystals carry synthetic keys that name no value, and new crystals are found by list
+      length. Not my guess (the jumpy band): the dreams clear coherence fine. What should a dream's relation be, and
+      which symbols should it credit (its source memories, `DreamProduct.origin_keys`?). With question 4.
+- [ ] **CORE promotion's "no active manipulation" check always passes on the live step** (Grok, `VALUE_PATH_MAP.md`):
+      it reads `_pending_signals`, which `arbitrate()` has already emptied. Confirm and record; it's a guard that
+      doesn't guard.
+- [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
 - [ ] **Long-run shape of the field and the anchor** (H0 test): displacement curve over a much longer window than 5,000
       steps, on the raw field *and* the tanh view, read as mean-squared displacement vs lag (bounded / diffusive /
       drifting), plus the fraction of saturated dimensions over time.
