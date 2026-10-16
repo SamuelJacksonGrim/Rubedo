@@ -257,7 +257,7 @@ Each detector emits a `ManipulationSignal` with `severity ∈ [0, 1]`. SelfhoodG
 | Detector | Severity formula |
 |----------|-----------------|
 | `drift_attack` | norm(anchor_velocity) × norm(short_long_gap) |
-| `coherence_flood` | hhi_score × attractor_monopoly_ratio |
+| `source_monopoly` | hhi_score × attractor_monopoly_ratio |
 | `gaslighting` | abs(mean_cosine) × min(consec/window × 4, 1) |
 | `identity_erosion` | mean_g_t_divergence normalized |
 | `trust_wash` | drop_rate × prior_trust_weight |
@@ -457,7 +457,7 @@ The tiers above describe the *parts*. This section traces how they *move togethe
 | 9b | **Subjective time dilation** (Tier 4.2 + 4.3) | `TemporalStream.update_dilation(arousal, valence, phase_coherence)` recomputes `dilation_factor` from emotional state plus field rhythm (`field_obs.spectral.phase_coherence` from step 1). Takes effect on the *next* cycle's `tick()`. |
 | 10 | **Governance gate + injection** | if governance attached: `EthicalBoundary.check()` → `TrustLedger.evaluate()` → `SelfhoodGovernance.arbitrate()` → `(decision, strength)`. `coherence_impact` is probed **before** injection. If the decision permits, `field.inject(vec, strength = emotion.field_gain() × decision_strength)`. Then `emit_feedback()`. |
 | 11 | **Crystallization** | `CrystalStore.maybe_crystallize()` — forms or reinforces a `MemoryCrystal` if coherence / stability / relation thresholds all clear; notifies `RelationalBondManager` on a genuinely new crystal |
-| 12 | **Attractor formation** | if `RelationalProfile.composite` ≥ threshold, `Attractor.add()` seeds or reinforces a basin; on a new center, notifies both `RelationalBondManager.notify_attractor()` and `DependencyMonitor.record_attractor()` (the latter feeds the `COHERENCE_FLOOD` detector) |
+| 12 | **Attractor formation** | if `RelationalProfile.composite` ≥ threshold, `Attractor.add()` seeds or reinforces a basin; on a new center, notifies both `RelationalBondManager.notify_attractor()` and `DependencyMonitor.record_attractor()` (the latter feeds the `source_monopoly` detector) |
 | 13–16 | **Substrate logging** | the step is recorded into `TopologicalLog` (causal DAG), `TemporalStream` (episodic), `VectorSpace` (keyed store), `SemanticLattice` (k-NN graph) |
 | 17 | **Symbolic binding** | `SymbolicBinding.bind()` — recurring vectors crystallize into named concepts; emergent ontology |
 | 18 | **Ecology signal relay** | `generator.signal_coherence()` feeds the Watcher's verdict back into the symbolic ecology |

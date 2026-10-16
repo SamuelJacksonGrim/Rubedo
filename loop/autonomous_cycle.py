@@ -654,7 +654,7 @@ class AutonomousCycle:
             # Notify Tier 2 subsystems on attractor seeding (new center only).
             # Both calls matter: bond_manager tracks who's forming structure,
             # dependency_monitor populates attractor_monopoly_ratio() which the
-            # COHERENCE_FLOOD detector needs. Without record_attractor, that
+            # SOURCE_MONOPOLY detector needs. Without record_attractor, that
             # detector silently cannot fire.
             if (len(self.attractor.centers) > attractor_before
                     and self.governance is not None):

@@ -96,7 +96,7 @@ All of this is absent unless `attach_governance` ran. `build_engine` does. A bar
 | Pre-bond counters | `_pre_bond` | every feedback | formation: interactions ≥ 20 and crystals ≥ 1, then the DDM (boot default on) or the classic quality read | per source | No |
 | DDM variable | `BondFormationAccumulator` | per-source feedback while unbonded | an ACCEPT, still waiting on those two counts. The field never reads it | trace deque 64 per candidate | No |
 | Dependency window | `DependencyMonitor._window` | feedback, **allowed** injections only | HHI → manipulation, the next arbitrate | deque 128 | No |
-| Attractor monopoly counts | same monitor | `record_attractor` on a **new** center | `COHERENCE_FLOOD` | unbounded dict | No |
+| Attractor monopoly counts | same monitor | `record_attractor` on a **new** center | `source_monopoly` | unbounded dict | No |
 | Flood log | `EthicalBoundarySystem._injection_log` | the ethical check | flood gate, 60 s window | per-source deque, stale timestamps popped. Not a fixed maxlen | No |
 | Manipulation windows | `ManipulationResistanceEngine` | phase 18b | `detect` → `_pending_signals` | deques of 32. Signals have **no TTL**; `arbitrate` consumes the list | No |
 | `force_dream_flag` | `SelfhoodGovernance` | `arbitrate` when queued severity ≥ 0.90 | the **next** step's phase 20 | one bool | No |

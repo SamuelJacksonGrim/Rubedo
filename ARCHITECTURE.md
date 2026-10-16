@@ -51,7 +51,7 @@ not a smoother sentence.
 | `agents/governance_constants.py` | Boot-sacred `ANCHOR` / `RECURSION` / `HOMEOSTASIS` | `SelfhoodGovernance.__init__` | `sacred_ids` |
 | `agents/trust_ledger.py` | Source trust and per-symbol trust | gate, then `receive_feedback` | advisory into `arbitrate` |
 | `agents/ethical_boundary.py` | O(1) hard gates (toxic, sacred write, collapse, drift, flood) | first call inside `_governance_gate` | `EthicalResult` into `arbitrate` |
-| `agents/dependency_monitor.py` | HHI over recent *allowed* injections; attractor monopoly | feedback subscriber; `record_attractor` | `COHERENCE_FLOOD`; dependency modulation |
+| `agents/dependency_monitor.py` | HHI over recent *allowed* injections; attractor monopoly | feedback subscriber; `record_attractor` | `source_monopoly`; dependency modulation |
 | `agents/relational_bond_manager.py` | Bonds from lived interaction | feedback subscriber; crystal/attractor notifies | trust floor; value bond-weights |
 | `agents/bond_accumulator.py` | Leaky asymmetric DDM that replaces the instantaneous quality read | only when `ddm_formation` is on | an ACCEPT, still gated by the structural counts |
 | `agents/manipulation_resistance.py` | Five detectors | step 18b | `handle_manipulation_signals` → later `arbitrate` / `force_dream_flag` |

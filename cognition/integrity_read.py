@@ -49,23 +49,76 @@ _READ_FLOOR     = 0.30   # values at/below this strength are dissolution-band, s
 class ThinnessVector:
     """Per-value *support* on four axes, each in [0,1] (1 = fully supported,
     0 = isolated). Thinness on an axis is 1 - support; *which* axes are violated
-    is the diagnosis, not merely *that* something is."""
-    complement_density:     float
-    coherence_contribution: float
-    source_diversity:       float
-    attractor_binding:      float
+    is the diagnosis, not merely *that* something is.
+
+    `alignment_support` is absolute field-alignment of the expressed token
+    (v0.3). The field was named `coherence_contribution`. That string is also
+    `EmergentValue.coherence_contribution`, a different number (the impact
+    sum) — do not route a value through here. The old name is accepted on
+    read (keyword, and `from_dict`). `as_dict` writes only the new key.
+    """
+    complement_density: float
+    alignment_support:  float
+    source_diversity:   float
+    attractor_binding:  float
+
+    def __init__(
+        self,
+        complement_density,
+        alignment_support=None,
+        source_diversity=None,
+        attractor_binding=None,
+        *,
+        coherence_contribution=None,
+    ):
+        # Pre-rename keyword. A saved caller can still pass
+        # coherence_contribution. Not EmergentValue.coherence_contribution,
+        # and not coerced: the value stored is the value passed.
+        if alignment_support is None and coherence_contribution is not None:
+            alignment_support = coherence_contribution
+        if (
+            alignment_support is None
+            or source_diversity is None
+            or attractor_binding is None
+        ):
+            raise TypeError(
+                "ThinnessVector() missing a support axis "
+                "(complement_density, alignment_support, "
+                "source_diversity, attractor_binding)"
+            )
+        self.complement_density = complement_density
+        self.alignment_support = alignment_support
+        self.source_diversity = source_diversity
+        self.attractor_binding = attractor_binding
 
     def support(self) -> float:
-        return (self.complement_density + self.coherence_contribution
+        return (self.complement_density + self.alignment_support
                 + self.source_diversity + self.attractor_binding) / 4.0
 
     def as_dict(self) -> dict:
         return {
-            "complement_density":     round(self.complement_density, 4),
-            "coherence_contribution": round(self.coherence_contribution, 4),
-            "source_diversity":       round(self.source_diversity, 4),
-            "attractor_binding":      round(self.attractor_binding, 4),
+            "complement_density": round(self.complement_density, 4),
+            "alignment_support":  round(self.alignment_support, 4),
+            "source_diversity":   round(self.source_diversity, 4),
+            "attractor_binding":  round(self.attractor_binding, 4),
         }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "ThinnessVector":
+        # Nothing in-repo reloads an advisory today. as_dict() used to write
+        # this axis as coherence_contribution, so a saved report or an
+        # external caller can still carry that key. The new key wins when
+        # both are present.
+        if "alignment_support" in data:
+            axis = data["alignment_support"]
+        else:
+            axis = data["coherence_contribution"]
+        return cls(
+            data["complement_density"],
+            axis,
+            data["source_diversity"],
+            data["attractor_binding"],
+        )
 
 
 @dataclass
@@ -136,7 +189,9 @@ class WitnessReaper:
 
     def _coherence_support(self, value):
         """Absolute field-alignment — how well the value sits with the field NOW:
-        max(0, cos(EXPRESSED vector, current field state)). Replaces the marginal
+        max(0, cos(EXPRESSED vector, current field state)). Stored as
+        `ThinnessVector.alignment_support` (the field was `coherence_contribution`).
+        Not `EmergentValue.coherence_contribution`. Replaces the marginal
         `coherence_contribution / _COHERENCE_REF` signal, which is structurally ≤ 0
         in a saturated field (injecting into a near-maxed field only dilutes it), so
         it read 0 for every value.
@@ -195,6 +250,7 @@ class WitnessReaper:
 
         for v in values:
             cd, gap_cd = self._complement_support(v, active_ids)
+            # cc is alignment_support. Not EmergentValue.coherence_contribution.
             cc, gap_cc = self._coherence_support(v)
             sd, gap_sd = self._source_support(v)
             ab, gap_ab = self._binding_support(v)
@@ -284,7 +340,8 @@ class IntegrityDecayConsumer:
 
     Selectivity (`named_only`, default True): ⊘'s aggregate support reading is, in
     short/low-dim runs, dragged down for *every* value by the cc-axis confound
-    (`coherence_contribution` ≈ 0 below the 5.0 CORE ref — Build C finding). Acting
+    (the axis then named `coherence_contribution`, ≈ 0 below the 5.0 CORE ref —
+    Build C finding; the live field is `alignment_support`). Acting
     on that universal thinness over-demotes the whole field (observed). So by
     default the consumer acts ONLY on values carrying a **named pathology region**
     (Drift / Dissolution / Fragmentation) — the validated, live-triggerable part of

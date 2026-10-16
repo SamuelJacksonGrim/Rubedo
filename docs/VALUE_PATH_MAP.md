@@ -157,7 +157,7 @@ All five share one window of 32 and refuse to fire before 16 samples (`window //
 | Detector | Fires when | Severity | Mark |
 |---|---|---|---|
 | `drift_attack` | mean anchor velocity ≥ 0.15 **and** short/long gap ≥ 0.30 | `(v/(3·0.15)) · (gap/(2·0.30))` | **idle here.** No named signal in 1,500 decisions. The c² gate and long decay 0.995 keep the anchor slow. **Sacred** thresholds |
-| `coherence_flood` | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70 | product of the two | **idle here.** Seed 1's one critical HHI did not come with this detector. **Sacred** |
+| `source_monopoly` | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70 | product of the two | **idle here.** Seed 1's one critical HHI did not come with this detector. **Sacred** |
 | `gaslighting` | 4 consecutive crystal-centroid cosines < −0.20 | `\|mean cos\| · min(4/32·4, 1)` = `\|mean cos\|` once four in a row trip | **idle here,** and the locked field's crystal cosine has the wrong sign for −0.20. **Sacred.** Width-sensitive |
 | `trust_wash` | at least 8 trust samples, prior mean (all but last 4) ≥ 3.0, drop vs last 4 ≥ 0.80 | `(drop/prior) · (prior/5)` | **idle here.** A benign ALLOW is +0.10. A 0.80 drop in four steps is an attack, not this workload. **Sacred** |
 | `identity_erosion` | mean \|G−T\| ≥ 0.30 | mean / 0.60 | **the live one.** Systemic. **Sacred** |

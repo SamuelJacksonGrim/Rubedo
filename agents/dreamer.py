@@ -1,7 +1,8 @@
 """
 agents/dreamer.py
 
-Dream synthesis — offline latent recombination and symbolic mutation.
+Dream synthesis — latent recombination and symbolic mutation. It runs live
+inside the step, not as a separate offline pass.
 
 The Dreamer runs during low-energy field states (rhythm == "dream" or
 "stabilize") and performs:
@@ -50,7 +51,8 @@ class DreamProduct:
 
 class Dreamer:
     """
-    Offline latent recombination and symbolic mutation engine.
+    Live latent recombination and symbolic mutation engine. Called from the
+    cycle step, not as a separate offline pass.
 
     Parameters
     ----------

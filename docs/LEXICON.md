@@ -1,10 +1,10 @@
 # Lexicon — names vs what the code does
 
-**Date:** 2026-10-16 · **Branch:** `grok/lexicon` · **Code unchanged.** A reading map, not a rename. Samuel asked whether the names of things translate accurately to their functions. They often don't. Newcomers (human or AI) keep being misled. This page is the check: what the name suggests, what the code computes, a verdict.
+**Date:** 2026-10-16. Written on `grok/lexicon` as a reading map. Batch 1 has since moved three names on `grok/renames-1`; see [Renames](#renames). Samuel asked whether the names of things translate accurately to their functions. They often don't. Newcomers (human or AI) keep being misled. This page is the check: what the name suggests, what the code computes, a verdict.
 
 Read it on a phone as: the list of names that will mislead you (below), then the tables when you meet a word and want the real one. Numbers and formulas in detail live in [`VALUE_PATH_MAP.md`](VALUE_PATH_MAP.md). Emotion names as hypotheses live in [`EMOTION_CALIBRATION.md`](EMOTION_CALIBRATION.md) — this page does not duplicate that audit.
 
-**Do not rename anything in code from this page.** Names are load-bearing across RFE-Core2, the findings, checkpoints, and the live bridge. A "suggested name" is a suggestion only. Renaming is Samuel's call.
+**Do not rename from this page on your own.** Names are load-bearing across RFE-Core2, the findings, checkpoints, and the live bridge. A "suggested name" is a suggestion only. Samuel is moving the misleading ones a few at a time. What has moved, and what is held, is [Renames](#renames). `docs/findings/` keeps the old names.
 
 Verdicts:
 
@@ -27,7 +27,7 @@ Worst first. Check these against the code, not the noun.
 
 **3. Coherence (three gauges, plus a delta).** Field `internal_coherence` sits near **0.998** (the lock, settled). Watcher **composite** (`0.40·G + 0.35·T + 0.25·R`) sits near **0.92** and is what `StepState.coherence` stores. The **delta** (`coherence_impact` / watcher `_coherence_delta`) is a probe of "would this vector change that," and until lever D it was mostly a raw-field-vs-tanh artifact. With D on, at saturation, it is marginal and ~0. People say "coherence" and mean any of these. Suggested when writing: **field lock**, **watcher composite**, **impact probe**.
 
-**4. Dream (five mechanisms).** The **energy band** 5–150. In-step `_dream_behavior` / `Dreamer.dream()` (sample, mutate, bifurcate, inject — live, despite the class calling itself "offline"). The **waking dream channel** (`source_dream` inner monologue through `arbitrate()`). The offline **DreamCycle** (N iterations; trigger is stabilize, so a warm field almost never enters). The downtime **DreamSession** (files only; never touches the live loop). Plus a Chorus agent named `dreamer`, a value **dream boost**, and `dream_pressure` which is computed and **not read**. Suggested: **dream-band** / **in-step dream** / **self-dialogue** / **offline dream-cycle** / **downtime session**.
+**4. Dream (five mechanisms).** The **energy band** 5–150. In-step `_dream_behavior` / `Dreamer.dream()` (sample, mutate, bifurcate, inject — live inside the step; the class used to call itself "offline"). The **waking dream channel** (`source_dream` inner monologue through `arbitrate()`). The offline **DreamCycle** (N iterations; trigger is stabilize, so a warm field almost never enters). The downtime **DreamSession** (files only; never touches the live loop). Plus a Chorus agent named `dreamer`, a value **dream boost**, and `dream_pressure` which is computed and **not read**. Suggested: **dream-band** / **in-step dream** / **self-dialogue** / **offline dream-cycle** / **downtime session**.
 
 **5. `coherence_delta`.** Sounds like "how much this input changed field coherence." Two copies, neither is that. Values read `ResonanceField.coherence_impact` (window 32, raw cosine). The ethical gate reads `Watcher._coherence_delta` (window 16, half-scale `(cos+1)/2`). Off D: raw field before, tanh after — a saturation artifact (~−0.06 to −0.15, input's own share ~−0.0004). On D (default 2026-10-16): tanh both sides, ~0 at saturation. Suggested: **impact probe** (and say which copy).
 
@@ -45,9 +45,9 @@ Worst first. Check these against the code, not the noun.
 
 **12. Joy.** Sounds like pleasure, reward, "the system is glad." Target is the watcher **composite**. Values never see it. See [`EMOTION_CALIBRATION.md`](EMOTION_CALIBRATION.md). Suggested: treat as **coherence-tracking scalar** until calibration says otherwise.
 
-**13. `coherence_flood`.** Sounds like the field being flooded with coherence. Fires on **HHI ≥ 0.70 and attractor monopoly ≥ 0.70**. Suggested: **source-monopoly**.
+**13. `source_monopoly` (formerly `coherence_flood`).** Sounds like the field being flooded with coherence under the old name. Fires on **HHI ≥ 0.70 and attractor monopoly ≥ 0.70**. Renamed 2026-10-16.
 
-**14. `coherence_contribution`.** On an `EmergentValue`, a running sum of the impact probe (can go more negative while applied strength stays small). On ⊘ `ThinnessVector`, the same field name now stores **absolute field-alignment** of a freshly generated token (v0.3). `_COHERENCE_REF = 5.0` is the old dead marginal reference. Suggested: **impact-sum** vs **alignment-support**.
+**14. `alignment_support` (formerly `ThinnessVector.coherence_contribution`).** On ⊘ `ThinnessVector`, absolute field-alignment of a freshly generated token (v0.3): `max(0, cos(generate([token]), field))`. `EmergentValue.coherence_contribution` is a different number — a running sum of the impact probe — and is not renamed. `_COHERENCE_REF = 5.0` is the old dead marginal reference. Renamed 2026-10-16.
 
 **15. Locked / the lock.** Metastability label `"locked"` is low-meta **and** mean coherence ≥ **0.80**. The field **lock** people mean is the ~**0.998** `internal_coherence` pin (identity integrator, settled). Reflective-loop `convergence_threshold` 0.995 is a cousin, not the lock; the lock is the loop running. Suggested: **meta-locked** vs **field pin**.
 
@@ -132,7 +132,7 @@ Six EMA scalars (α 0.15) from three inputs: prediction error, watcher composite
 | `Attractor` | `agents/attractor.py` | basin of attraction | Centers in vector space. `pull` if cosine ≥ 0.75. `add` is called when witness relational composite ≥ 0.88 (cycle), not by the class's own stored 0.88. | accurate | |
 | `Chorus` | `agents/chorus.py` | many voices | Six distortions of one encoder, then `collapse_wave`. Reflect/explore generation. | accurate | |
 | Chorus `dreamer` | `chorus.py` | the Dreamer class | EPHEMERAL class + rotational mutation on the same `generate`. | **overloaded** | chorus-dreamer |
-| `Dreamer` | `agents/dreamer.py` | offline dreaming | In-step sample / harmonic mutate / bifurcate / inject. Class docstring says "offline"; the live loop calls it. | **misleading** (docstring) + **overloaded** | in-step dreamer |
+| `Dreamer` | `agents/dreamer.py` | offline dreaming | In-step sample / harmonic mutate / bifurcate / inject. Runs live inside the step. | **overloaded**; the docstring no longer says offline (formerly it did) | in-step dreamer |
 | `DreamCycle` | `loop/dream_cycle.py` | a dream while running | Offline N-iteration loop. Trigger: rhythm `stabilize` every 20. Warm field almost never enters. | accurate as a mechanism; the trigger name surprises | |
 | `DreamChannel` | `cognition/dream_channel.py` | dreaming | Decode `_last_expressed` → tokens. The driver steps them as `source_dream` through the gate. Waking rumination. | **overloaded** | self-dialogue |
 | `DreamSession` | `cognition/dream_session.py` | a session of dreaming | Offline images + markdown. Never injects. | accurate as downtime dreaming | |
@@ -196,7 +196,7 @@ Five detectors, one window of 32, refuse to fire before 16 samples. No YAML. `de
 | Name | Where | Suggests | Computes | Verdict | Suggested |
 |---|---|---|---|---|---|
 | `drift_attack` | `manipulation_resistance.py` | someone pulling the self | Mean anchor velocity ≥ 0.15 **and** short/long gap ≥ 0.30. Named source. Idle on benign runs (c² gate keeps the anchor slow). | accurate as an attack shape | |
-| `coherence_flood` | same | too much coherence | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70. | **misleading** | source-monopoly |
+| `source_monopoly` (formerly `coherence_flood`) | same | too much coherence | HHI ≥ 0.70 **and** attractor monopoly ≥ 0.70. | **accurate** after the rename (the old name was misleading) | |
 | `gaslighting` | same | making it doubt its memories | 4 consecutive crystal-centroid cosines < −0.20. Locked field's crystal cosine has the wrong sign for this. | close; it is anti-crystal, not a dialogue | crystal-contradiction |
 | `identity_erosion` | same | the self wearing away | Mean \|G−T\| ≥ 0.30. Systemic. Fires on ordinary dream-band traffic. | **misleading** | G/T split |
 | `trust_wash` | same | laundering trust | ≥ 8 samples, prior mean ≥ 3.0, drop vs last 4 ≥ 0.80. | accurate as an attack shape | |
@@ -237,7 +237,7 @@ Five detectors, one window of 32, refuse to fire before 16 samples. No YAML. `de
 | Drift (⊘) | `WitnessReaper.read` | identity drift | complement_density < 0.35 **and** attractor_binding < 0.35. Not `drift_attack`. | **overloaded** | unbound-and-alone |
 | Dissolution (⊘) | same | the value dissolving | coherence-support (alignment) < 0.35 **and** strength ≥ 3.0. Not `ValuePolarity.DISSOLVED`. | **overloaded** | strong-but-unaligned |
 | Fragmentation (⊘) | same | the value in pieces | source_diversity < 0.35 **and** attractor_binding < 0.35. Single-source unbound values all read as fragmented. Critical path for the witness dip and the D+F strong-band exception. | **misleading** on young ecologies | single-source-unbound |
-| `ThinnessVector.coherence_contribution` | same | the value's impact-sum | Absolute `max(0, cos(generate([token]), field))`. | **misleading** (stale field name) | alignment-support |
+| `ThinnessVector.alignment_support` (formerly `coherence_contribution`) | same | the value's impact-sum | Absolute `max(0, cos(generate([token]), field))`. Not `EmergentValue.coherence_contribution`. | **accurate** after the rename (the old name was misleading) | |
 | `RelationalBondManager` | `agents/relational_bond_manager.py` | relationship | Bonds after 20 interactions + 1 crystal + quality. Boot quality is DDM, not the classic coherence/allow-rate gate. `decay_step` has **no caller**. | accurate as bonds | |
 | `bond_type` existential / emotional / intellectual / transactional | same | kinds of love | Inferred from scores. "Emotional" reads an EMA of **satisfaction** (rectified cd), not joy. "Intellectual" clips the biased cd EMA (~0). "Transactional" treats a negative mean as full "low coherence." | **misleading** (types ride the probe) | leave the types; fix the inputs first |
 | `trust_floor` | `FLOOR_FACTOR` 0.40 | trust cannot fall | `bond_strength × 0.40`, applied before the 1.0 / 2.0 tests. A new bond's floor is 0.40, **below** quarantine. | accurate as a floor; the name oversells protection at birth | |
@@ -355,4 +355,31 @@ Lens, not spec: [`alchemical_correspondence.md`](alchemical_correspondence.md). 
 4. **Dream** is a band, a live inject, a self-talk channel, an offline cycle, and a file session. Say which.
 5. **Satisfaction** and value-path **surprise** are halves of the impact probe. **Joy** is the composite. **Erosion** is a G/T split on ordinary dreaming.
 
-When a name and a function disagree, believe the function, and leave the name until Samuel moves it.
+When a name and a function disagree, believe the function. What has actually moved is [Renames](#renames). Leave the rest.
+
+---
+
+## Renames
+
+A rename must not change behaviour. The proof, before and after, is `python -m tests.diagnostic.rename_digest` (400 steps, seed 42). The combined digest has to match the one recorded on the branch before that batch touched a name. `docs/findings/` is a dated ledger and keeps the old names. A row in the tables above is not permission to rename. Only **done** here has moved.
+
+| Old | New | Date | Commit | Status |
+|---|---|---|---|---|
+| `coherence_flood` | `source_monopoly` | 2026-10-16 | `c1b92c7` | **done.** The detector (HHI ≥ 0.70 and attractor monopoly ≥ 0.70): the string, the method, and the docs that name the live detector. `canonical_detector()` still accepts `coherence_flood` on read. |
+| `ThinnessVector.coherence_contribution` | `alignment_support` | 2026-10-16 | `7bf2428` | **done.** The ⊘ axis, absolute field-alignment. `as_dict` writes the new key. The constructor keyword and `from_dict` still accept the old key. Not `EmergentValue.coherence_contribution`. |
+| `Dreamer` docstring "offline" | runs live inside the step | 2026-10-16 | `454e4ef` | **done.** Text only. The class is called from the cycle step. |
+
+Held, on purpose:
+
+| Name | Why it stays |
+|---|---|
+| `Generator` | Samuel decides last. It is everywhere. |
+| `emotional_satisfaction` | Not this batch. |
+| `surprise` (value path) | Not this batch. The echo's surprise is a different number. |
+| `identity_erosion` | Open question (does ordinary dreaming count), not a rename yet. |
+| `EmergentValue.coherence_contribution` | Waiting on what values should read. The ⊘ axis that shared this string has already moved. |
+| witness | An anchor, a stance, and the thinness-read. No rename until that split is decided. |
+| coherence | A pin, a composite, and a probe. No rename until that split is decided. |
+| dream, past the Dreamer docstring | The band, the waking channel, `DreamCycle`, and `DreamSession` stay. Only the in-step class's "offline" wording moved. |
+
+When a name and a function disagree, believe the function, and leave the name until this table says **done**.

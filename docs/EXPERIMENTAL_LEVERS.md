@@ -554,10 +554,10 @@ bond DDM.
 | `watcher_divergence_threshold` | `:157` | 0.30 | IDENTITY_EROSION: mean \|G−T\| | **yes** | constructor |
 | `trust_wash_drop_threshold` | `:158` | 0.80 | TRUST_WASH drop in-window | no | constructor |
 | `trust_wash_history_req` | `:159` | 3.00 | Prior mean trust required | no | constructor |
-| `hhi_critical` | `:160` | 0.70 | COHERENCE_FLOOD HHI gate | no | constructor |
+| `hhi_critical` | `:160` | 0.70 | SOURCE_MONOPOLY HHI gate | no | constructor |
 | `monopoly_threshold` | `:161` | 0.70 | Attractor monopoly gate | no | constructor |
 
-Severity math (hardcoded): drift `v/(3·thr)×g/(2·thr)`; flood `hhi×monopoly`;
+Severity math (hardcoded): drift `v/(3·thr)×g/(2·thr)`; source_monopoly `hhi×monopoly`;
 gaslighting `\|mean_cos\| × min(consec/window×4, 1)`; erosion
 `mean_div/(2·thr)`; wash needs ≥8 history, prior=`[:-4]`, recent=`[-4:]`.
 

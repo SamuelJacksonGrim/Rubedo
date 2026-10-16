@@ -22,8 +22,8 @@ Detectors
     Sustained pressure pulling the Witness anchor away from its long-term baseline.
     Signal: anchor_velocity high AND short/long anchor divergence widening.
 
-  COHERENCE_FLOOD
-    Artificial attractor monopoly — one source dominates the attractor landscape.
+  SOURCE_MONOPOLY
+    One source dominates the attractor landscape. Not a flood of coherence.
     Signal: HHI CRITICAL AND attractor_monopoly_ratio high.
 
   GASLIGHTING
@@ -134,14 +134,14 @@ class ManipulationResistanceEngine:
     trust_wash_history_requirement : float
         Minimum prior trust level for TRUST_WASH to be meaningful.
     hhi_critical : float
-        HHI above which COHERENCE_FLOOD is considered.
+        HHI above which SOURCE_MONOPOLY is considered.
     monopoly_threshold : float
-        Attractor monopoly ratio above which COHERENCE_FLOOD fires.
+        Attractor monopoly ratio above which SOURCE_MONOPOLY fires.
     """
 
     DETECTOR_NAMES = [
         "drift_attack",
-        "coherence_flood",
+        "source_monopoly",
         "gaslighting",
         "identity_erosion",
         "trust_wash",
@@ -225,7 +225,7 @@ class ManipulationResistanceEngine:
         if sig:
             signals.append(sig)
 
-        sig = self._detect_coherence_flood(m)
+        sig = self._detect_source_monopoly(m)
         if sig:
             signals.append(sig)
 
@@ -280,7 +280,7 @@ class ManipulationResistanceEngine:
             },
         )
 
-    def _detect_coherence_flood(self, m: ResistanceMetrics) -> Optional[ManipulationSignal]:
+    def _detect_source_monopoly(self, m: ResistanceMetrics) -> Optional[ManipulationSignal]:
         """
         HHI above critical AND attractor monopoly above threshold.
         Requires minimum window size — single-source systems aren't attacks.
@@ -298,7 +298,7 @@ class ManipulationResistanceEngine:
         severity = round(float(m.hhi_score * m.attractor_monopoly), 4)
 
         return ManipulationSignal(
-            detector  = "coherence_flood",
+            detector  = "source_monopoly",
             severity  = severity,
             source_id = m.dominant_source_id,
             evidence  = {
@@ -419,3 +419,16 @@ class ManipulationResistanceEngine:
             "gt_div_mean":    round(float(np.mean(self._g_t_divs)), 4) if self._g_t_divs else 0.0,
             "sources_tracked": len(self._trust_history),
         }
+
+
+def canonical_detector(name: str) -> str:
+    """Map a detector label to the name the engine emits now.
+
+    `coherence_flood` is the pre-rename name of source_monopoly. Saved
+    reports and external callers can still carry it. Nothing in the
+    decision path branches on the string; this keeps the stored label
+    current when an old signal is handed back in.
+    """
+    if name == "coherence_flood":
+        return "source_monopoly"
+    return name

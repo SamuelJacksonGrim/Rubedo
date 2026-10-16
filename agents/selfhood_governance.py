@@ -44,7 +44,10 @@ from agents.trust_ledger import GovernanceFeedback, TrustLedger, TrustReport
 from agents.ethical_boundary import EthicalBoundarySystem, EthicalCheckResult
 from agents.dependency_monitor import DependencyMonitor, DependencyRisk
 from agents.relational_bond_manager import RelationalBondManager
-from agents.manipulation_resistance import ManipulationResistanceEngine, ManipulationSignal, ResistanceMetrics
+from agents.manipulation_resistance import (
+    ManipulationResistanceEngine, ManipulationSignal, ResistanceMetrics,
+    canonical_detector,
+)
 from agents.symbolic_memory import SymbolRegistry
 
 logger = logging.getLogger(__name__)
@@ -642,6 +645,9 @@ class SelfhoodGovernance:
         """
         if not hasattr(self, '_pending_signals'):
             self._pending_signals = []
+        for signal in signals:
+            # coherence_flood is the old name of source_monopoly.
+            signal.detector = canonical_detector(signal.detector)
         self._pending_signals.extend(signals)
 
         if signals:
