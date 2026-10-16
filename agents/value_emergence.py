@@ -106,6 +106,7 @@ class ExperienceReport:
     surprise:               float
     trust_impact:           float
     decision:               str              # GovernanceDecision.value string
+    field_alignment:        float = 0.0      # absolute v0.3 alignment from step 10
 
 
 # ---------------------------------------------------------------------------
@@ -124,7 +125,7 @@ class EmergentValue:
 
     # Accumulated history
     reinforcement_count:    int   = 0
-    coherence_contribution: float = 0.0   # lifetime sum of coherence_delta
+    coherence_contribution: float = 0.0   # lifetime sum of the coherence term applied
     emotional_resonance:    float = 0.0   # EMA of emotional_satisfaction
 
     # Source attribution
@@ -303,6 +304,13 @@ class ValueEmergenceEngine:
         bond_type       = bond.bond_type       if bond else None
         bond_confidence = bond.bond_confidence if bond else 0.0
 
+        # Lever F writes value_payment only for a systemic-only damp. Absent
+        # means the value engine is paid the real decision.
+        decision = feedback.decision
+        payment = feedback.outcome_metrics.get("value_payment")
+        if payment:
+            decision = str(payment)
+
         report = ExperienceReport(
             source_id              = feedback.source_id,
             bond_type              = bond_type,
@@ -312,7 +320,8 @@ class ValueEmergenceEngine:
             emotional_satisfaction = feedback.outcome_metrics.get("emotional_satisfaction", 0.0),
             surprise               = feedback.outcome_metrics.get("surprise", 0.0),
             trust_impact           = feedback.outcome_metrics.get("trust_impact", 0.0),
-            decision               = feedback.decision,
+            decision               = decision,
+            field_alignment        = float(feedback.outcome_metrics.get("field_alignment", 0.0)),
         )
         self.evaluate_experience(report)
 
@@ -323,6 +332,9 @@ class ValueEmergenceEngine:
         Can be called directly for synthetic experiences (testing, internal reflection).
         """
         self._step += 1
+        # Stashed, not a new argument: the reinforcement trace wraps these
+        # two methods at the old signature. Off, this is coherence_delta.
+        self._step_coherence_term = self._value_coherence_term(report)
 
         # 1. Detect candidates from this experience
         candidates = self._detect_candidates(report)
@@ -351,6 +363,26 @@ class ValueEmergenceEngine:
     # Detection
     # ==================================================================
 
+    def _value_coherence_term(self, report: ExperienceReport) -> float:
+        """The coherence term the gate and the reinforcement both read.
+
+        Off: the step's coherence_delta, unchanged.
+        On (`value_alignment_signal`): field_alignment minus an EMA of
+        field_alignment. The first observation centers at 0 and seeds the
+        EMA. coherence_contribution records this same number.
+        """
+        if not getattr(self, "value_alignment_signal", False):
+            return float(report.coherence_delta)
+        alignment = float(getattr(report, "field_alignment", 0.0))
+        alpha = float(getattr(self, "alignment_ema_alpha", 0.05))
+        ema = getattr(self, "_alignment_ema", None)
+        if ema is None:
+            self._alignment_ema = alignment
+            return 0.0
+        centered = alignment - float(ema)
+        self._alignment_ema = (1.0 - alpha) * float(ema) + alpha * alignment
+        return float(centered)
+
     def _detect_candidates(self, report: ExperienceReport) -> List[int]:
         """
         A symbol is a value candidate when the experience signal
@@ -368,11 +400,14 @@ class ValueEmergenceEngine:
             "monitor":        self.config["decision_bonus_monitor"],
         }.get(report.decision, 0.0)
 
+        coherence_term = getattr(self, "_step_coherence_term", None)
+        if coherence_term is None:
+            coherence_term = float(report.coherence_delta)
         score = (
-            report.coherence_delta        * 0.40 +
-            report.emotional_satisfaction * 0.35 +
-            report.surprise               * 0.15 +
-            max(0.0, report.trust_impact) * 0.10
+            coherence_term                    * 0.40 +
+            report.emotional_satisfaction     * 0.35 +
+            report.surprise                   * 0.15 +
+            max(0.0, report.trust_impact)     * 0.10
         ) * bond_weight + decision_bonus
 
         if score < self.config["min_emergence_threshold"]:
@@ -420,8 +455,11 @@ class ValueEmergenceEngine:
             "monitor":        self.config["decision_bonus_monitor"],
         }.get(report.decision, 0.0)
 
+        coherence_term = getattr(self, "_step_coherence_term", None)
+        if coherence_term is None:
+            coherence_term = float(report.coherence_delta)
         reinforcement = (
-            report.coherence_delta        * 0.6 +
+            coherence_term                * 0.6 +
             report.emotional_satisfaction * 0.4
         ) * bond_weight + decision_bonus
 
@@ -430,7 +468,7 @@ class ValueEmergenceEngine:
         value.strength = float(np.clip(value.strength + delta, 0.0, 5.0))
         value.reinforcement_count   += 1
         value.last_reinforced_step   = self._step
-        value.coherence_contribution += report.coherence_delta
+        value.coherence_contribution += coherence_term
         value.emotional_resonance    = (
             0.85 * value.emotional_resonance
             + 0.15 * report.emotional_satisfaction

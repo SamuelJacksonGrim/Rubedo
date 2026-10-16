@@ -17,16 +17,13 @@ runtime or gate changes until it is answered.
       Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
       `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
       question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
-- [ ] **Design what a dream credits** (`findings/2026-10-15-dream-consolidation-closed.md`). The post-dream boost is
-      closed by construction: the dreamer hard-codes long_relation 0.5 against the store's 0.80 (half of dream offers
-      fail only on that), dream crystals carry synthetic keys that name no value, and new crystals are found by list
-      length. Not my guess (the jumpy band): the dreams clear coherence fine. What should a dream's relation be, and
-      which symbols should it credit (its source memories, `DreamProduct.origin_keys`?). With question 4.
-- [ ] **CORE promotion's "no active manipulation" check always passes on the live step** (Grok, `VALUE_PATH_MAP.md`):
-      it reads `_pending_signals`, which `arbitrate()` has already emptied. **Confirmed by step order** (Ember): signals
-      are detected at step 18 and queued; the next step's step 10 `arbitrate()` consumes and clears them; value
-      reinforcement and CORE review run after that, so the check always sees an empty list. A guard that doesn't guard.
-      Fix is small (snapshot the consumed signals for the step), but it changes CORE promotion; record, then decide.
+- [ ] **Graduate D+F (then maybe E)?** (`findings/2026-10-15-value-fixes-measured.md`) D+F: witness starvation
+      ~0.6→~0.9, composition = REF (2/3), no alarms. E: witness stops starving values, witness gate passes for the
+      first time on one seed. Two gates before any default change: the wider-workload run below, and the architect's
+      call on the exception (the failing check is the opt-in ⊘ consumer's strong-band ceiling, not a regression).
+- [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new
+      crystals pay) but floods: many new dream crystals × several symbols × 0.30 → strength cap → mass CORE promotion
+      breaks trust and bonds. Needs a per-dream / per-symbol budget or diminishing credit.
 - [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
 - [ ] **Run H0 and the value levers on a wider workload** (`findings/2026-10-15-h0-steady-self-rattling-mind.md`). The
       value count freezing at 46 was workload A's 46-token vocabulary, not the system closing. Crystals stuck at 2,
@@ -34,19 +31,15 @@ runtime or gate changes until it is answered.
       so far runs on that one 46-word workload; a wider one (corpus 1.4.0 holdout) is the next control for everything.
 - [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
       feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
-- [ ] **Second workload with different content**: is the 15° cone the system's or the corpus's?
 - [ ] **50,000-step plain run** (~80 min/seed): does the raw direction's slow wobble ceiling or drift?
 - [ ] **Does observing stabilize, or just not acting?** (Samuel, 2026-10-15: maybe witness steadies the system *because*
       it is observed.) Witness skips the attractor pull, reflect, crystal replay and behaviour inject, so its steadier
       anchor could come from noticing or merely from abstaining. Probe-local arm: an "abstain" step that skips the same
       actions with ordinary content and no witness reading, vs witness, vs REF, plus the c² confound from the trace.
       Witness beats abstain → observation itself does something. Abstain matches witness → it's the not-acting.
-- [ ] **coherence_delta is mostly measurement artifact** (recorded in `findings/2026-10-15-why-values-weaken-under-witness.md`,
-      probe `coherence_delta_bias.py`): raw field before vs tanh field after, so it reads the field's shape, not the
-      input; like-for-like the input's effect is ≈0 at saturation. Bonds moved to `field_alignment` on 2026-07-09;
-      value reinforcement and the trust ledger never did. Fix waits for the value-semantics answer.
-- [ ] **`emotional_satisfaction = max(0, coherence_delta)`** (`selfhood_governance.emit_feedback`): no emotion in it,
-      just a rectified copy of a biased cd, so it's ~0 always. What was it meant to read? (Samuel: doesn't seem right.)
+- [ ] **A satisfaction read that varies per experience.** Lever G (satisfaction = max(0, valence)) is built but
+      indiscriminate: valence is nearly constant, so every value gets the same bonus. Candidates: change in joy across
+      the step, or valence relative to its own running baseline.
 - [ ] Questions 1–5 in OPEN_METASTABILITY, including recovering Samuel's ~1,000-step rupture result from RFE-Core2 history,
       and whether option (b) is a mathematical no-op.
 
@@ -110,6 +103,10 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 ---
 
 ## Done (don't reopen)
+
+- [x] Value fixes built and measured (Grok + Ember) — `findings/2026-10-15-value-fixes-measured.md`: CORE manipulation
+  check fixed and on; dream crystals by identity, only new ones pay, on; levers C–G built off (D = honest
+  coherence_delta, E = alignment value signal, F = systemic damp pays full, C = dream consolidation, G = valence)
 
 - [x] H0 measurements: long-run shape, timescale ratio, who leads (forks), recovery against age (Grok) — `findings/2026-10-15-h0-steady-self-rattling-mind.md`
 

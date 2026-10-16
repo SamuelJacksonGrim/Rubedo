@@ -617,8 +617,13 @@ class AutonomousCycle:
         # Emit feedback with pre-injection delta
         if self.governance is not None:
             stable_ids   = self.generator.registry.stable_ids_for_tokens(tokens)
-            self.governance.emit_feedback(decision, source_id, stable_ids, actual_delta,
-                                          field_alignment=field_alignment)
+            fb_kwargs = {"field_alignment": field_alignment}
+            # Lever G. Off leaves satisfaction = max(0, coherence_delta).
+            if getattr(self, "satisfaction_from_emotion", False):
+                fb_kwargs["satisfaction"] = float(max(0.0, self.emotion.valence))
+            self.governance.emit_feedback(
+                decision, source_id, stable_ids, actual_delta, **fb_kwargs,
+            )
 
         # ------------------------------------------------------------------
         # 11. Crystal evaluation
@@ -682,7 +687,9 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 15. Vector space storage
         # ------------------------------------------------------------------
-        self.vector_space.put(key, vec, tags=[rhythm])
+        # Tokens ride with the entry so a later dream can name what it recombined.
+        # Nothing reads them unless dream_consolidation is on.
+        self.vector_space.put(key, vec, tags=[rhythm], origin_tokens=list(tokens))
 
         # ------------------------------------------------------------------
         # 16. Semantic lattice
@@ -1040,23 +1047,32 @@ class AutonomousCycle:
         Free association phase.
         Also triggered when governance sets force_dream_flag (manipulation response).
         """
-        # Snapshot crystal count before dream
-        crystals_before = len(self.crystal_store.crystals)
-
+        consolidate = bool(getattr(self, "dream_consolidation", False))
+        existing = {id(c) for c in self.crystal_store.crystals}
         self.dreamer.dream(
             emotion       = self.emotion,
             watcher       = self.watcher,
             anchor        = self.witness.current_anchor(),
             crystal_store = self.crystal_store,
             generator     = self.generator,
+            consolidate   = consolidate,
+            long_anchor   = self.witness.long_anchor() if consolidate else None,
         )
         # Clear force_dream_flag after executing
         if self.governance is not None and self.governance.force_dream_flag:
             self.governance.force_dream_flag = False
 
-        # Value engine dream hook — boost values for symbols that crystallized
+        # Value engine dream hook — boost values for symbols on crystals this
+        # dream newly formed, found by identity (list length misses any crystal
+        # formed at the store's cap). Reinforcing an existing crystal does not
+        # pay: crediting reinforcement re-paid the same symbols every dream and
+        # flooded CORE (value_fixes_probe, 2026-10-15: ~1,200 boosts per run).
         if self.value_engine is not None:
-            new_crystals = self.crystal_store.crystals[crystals_before:]
+            new_crystals = []
+            for crystal in getattr(self.dreamer, "last_dream_crystals", []) or []:
+                if (crystal is not None and id(crystal) not in existing
+                        and all(crystal is not seen for seen in new_crystals)):
+                    new_crystals.append(crystal)
             crystallized_sids: List[int] = []
             for crystal in new_crystals:
                 if crystal.origin_tokens:

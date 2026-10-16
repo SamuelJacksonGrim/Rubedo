@@ -380,7 +380,17 @@ class ResonanceField:
         if mean_norm < 1e-8 or field_norm < 1e-8:
             return 0.0
 
-        before = float(np.dot(self.field, history_mean) / (field_norm * mean_norm + 1e-8))
+        # Lever D. Off compares the raw field (before) with tanh(field + vec).
+        # On compares tanh with tanh, so the field's own saturation is not
+        # counted as the input's effect. At saturation the result is ~0.
+        if getattr(self, "coherence_like_for_like", False):
+            before_vec = np.tanh(self.field)
+            before_norm = np.linalg.norm(before_vec)
+            if before_norm < 1e-8:
+                return 0.0
+            before = float(np.dot(before_vec, history_mean) / (before_norm * mean_norm + 1e-8))
+        else:
+            before = float(np.dot(self.field, history_mean) / (field_norm * mean_norm + 1e-8))
 
         probed      = np.tanh(self.field + vec * 0.5)
         probed_norm = np.linalg.norm(probed)

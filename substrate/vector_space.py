@@ -32,10 +32,15 @@ class VectorEntry:
     timestamp: float
     access_count: int = 0
     tags:      List[str] = None
+    # Tokens that produced this vector. Empty unless the writer passed them.
+    # Dreams read this when dream_consolidation is on; nothing reads it off.
+    origin_tokens: Optional[List[str]] = None
 
     def __post_init__(self):
         if self.tags is None:
             self.tags = []
+        if self.origin_tokens is not None:
+            self.origin_tokens = list(self.origin_tokens)
 
     def touch(self):
         self.access_count += 1
@@ -67,17 +72,28 @@ class VectorSpace:
     # Write
     # ------------------------------------------------------------------
 
-    def put(self, key: str, vector: np.ndarray, tags: Optional[List[str]] = None):
-        """Store a vector. Overwrites existing entry for the same key."""
+    def put(
+        self,
+        key: str,
+        vector: np.ndarray,
+        tags: Optional[List[str]] = None,
+        origin_tokens: Optional[List[str]] = None,
+    ):
+        """Store a vector. Overwrites existing entry for the same key.
+
+        `origin_tokens` is the carrier for dream consolidation: the symbols
+        a later dream can credit. Omit it and the entry stores none.
+        """
         if vector.shape[0] != self.dim:
             raise ValueError(
                 f"Vector dim {vector.shape[0]} != space dim {self.dim}"
             )
         entry = VectorEntry(
-            key       = key,
-            vector    = vector.astype(np.float32).copy(),
-            timestamp = determinism.now(),
-            tags      = tags or [],
+            key           = key,
+            vector        = vector.astype(np.float32).copy(),
+            timestamp     = determinism.now(),
+            tags          = tags or [],
+            origin_tokens = list(origin_tokens) if origin_tokens else None,
         )
         self._store[key] = entry
 
@@ -114,6 +130,16 @@ class VectorSpace:
 
     def keys(self) -> List[str]:
         return list(self._store.keys())
+
+    def origin_tokens_for(self, key: str) -> List[str]:
+        """Tokens stored with `key`, or [] if the entry has none.
+
+        Does not touch the entry (no access-count or timestamp update).
+        """
+        entry = self._store.get(key)
+        if entry is None or not entry.origin_tokens:
+            return []
+        return list(entry.origin_tokens)
 
     # ------------------------------------------------------------------
     # Nearest neighbor

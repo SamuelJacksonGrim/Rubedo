@@ -102,6 +102,9 @@ class Dreamer:
 
         self._dream_count = 0
         self._rng = determinism.make_rng()
+        # Crystals maybe_crystallize returned during the most recent dream
+        # (formed or reinforced). Empty when none cleared the store.
+        self.last_dream_crystals: list = []
 
     # ------------------------------------------------------------------
     # Dream cycle
@@ -114,6 +117,8 @@ class Dreamer:
         anchor=None,       # Witness anchor np.ndarray
         crystal_store=None,
         generator=None,
+        consolidate: bool = False,
+        long_anchor=None,
     ) -> List[DreamProduct]:
         """
         Execute one dream cycle.
@@ -130,11 +135,19 @@ class Dreamer:
             If provided, high-coherence dreams are offered for crystallization.
         generator : Generator or None
             For ecology signal relay.
+        consolidate : bool
+            Lever C. Off (default) offers long_relation 0.5 and a synthetic
+            dream key. On, relation is the variant's cosine with `long_anchor`
+            (the witness long layer) and the crystal is credited with the
+            tokens of the sampled source memories.
+        long_anchor : np.ndarray or None
+            Witness long layer. Used only when consolidate is True.
 
         Returns
         -------
         List[DreamProduct]
         """
+        self.last_dream_crystals = []
         if len(self.vector_space) < 2:
             return []
 
@@ -179,24 +192,43 @@ class Dreamer:
                 self.field.inject(variant, strength=injection_strength)
                 injected = True
 
-                # Store back into VectorSpace
+                if consolidate:
+                    if long_anchor is not None:
+                        denom = (
+                            np.linalg.norm(variant) * np.linalg.norm(long_anchor) + 1e-8
+                        )
+                        long_relation = round(float(np.dot(variant, long_anchor) / denom), 6)
+                    else:
+                        long_relation = 0.0
+                    origin_tokens = self._tokens_for(sampled_keys)
+                else:
+                    long_relation = 0.5
+                    origin_tokens = [key]
+
+                # Store back into VectorSpace. Off keeps the historical call.
                 if self.store_dreams:
-                    self.vector_space.put(key, variant, tags=["dream"])
+                    if consolidate and origin_tokens:
+                        self.vector_space.put(
+                            key, variant, tags=["dream"], origin_tokens=origin_tokens,
+                        )
+                    else:
+                        self.vector_space.put(key, variant, tags=["dream"])
                     stored = True
 
                 # Offer to crystal store
                 if crystal_store is not None and watcher is not None and anchor is not None:
                     from substrate.memory_crystals import CrystalStore
                     report = watcher.evaluate(variant, anchor, field_state)
-                    crystal_store.maybe_crystallize(
+                    crystal = crystal_store.maybe_crystallize(
                         vec                      = variant,
                         composite_coherence      = report.composite,
                         crystallization_pressure = report.crystallization_pressure,
-                        long_relation            = 0.5,  # dreams don't have long-relation yet
-                        origin_tokens            = [key],
+                        long_relation            = long_relation,
+                        origin_tokens            = origin_tokens,
                         field                    = self.field,
                         generator                = generator,
                     )
+                    self._note_crystal(crystal)
 
             products.append(DreamProduct(
                 key         = key,
@@ -213,6 +245,29 @@ class Dreamer:
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------
+
+    def _note_crystal(self, crystal) -> None:
+        """Record a formed or reinforced crystal once per dream."""
+        if crystal is None:
+            return
+        if any(existing is crystal for existing in self.last_dream_crystals):
+            return
+        self.last_dream_crystals.append(crystal)
+
+    def _tokens_for(self, keys: List[str]) -> List[str]:
+        """Tokens carried on the sampled memories, in sample order, unique.
+
+        Stream keys and entries stored without tokens contribute nothing.
+        """
+        found: List[str] = []
+        lookup = getattr(self.vector_space, "origin_tokens_for", None)
+        if lookup is None:
+            return found
+        for key in keys:
+            for token in lookup(key):
+                if token not in found:
+                    found.append(token)
+        return found
 
     def _sample_memories(self):
         """Sample vectors from VectorSpace and optionally TemporalStream."""

@@ -155,6 +155,29 @@ CONFIG = {
     # Rupture variant (a): bend the generator's raw output toward the held
     # direction and let the ordinary path carry it (no forced reflective loop).
     "rupture_upstream":             False,
+
+    # ------------------------------------------------------------------
+    # VALUE-PATH LEVERS — default OFF until measured. Off is the historical
+    # path (bugs A and B excepted: those are fixed above this block).
+    # See docs/EXPERIMENTAL_LEVERS.md.
+    # ------------------------------------------------------------------
+    # C. Dream offers take the variant's cosine with the witness long layer
+    # (still must clear the store's 0.80) and credit the sampled memories'
+    # tokens instead of a synthetic dream_<hex> key.
+    "dream_consolidation":          False,
+    # D. coherence_impact and the watcher's coherence_delta compare tanh
+    # with tanh. At saturation the input's own effect is ~0.
+    "coherence_impact_like_for_like": False,
+    # E. Value gate and reinforcement read field_alignment minus an EMA of
+    # itself, not coherence_delta. Alpha is unused while the lever is off.
+    "value_alignment_signal":       False,
+    "alignment_ema_alpha":          0.05,
+    # F. A systemic-only manipulation damp still damps injection and trust.
+    # The value engine is paid as ALLOW. Named sources, quarantine, reject
+    # and sacred shield are unchanged.
+    "systemic_damp_pays_full":      False,
+    # G. emotional_satisfaction reads max(0, valence) instead of max(0, cd).
+    "satisfaction_from_emotion":    False,
 }
 
 # Default token sequences — replace with your own input pipeline
@@ -370,7 +393,26 @@ def build_engine(config: dict = None):
         cycle.attach_stream_recorder(StreamRecorder(window=window))
         logger.info("Stream recorder attached (observe-only census, window=%d).", window)
 
+    apply_value_levers(cycle, governance, value_engine, config)
+
     return generator, cycle, governance, value_engine
+
+
+def apply_value_levers(cycle, governance, value_engine, config: dict = None) -> None:
+    """Attach levers C–G. Every flag defaults off; off leaves the historical path.
+
+    A and B are not levers. They are always on, in the governance and dream
+    code, and this function does not touch them.
+    """
+    config = config or {}
+    cycle.dream_consolidation = bool(config.get("dream_consolidation", False))
+    cycle.satisfaction_from_emotion = bool(config.get("satisfaction_from_emotion", False))
+    like = bool(config.get("coherence_impact_like_for_like", False))
+    cycle.field.coherence_like_for_like = like
+    cycle.watcher.coherence_like_for_like = like
+    governance.systemic_damp_pays_full = bool(config.get("systemic_damp_pays_full", False))
+    value_engine.value_alignment_signal = bool(config.get("value_alignment_signal", False))
+    value_engine.alignment_ema_alpha = float(config.get("alignment_ema_alpha", 0.05))
 
 
 def build_dream_channel(generator, config: dict = None):
