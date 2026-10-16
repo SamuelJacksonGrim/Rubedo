@@ -145,6 +145,22 @@ Rubedo/
 │   │   ├── run_lock_short_wsl.sh          Short identity-lock comparison; writes no checkpoint
 │   │   ├── run_payoff_wsl.sh              Paired 128 retrain plus decoder legibility; not the live names
 │   │   └── run_rupture_long_wsl.sh        Does a rupture-forced reflective loop keep walking
+│   ├── board/
+│   │   ├── __init__.py                    The one tools/ path that may flip a lever flag
+│   │   ├── README.md                      How to run the live board, and what it must not do
+│   │   ├── start-board.ps1                Start the runner and the page
+│   │   ├── run_live.py                    Production-shaped loop, metrics files, replay
+│   │   ├── server.py                      Page and control-file writer; does not import the engine
+│   │   ├── levers.py                      Which flags may flip mid-run, and the refusals
+│   │   ├── metrics.py                     Rolling-window reads; reuses the probe estimators
+│   │   ├── control.py                     Inbox the page writes and the runner reads
+│   │   ├── jsonio.py                      JSON and JSONL for the run folder
+│   │   ├── workloads.py                   Canonical and wide rooms; themes reserved
+│   │   ├── runs/.gitignore                Run artifacts stay untracked
+│   │   └── static/
+│   │       ├── index.html                 The board
+│   │       ├── app.css                    Phone-legible layout
+│   │       └── app.js                     Polls the run folder and draws the curves
 │   └── ignition/
 │       ├── __init__.py                    Package marker
 │       ├── cii.py                         CII = R·I·(Cm·g(Cs)) from live telemetry
@@ -241,7 +257,8 @@ Rubedo/
 │   │   ├── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
 │   │   ├── determinism_replay.py          Exact replay in/across processes; production clock untouched; guard
 │   │   ├── wide_workload.py               Holdout room is a deterministic partition; canonical object untouched
-│   │   └── production_boot.py             Production stack via build_engine: composition, attacks, health
+│   │   ├── production_boot.py             Production stack via build_engine: composition, attacks, health
+│   │   └── live_board.py                  Live runner: one inbox toggle, replay digest, page writes a file
 │   │
 │   ├── adversarial/
 │   │   ├── sacred_shield.py               SACRED_SHIELD fires at all trust levels

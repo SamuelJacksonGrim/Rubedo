@@ -95,13 +95,11 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
 - [ ] After the recovery-vs-age measurement: decide whether levers should open in growth periods (gates keyed on
       demonstrated recovery, not step count), and whether anything should act like a hormone (a slow global signal
       that shifts plasticity, e.g. the witness gate).
-- [ ] **A live Rubedo board with lever toggles** (Samuel, 2026-10-16). While Rubedo runs, stream the probe metrics
-      on rolling windows (saturation, timescale ratio, expression cone, boredom, rhythm mix, values / crystals /
-      attractors, ⊘ demotions, decision mix, witness write rate) to plain files; a board (own page or a Rubedo tab on
-      `tools\train-dashboard`) shows them and writes lever changes to a control file the run applies at the next step
-      boundary. Only `EXPERIMENTAL_LEVERS` levers are togglable, never guards; every toggle is logged with its step so a
-      hand-steered session replays exactly. Hand-steering is how the maturity triggers below get learned. After rename
-      batch 1 (the board reads renamed ⊘ fields).
+- [x] **A live Rubedo board with lever toggles** (Samuel, 2026-10-16). Shipped in `tools/board`: rolling probe
+      metrics to the run folder, a page on :8780, lever changes through an inbox the runner applies at the next step
+      boundary. Guards are not on the panel. Every applied toggle is logged with its step; `--replay` checks the
+      metrics digest. How to toggle: `docs/EXPERIMENTAL_LEVERS.md`. Hand-steering is how the maturity triggers below
+      get learned.
 - [ ] **Trigger levers by maturity instead of on/off for life** (Samuel, 2026-10-16). The ⊘ consumer is wrong early and
       right late: before the system has multiple sources and crystal/attractor binding, Fragmentation reads every value
       as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth). Witness may

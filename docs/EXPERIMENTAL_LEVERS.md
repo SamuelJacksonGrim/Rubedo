@@ -67,6 +67,35 @@ not omitted anymore — they are exactly what a width change moves:
 Opt-in overlay/instruments live in *The levers* and *The instruments* tables
 below (attached via the cycle hooks, not `CONFIG`).
 
+## Toggling a lever while a run is going
+
+`tools/board` is the one `tools/` path that changes a running process, and only by flipping a lever flag at the next step boundary. It does not inject a vector. It does not call the ⊘ read itself: that read calls `generate` and bumps symbol usage. Sacred shield, the manipulation ladder, ethical gates, and SystemRights are not on the panel.
+
+From the repo root (pretrain on; that boot is the long one):
+
+```
+powershell -File tools/board/start-board.ps1
+```
+
+The page is http://127.0.0.1:8780/ . 8740 is the machine board and 8770 is the train dashboard. A headless run, and the check that a hand-steered session replays:
+
+```
+python -m tools.board.run_live --run-dir tools/board/runs/demo --threads 1
+python -m tools.board.run_live --replay tools/board/runs/demo --threads 1
+```
+
+Pin the thread count (`--threads`, or `RUBEDO_THREADS` before the process starts). The metrics digest moves when the pin does, and replay refuses a different one.
+
+The page writes one JSON file per request into the run's `inbox/`. The runner applies the files in order at the boundary before the next step and appends `toggles.jsonl` (accepted and refused). `--replay` re-applies that log at the same steps and checks `metrics.sha256`. Machine-time fields are not part of the digest.
+
+Flippable mid-run, because the step already reads the flag or the cycle already exposes the attach: D, F, C, E, G, novelty attenuation, the six-rhythm selector (only if its reader was built at boot), rupture upstream, the ⊘ consumer (named pathologies only; the aggressive mode is not offered), the dream channel (only if the decoder was built at boot; the toggle gates the coin, it does not train), the dream cycle (the existing driver, which does write crystals and the field), the bond accumulator, Fix 0-B, the binding leak (on is 0.10), and λ.
+
+Witness is not its own switch. The selector's read chooses witness or rupture. `rupture_upstream` is how a chosen rupture is applied.
+
+Shown and refused, with the reason on the row: pretrain, eval mode, chorus, session persistence, the stream recorder, the ignition threshold gate (severed, not waiting on a measurement), the rhythm-read margin, the alignment EMA rate, and the dream-channel rate. Those are boot work or dials, not switches.
+
+Turning the bond accumulator off drops the evidence it had integrated; on again starts at zero. Turning Fix 0-B off clears the private diversity profiles, so the fitness term leaves the decay; stored credits stay on the symbols and are unread. The first time λ is turned on it ignites at 2; off detaches the gate and keeps the scalar; on again reattaches the same ledger. The full note is `tools/board/README.md`.
+
 ---
 
 ## Already applied by default (no switch needed)

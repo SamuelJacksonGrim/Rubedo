@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rubedo live</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="dot" id="dot"></span>
+      <div>
+        <strong>Rubedo</strong>
+        <span class="sub">Live board</span>
+      </div>
+    </div>
+    <p class="rule" id="rule">This page writes a control file. The runner flips that flag at the next step. It does not inject into the field.</p>
+    <div class="links">
+      <a href="http://127.0.0.1:8770/">Train dashboard</a>
+      <a href="http://127.0.0.1:8740/">Machine board</a>
+    </div>
+  </header>
+
+  <main>
+    <p class="empty" id="empty" hidden>No run yet. Start one with <code>tools/board/start-board.ps1</code>.</p>
+    <p class="error" id="error"></p>
+
+    <section class="bar" id="bar" hidden>
+      <label class="field">Run
+        <select id="run"></select>
+      </label>
+      <p class="meta" id="meta"></p>
+      <button type="button" class="stop" id="stop">Stop the run</button>
+    </section>
+
+    <section id="curves" class="curves" hidden></section>
+    <section id="mixes" class="mixes" hidden></section>
+    <section id="panel" class="panel" hidden>
+      <h2>Levers</h2>
+      <p class="plain" id="guards"></p>
+      <p class="wait" id="wait" hidden>Waiting for the next step boundary.</p>
+      <div id="levers"></div>
+      <h3 class="readonly-title">Shown, not switchable</h3>
+      <div id="readonly"></div>
+    </section>
+    <section id="log" class="log" hidden>
+      <h2>Toggles</h2>
+      <ol id="toggles"></ol>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

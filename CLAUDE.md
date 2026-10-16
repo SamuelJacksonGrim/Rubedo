@@ -185,7 +185,8 @@ errors.
   only for literal external speech; it is the *right* register for inner
   monologue and the native medium for dreams. `tools/` (voice, decoder/listen,
   dream, ignition) are **instruments** — they observe and render, never feed the
-  live loop.
+  live loop. The one exception is `tools/board`: it may flip a lever flag at a
+  step boundary and must not inject into the field. Guards are not on that panel.
 - The waking dream channel (`cognition/dream_channel.py`, default ON at
   `dream_channel_p = 0.20`) feeds the system's own decoded expression back as
   `source_id='source_dream'` **through `arbitrate()`** — no bypass. Trust, HHI,
@@ -383,7 +384,8 @@ README tree entry in the same commit or CI goes red.
   monitor" — and the monitor still consumes nothing from the loop.)
 - Give `source_dream` (the system's own voice) a path around `arbitrate()`, or
   let `DreamSession` / any `tools/` instrument inject into the live field —
-  every voice passes the gate; instruments observe only.
+  every voice passes the gate; instruments observe only. `tools/board` is the
+  one sanctioned actuator and it only flips lever flags at step boundaries.
 - Raise `ReflectiveLoop.attenuation_max` above `0.30` without a fresh
   manipulation-rate run — the ceiling is a thin cost-clean band.
 - Break `ignition/`'s import isolation — λ writes generator weights from

@@ -157,6 +157,12 @@ cooperate correctly."
   checks basic health on the same 500-step Resonance Family run. The
   suite's other tests build components directly, so they cannot catch a
   boot path that silently drops a CONFIG lever.
+- `live_board.py` — The live runner (`tools/board`) for a few dozen steps
+  with pretrain, the dream-channel decoder, and the rhythm reader skipped.
+  One lever is flipped through the control inbox at a step boundary;
+  `--replay` must reproduce the metrics digest. A guard id is refused, the
+  themes workload stays a hook, and the page server writes an inbox file
+  without importing the engine.
 
 ### `adversarial/`
 "Does the system resist what it's supposed to resist?" Probes against

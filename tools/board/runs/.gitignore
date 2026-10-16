@@ -1,0 +1,3 @@
+# Run folders. The runner writes them; they are not source.
+*
+!.gitignore
