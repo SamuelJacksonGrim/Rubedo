@@ -17,6 +17,13 @@ runtime or gate changes until it is answered.
       Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
       `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
       question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
+- [ ] **The post-dream consolidation channel exists but paid nothing.** `ValueEmergenceEngine.on_dream_cycle_complete`
+      gives +0.30 × quality (quality = joy + 0.5·stability) to values whose symbols crystallize during a dream behaviour,
+      4× an ALLOW event, but it contributed 0 to live values in Grok's trace. Find out why: how often `_dream_behavior`
+      runs, how often a crystal forms during it (crystallization needs coherence ≥ 0.75 / stability ≥ 0.60 /
+      relation ≥ 0.80, hard in a jumpy band), and whether those crystals map to live values. If it's the gate, the
+      channel built to credit dreaming is closed by the same thing dreaming lowers. (Samuel's "post-dream
+      consolidation" direction, 2026-10-15.)
 - [ ] **Long-run shape of the field and the anchor** (H0 test): displacement curve over a much longer window than 5,000
       steps, on the raw field *and* the tanh view, read as mean-squared displacement vs lag (bounded / diffusive /
       drifting), plus the fraction of saturated dimensions over time.
