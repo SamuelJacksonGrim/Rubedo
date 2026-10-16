@@ -9,7 +9,8 @@ tour, and conceptual walkthrough, read `README.md` first. This file covers only 
 can't infer from reading the tree.
 
 **OPEN NOW (2026-10-15): `docs/OPEN_METASTABILITY.md` is the resume point.** Witness and rupture stay off; no
-runtime or gate changes until its questions are answered.
+runtime or gate changes until its questions are answered. **The work list is `docs/BACKLOG.md`**: new open items go
+there first, then back to the task; check items off in the same commit that lands them.
 
 **What Rubedo is for:** widening the field from 128 to 256/768 so a real encoder (the
 corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, then

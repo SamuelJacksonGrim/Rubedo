@@ -69,6 +69,31 @@ Consequences to check, not conclusions:
   collapses onto the anchor (both slow, ratio → 1). The OFF arm's receptivity decay over 1,200 steps (16–21%) is a hint
   of stiffening, but that was field-wide receptivity, not the anchor. Read-only, no runtime change.
 
+### Corrections and the field's role (Samuel, 2026-10-15)
+
+- **0.00012 over 5,000 steps is a bound, not a rate.** It doesn't say whether displacement saturates (an envelope =
+  stability), accumulates linearly (slow migration, a different claim), or oscillates in a tiny envelope. Only the shape
+  over a much longer window tells them apart. Read it as mean-squared displacement vs lag, MSD(τ) ∝ τ^α: α ≈ 0
+  bounded, α ≈ 1 diffusive wander, α ≈ 2 directed drift.
+- **The field is not an EMA, so not "a fourth, slower layer."** Checked in `substrate/resonance_field.py`: `inject` adds
+  `strength·vec` to the raw field, `decay()` multiplies it by 0.995, `diffuse()` low-passes it, and every observer reads
+  `tanh(raw)`. Ember's addition: the raw part is linear, an *unnormalized* leaky sum, with **the same 0.995 as the
+  anchor's long layer** (about 200 steps of memory each). So the field's stillness isn't a longer timescale. It is
+  **saturation**: consistent inputs pile up the raw magnitude, tanh pins the view, and the view stops responding.
+  Prediction: the raw field may move a lot while the view barely does, so measure both. And tanh is memoryless, so
+  "a stable attractor no single input controls" comes from closing the loop (the field view shapes what is generated
+  and admitted, which feeds back), consistent with SECOND-LOCKER (the reflective loop is the operative lock). Different
+  operators, as Samuel says, which strengthens the point: ground vs identity is not a matter of timescale.
+- **Third position: the field is constitutive.** Not underneath the anchor, not identical to it: the near-fixed
+  reference that makes the anchor's slow drift *structured departure* instead of wander. The relationship between
+  timescales is still the identity; this names the field's role in it.
+- **Telling ground / read-out / constitutive apart:** field leads → field ≈ identity, anchor a read-out; anchor leads →
+  field is ground; lockstep at different rates → constitutive. First pass: cross-correlate field displacement with
+  anchor displacement at lags. Caveat (Ember): both integrate the same expressed vector, so a peak at lag zero is
+  expected from the shared driver alone. Condition on it (does past anchor predict the field beyond past field + input?),
+  or intervene: paired replay-exact forks with a tiny perturbation to one, watching whether and when the other
+  diverges. Determinism makes that clean, and it needs no hostile input.
+
 ## The work, in order
 0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,

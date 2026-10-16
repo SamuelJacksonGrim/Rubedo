@@ -190,6 +190,7 @@ Rubedo/
 │   ├── WIDENING_PLAN.md                   Why the field goes 128 → 256/768, and what done means
 │   ├── EMOTION_CALIBRATION.md             The six emotion names are hypotheses: what they compute, how to test them
 │   ├── OPEN_METASTABILITY.md              RESUME HERE: metastability, change, and what values are built from
+│   ├── BACKLOG.md                         The work list: what's next, what's parked, what's done
 │   ├── EXPERIMENTAL_LEVERS.md             On/off switches and the dial census
 │   ├── ARCHITECT_RULINGS_2026-07-03.md    F8 shield, checkpoint adoption, lever policy
 │   ├── ARCHITECT_RULINGS_2026-07-06.md    Trust posture: sources start TRUSTED
