@@ -8,9 +8,12 @@ optional but aren't — read this before editing. For the project overview, stru
 tour, and conceptual walkthrough, read `README.md` first. This file covers only what you
 can't infer from reading the tree.
 
-**OPEN NOW (2026-10-15): `docs/OPEN_METASTABILITY.md` is the resume point.** Witness and rupture stay off; no
-runtime or gate changes until its questions are answered. **The work list is `docs/BACKLOG.md`**: new open items go
-there first, then back to the task; check items off in the same commit that lands them.
+**OPEN NOW (2026-10-16): `docs/OPEN_METASTABILITY.md` is the resume point; the work list is `docs/BACKLOG.md`**
+(new open items go there first, then back to the task; check items off in the same commit that lands them). Witness and
+rupture stay off. Value fixes landed 2026-10-15/16 (`findings/2026-10-15-value-fixes-measured.md`,
+`2026-10-16-wide-workload-and-df-graduation.md`): the CORE manipulation guard and dream-crystal identity are fixed, and
+levers D + F are graduated default-on under an architect-granted exception (the all-ON gate's ⊘ strong-band check
+reports HOLD on purpose until ⊘ Fragmentation is made meaningful). Levers C, E, G stay off.
 
 **What Rubedo is for:** widening the field from 128 to 256/768 so a real encoder (the
 corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, then
