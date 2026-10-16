@@ -94,6 +94,38 @@ Consequences to check, not conclusions:
   or intervene: paired replay-exact forks with a tiny perturbation to one, watching whether and when the other
   diverges. Determinism makes that clean, and it needs no hostile input.
 
+## Growth: a mind is grown, not set (Samuel, 2026-10-15)
+
+Models are grown over time, and that shouldn't stop for Rubedo, only change form: the way a mind grows, with levers for
+times of growth, gates not turned on yet, something like hormones. **A system that can refuse instability, but has to
+learn to deal with it, will become brittle.** Babies cry and are nurtured because of a need; later the parents let the
+child cry and self-soothe, so it learns to handle instability in its own body and mind.
+
+What the code is today (Ember checked): **nothing knows how old the system is.** Symbols have ages
+(`symbolic_memory.py`); the system doesn't. Every lever is on or off for life, every rate is fixed, and the witness c²
+gate is the same on step 10 as on step 100,000. The only developmental framing on record is RFE-Core2's
+`FEDERATION_SEAM_SPEC.md` ("emotion cannot emerge cold": initialize → interact → accumulate → transition → observe).
+
+What our data already says, read this way:
+- **Brittleness with age is visible.** In the OFF arm, field-wide receptivity decays to 16–21% over 1,200 steps; with
+  witness it holds at 41–42% (`findings/2026-10-14-witness-aftermath-and-upstream-rupture.md`). Unchallenged, it
+  stiffens.
+- **The capacity to self-soothe exists.** Per-event recovery from witness dips passed 3/3. The dip is the update and
+  the system comes back.
+- **The composition failure looks like an infant's values:** credit only for what soothes right now (value =
+  immediate coherence_delta), so every disruption reads as loss even when it is recovered. For question 4: whether a
+  value should be credited when a disruption is *integrated* (recovered), not only at the moment of the dip.
+
+The analogy's precondition (Ember): a child is left to self-soothe only after a secure base, care that reliably came.
+The system's "parent" is governance, the bond floor and the dream channel. So scaffolding should be withdrawn on
+**demonstrated recovery**, not on a calendar, which is Samuel's own measured-improvement rule for gates. And the right
+to refuse (BACKLOG §1) should refuse *who* (manipulation, named attacks) and never *how hard*: refusing difficulty is
+the brittleness this warns about.
+
+The measurement this adds, cheaply, to the paired-fork test: perturb at several ages (step 500, 2,000, 5,000, …) and
+read recovery time against age, then repeat exposures and read whether recovery gets faster (learning to self-soothe)
+or slower (brittleness). Read-only; no growth schedule gets built until that says something.
+
 ## The work, in order
 0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,

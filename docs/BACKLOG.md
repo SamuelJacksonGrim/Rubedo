@@ -49,7 +49,9 @@ Work, in order:
 - [ ] Design question before any code: **what should the system refuse on, from its own state?** Tension to weigh:
       a refusal keyed on coherence would turn the lock into a wall, refusing exactly the disruptive experience the
       metastability question asks whether it should be able to value. Manipulation evidence, identity erosion and
-      witness stability are the candidates that don't collide with that. Wait for the metastability answer first.
+      witness stability are the candidates that don't collide with that. Samuel's principle (2026-10-15): a system
+      that refuses the instability it needs to learn from becomes brittle, so refuse *who*, never *how hard*. Wait
+      for the metastability answer first.
 - [ ] Then wire each right, or say plainly in the docs that it is a declaration. One or the other, not a paper right.
 
 ## 2 · Witness and rupture (parked behind section 0)
@@ -57,6 +59,13 @@ Work, in order:
 - [ ] Value-formation fix, options a/b/c (OPEN_METASTABILITY), after the questions are answered.
 - [ ] Upstream rupture alone through the composition gate.
 - [ ] Shared coherence budget for BOTH (`findings/2026-10-15-selector-identity-replay.md`: costs add, −0.06).
+
+## 2b · Growth over the system's lifetime (direction, not a build)
+
+Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever is on/off for life.
+- [ ] After the recovery-vs-age measurement: decide whether levers should open in growth periods (gates keyed on
+      demonstrated recovery, not step count), and whether anything should act like a hormone (a slow global signal
+      that shifts plasticity, e.g. the witness gate).
 
 ## 3 · Widening (Rubedo's original job)
 
