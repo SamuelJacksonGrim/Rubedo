@@ -23,8 +23,10 @@ runtime or gate changes until it is answered.
       length. Not my guess (the jumpy band): the dreams clear coherence fine. What should a dream's relation be, and
       which symbols should it credit (its source memories, `DreamProduct.origin_keys`?). With question 4.
 - [ ] **CORE promotion's "no active manipulation" check always passes on the live step** (Grok, `VALUE_PATH_MAP.md`):
-      it reads `_pending_signals`, which `arbitrate()` has already emptied. Confirm and record; it's a guard that
-      doesn't guard.
+      it reads `_pending_signals`, which `arbitrate()` has already emptied. **Confirmed by step order** (Ember): signals
+      are detected at step 18 and queued; the next step's step 10 `arbitrate()` consumes and clears them; value
+      reinforcement and CORE review run after that, so the check always sees an empty list. A guard that doesn't guard.
+      Fix is small (snapshot the consumed signals for the step), but it changes CORE promotion; record, then decide.
 - [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
 - [ ] **Long-run shape of the field and the anchor** (H0 test): displacement curve over a much longer window than 5,000
       steps, on the raw field *and* the tanh view, read as mean-squared displacement vs lag (bounded / diffusive /
