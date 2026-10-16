@@ -62,9 +62,9 @@ pattern is an attractor with neighbours, and the ordinary path never visits them
 
 ## Open (Grok's, adopted)
 - [ ] 50,000-step plain run (~80 min/seed): does the raw direction's slow sub-diffusive wobble ceiling or drift?
-- [ ] **A second, wider workload, first.** Workload A has 46 distinct tokens; the value count's stop was that. Is the
-      15° cone, and the crystal/attractor stop, the system's or the workload's? (Corpus 1.4.0 holdout is the obvious
-      source of open-ended input.)
+- [x] **A second, wider workload** → `2026-10-16-wide-workload-and-df-graduation`: on 808 tokens the view locks the same
+      way, explore holds 7,495/8,000 steps, boredom overrides 233 (vs 237), the cone widens only to ~20°, crystals 4,
+      attractors 5. The rattle is the system's.
 - [ ] A felt shock, repeated (desat, or an anchor kick that moves expression by ~0.1 of its normal step), with
       age-matched twins: can the system become antifragile under stress it actually feels?
 - [x] Why values stop being born at step ~390 → the workload's 46-token vocabulary is exhausted (corrected above).

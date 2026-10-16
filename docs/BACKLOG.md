@@ -17,18 +17,17 @@ runtime or gate changes until it is answered.
       Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
       `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
       question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
-- [ ] **Graduate D+F (then maybe E)?** (`findings/2026-10-15-value-fixes-measured.md`) D+F: witness starvation
-      ~0.6→~0.9, composition = REF (2/3), no alarms. E: witness stops starving values, witness gate passes for the
-      first time on one seed. Two gates before any default change: the wider-workload run below, and the architect's
-      call on the exception, which Samuel granted for D+F if needed but thinks may not be (2026-10-16). The failing check is ⊘ Fragmentation (single-source + unbound values), driven by workload A giving 44/46 tokens to one source and the crystal store being nearly empty: the wider workload may clear it on its own.
+- [ ] **Re-run the witness composition gate with D+F on by default** (`findings/2026-10-16-wide-workload-and-df-graduation.md`).
+      Witness was blocked on value formation; with D+F graduated, witness starvation is ~0.95. Then upstream rupture.
+- [ ] **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
+      single-source, unbound values (12 strong → 2). Needs a workload with shared vocabulary per source, working crystal
+      formation, or a Fragmentation rule that doesn't read every single-source value as fragmented.
+- [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
+      words), wide starves them of repetition (808 words for 64 slots).
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new
       crystals pay) but floods: many new dream crystals × several symbols × 0.30 → strength cap → mass CORE promotion
       breaks trust and bonds. Needs a per-dream / per-symbol budget or diminishing credit.
 - [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
-- [ ] **Run H0 and the value levers on a wider workload** (`findings/2026-10-15-h0-steady-self-rattling-mind.md`). The
-      value count freezing at 46 was workload A's 46-token vocabulary, not the system closing. Crystals stuck at 2,
-      attractors mostly stuck, and expression jitter in a fixed ~15° cone may be the workload too. Every gate and probe
-      so far runs on that one 46-word workload; a wider one (corpus 1.4.0 holdout) is the next control for everything.
 - [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
       feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
 - [ ] **50,000-step plain run** (~80 min/seed): does the raw direction's slow wobble ceiling or drift?
@@ -103,6 +102,9 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 ---
 
 ## Done (don't reopen)
+
+- [x] Wide workload + D+F graduated default-on (Grok + Ember) — `findings/2026-10-16-wide-workload-and-df-graduation.md`:
+  the rattle is the system's (wide input widens the cone 15° → 20°, little else); D+F holds on both workloads, E doesn't
 
 - [x] Value fixes built and measured (Grok + Ember) — `findings/2026-10-15-value-fixes-measured.md`: CORE manipulation
   check fixed and on; dream crystals by identity, only new ones pay, on; levers C–G built off (D = honest

@@ -32,6 +32,9 @@ stiffening across 8,000 steps, recovery is the same at every age (robust). It fa
 white jitter in a fixed ~15° cone, and values, crystals and attractors stop forming by step ~400. The field is
 constitutive and clamped (forcing the view off saturation moves the anchor and expression; nothing on the ordinary path
 does). The text below is the hypothesis as written before the measurement.
+**Wide workload, 2026-10-16 → `findings/2026-10-16-wide-workload-and-df-graduation.md`:** with 808 words instead of 46
+the picture holds (cone ~20° vs ~15°, same explore lock and boredom), so the rattle is the system's. Value fixes D+F
+graduated default-on the same day; value semantics (question 4) and growth remain open.
 
 Perhaps coherence is more than a lock: maybe it **is** joy in a real sense, the system running optimally. What if we
 have been trying to force it out of optimal running, everything is as it should be, and **metastability is already
