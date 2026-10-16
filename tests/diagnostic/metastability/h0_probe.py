@@ -8,7 +8,10 @@ Stack: all_levers_composition_probe.build_all_on (the all-ON stack).
 Workload: the composition gate's workload A — Resonance Family phrases, no
 witness phrases, origin_type internal — under substrate.determinism, so a seed
 replays. The workload Random is the gate's random.Random(seed), not the RNG
-the cycle draws from.
+the cycle draws from. --workload wide opts into the corpus-holdout room
+(tests/workloads.py) without changing that draw. Default is canonical.
+--forks selects which perturbations run after the plain trace (default
+field,anchor,desat; "none" is the plain trace only).
 
 Subcommands:
     time    cost per 1k steps, estimator self-check, one bit-exact fork
@@ -73,8 +76,8 @@ REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
 
 from substrate import determinism  # noqa: E402
-from tests._common import RESONANCE_FAMILY_SOURCES, RESONANCE_FAMILY_WEIGHTS  # noqa: E402
 from tests.diagnostic.integrity.all_levers_composition_probe import build_all_on  # noqa: E402
+from tests.workloads import coverage as workload_coverage, load_named  # noqa: E402
 
 RHYTHM_CODE = {"stabilize": 0, "dream": 1, "reflect": 2, "explore": 3}
 VAR_FLOOR = 1e-18          # mean ||x - mean||^2 below this: the window is frozen
@@ -90,18 +93,36 @@ PRIVATE_SEED = 0xA11CE
 
 
 # ---------------------------------------------------------------------------
-# Workload A (the composition gate's canonical arm, no witness phrases)
+# Workload. Default is the composition gate's canonical arm (no witness
+# phrases). "wide" is the corpus-holdout room. Neither arm injects witness
+# phrases; this probe's question is the ordinary path.
 # ---------------------------------------------------------------------------
 
-def workload_sources():
-    sids = list(RESONANCE_FAMILY_SOURCES)
-    weights = [RESONANCE_FAMILY_WEIGHTS[s] for s in sids]
-    return sids, weights
+FORKS = ("field", "anchor", "desat")
 
 
-def draw(pick, sids, weights):
+def _parse_forks(text):
+    raw = [s.strip() for s in text.split(",") if s.strip()]
+    if len(raw) == 1 and raw[0].lower() == "none":
+        return ()
+    bad = [n for n in raw if n not in FORKS]
+    if bad:
+        raise ValueError(
+            f"unknown fork {bad}; expected {', '.join(FORKS)} or none"
+        )
+    return tuple(raw)
+
+
+def workload_sources(name="canonical"):
+    sources, weight_map = load_named(name)
+    sids = list(sources)
+    weights = [weight_map[s] for s in sids]
+    return sources, sids, weights
+
+
+def draw(pick, sources, sids, weights):
     src = pick.choices(sids, weights=weights)[0]
-    toks = pick.choice(RESONANCE_FAMILY_SOURCES[src])
+    toks = pick.choice(sources[src])
     return src, toks
 
 
@@ -555,19 +576,30 @@ def arrays_equal(live, stored):
 # One seed
 # ---------------------------------------------------------------------------
 
-def _step(cycle, pick, sids, weights):
+def _step(cycle, pick, sources, sids, weights):
     boredom = cycle._boredom_overrides
-    src, toks = draw(pick, sids, weights)
+    src, toks = draw(pick, sources, sids, weights)
     state = cycle.step(list(toks), source_id=src, origin_type="internal")
     return state, src, toks, boredom
 
 
-def run_plain(seed, steps, ages, horizon, progress=True, checkpoint_dir=None):
+def run_plain(seed, steps, ages, horizon, progress=True, checkpoint_dir=None,
+              workload="canonical"):
     """Plain ordinary-path run. Returns the trace, the cycle's companions, and
     pickled snapshots taken after each age in `ages`."""
-    sids, weights = workload_sources()
+    sources, sids, weights = workload_sources(workload)
     t_build = time.perf_counter()
     gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on()
+    if workload == "wide":
+        rep = workload_coverage(gen, sources)
+        print(
+            f"  known tokens {rep['tokens_known']}/{rep['tokens']} "
+            f"({rep['token_known_frac']:.4f})  "
+            f"known sequences {rep['sequences_known']}/{rep['sequences']} "
+            f"({rep['sequence_known_frac']:.4f})  "
+            f"distinct {rep['distinct_known']}/{rep['distinct']}",
+            flush=True,
+        )
     build_s = time.perf_counter() - t_build
     if cycle.six_rhythm_selector or cycle.config.get("rupture_on_lock", False):
         raise RuntimeError("witness selector or rupture is on; this probe refuses to run")
@@ -583,7 +615,7 @@ def run_plain(seed, steps, ages, horizon, progress=True, checkpoint_dir=None):
     bucket_n = 0
     rates = []
     for i in range(steps):
-        state, src, toks, boredom = _step(cycle, pick, sids, weights)
+        state, src, toks, boredom = _step(cycle, pick, sources, sids, weights)
         record_step(tr, i, cycle, ve, state, src, toks, boredom)
         step_no = i + 1
         if step_no in weight_points or step_no == steps:
@@ -643,7 +675,7 @@ def stream_dists(cycle, tr, step):
     }
 
 
-def verify_unperturbed(snap, tr, age, horizon, sids, weights):
+def verify_unperturbed(snap, tr, age, horizon, sources, sids, weights):
     """The unperturbed fork must match the plain run bit for bit."""
     pick = _bind_pick(snap)
     cycle = restore(snap, pick)
@@ -651,7 +683,7 @@ def verify_unperturbed(snap, tr, age, horizon, sids, weights):
     mismatches = []
     for h in range(1, horizon + 1):
         step = age + h
-        state, src, toks, _ = _step(cycle, pick, sids, weights)
+        state, src, toks, _ = _step(cycle, pick, sources, sids, weights)
         if tr.inputs[step - 1] != (src, tuple(toks)):
             mismatches.append(f"step {step}: input {src} {toks} != {tr.inputs[step - 1]}")
             break
@@ -685,7 +717,7 @@ def verify_unperturbed(snap, tr, age, horizon, sids, weights):
     return {"ok": not mismatches, "mismatches": mismatches, "horizon": horizon}
 
 
-def fork_horizon(snap, tr, age, horizon, sids, weights, perturb):
+def fork_horizon(snap, tr, age, horizon, sources, sids, weights, perturb):
     """Perturb the restored state, then walk `horizon` steps against the plain trace."""
     pick = _bind_pick(snap)
     cycle = restore(snap, pick)
@@ -704,7 +736,7 @@ def fork_horizon(snap, tr, age, horizon, sids, weights, perturb):
         if (step - 1) not in tr.rng_at:
             raise RuntimeError(f"no plain-run RNG snapshot before step {step}")
         restore_rng(tr.rng_at[step - 1])
-        state, src, toks, _ = _step(cycle, pick, sids, weights)
+        state, src, toks, _ = _step(cycle, pick, sources, sids, weights)
         if tr.inputs[step - 1] != (src, tuple(toks)):
             raise RuntimeError(
                 f"perturbed fork drew a different input at step {step}: "
@@ -801,18 +833,29 @@ def _save_partial(checkpoint_dir, seed, tr, step_no):
 
 
 def run_seed(seed, steps, ages, horizon, repeat_spacing, repeat_hits, progress=True,
-             checkpoint_dir=None):
+             checkpoint_dir=None, workload="canonical", fork_names=FORKS):
     ages = [a for a in ages if 100 < a and a + horizon <= steps]
+    sources, sids, weights = workload_sources(workload)
+    n_seq = sum(len(sources[s]) for s in sids)
+    n_tok = len({t for s in sids for seq in sources[s] for t in seq})
     if progress:
-        print(f"\n=== seed {seed}  steps {steps}  fork ages {ages}  horizon {horizon}", flush=True)
-    sids, weights = workload_sources()
+        print(f"\n=== seed {seed}  steps {steps}  workload {workload}  "
+              f"sequences {n_seq}  distinct {n_tok}  "
+              f"fork ages {ages}  horizon {horizon}  forks {','.join(fork_names) or 'none'}",
+              flush=True)
     with determinism.deterministic(seed):
         plain = run_plain(seed, steps, ages, horizon, progress=progress,
-                          checkpoint_dir=checkpoint_dir)
+                          checkpoint_dir=checkpoint_dir, workload=workload)
         tr = plain["trace"]
         if not ages:
             return {"seed": seed, "plain": plain, "nudges": None, "forks": {}, "repeat": None,
                     "verify": {}}
+        if not fork_names:
+            # Plain trace only. Cone, births, crystals, attractors and boredom
+            # are on it; there is no fork to verify.
+            plain["snaps"] = {a: len(blob["cycle"]) for a, blob in plain["snaps"].items()}
+            return {"seed": seed, "plain": plain, "nudges": None, "forks": {}, "repeat": None,
+                    "verify": {}, "ages": ages}
         cal_age = ages[0]
         med_view, med_anchor = median_step(tr, 100, cal_age)
         # The snapshot's cycle is the calibration state. Unpickle once.
@@ -838,12 +881,25 @@ def run_seed(seed, steps, ages, horizon, repeat_spacing, repeat_hits, progress=T
 
         verify = {}
         forks = {}
+
+        def pert_field(cycle, _n=nudges):
+            apply_field(cycle.field, _n["d_field"], _n["s_field"])
+
+        def pert_anchor(cycle, _n=nudges):
+            apply_anchor(cycle.witness, _n["d_anchor"], _n["s_anchor"])
+
+        def pert_desat(cycle):
+            apply_desat(cycle.field)
+
+        # desat is not a nudge. It asks whether a view that has left ±1 still
+        # drives the anchor and the expression, and how fast the view re-saturates.
+        pert_of = {"field": pert_field, "anchor": pert_anchor, "desat": pert_desat}
         for age in ages:
             snap = plain["snaps"][age]
             # Weight digest at the horizon end was not stored unless that step
             # is itself an age. Store comparison uses whatever run_plain saved;
             # also compare the vectors on every step, which is the real check.
-            v = verify_unperturbed(snap, tr, age, horizon, sids, weights)
+            v = verify_unperturbed(snap, tr, age, horizon, sources, sids, weights)
             verify[age] = v
             if progress:
                 print(f"  verify age {age}: {'OK' if v['ok'] else 'FAIL'} {v['mismatches'][:3]}",
@@ -852,25 +908,12 @@ def run_seed(seed, steps, ages, horizon, repeat_spacing, repeat_hits, progress=T
                 forks[age] = None
                 continue
 
-            def pert_field(cycle, _n=nudges):
-                apply_field(cycle.field, _n["d_field"], _n["s_field"])
-
-            def pert_anchor(cycle, _n=nudges):
-                apply_anchor(cycle.witness, _n["d_anchor"], _n["s_anchor"])
-
-            def pert_desat(cycle):
-                apply_desat(cycle.field)
-
-            forks[age] = {
-                "field": fork_horizon(snap, tr, age, horizon, sids, weights, pert_field),
-                "anchor": fork_horizon(snap, tr, age, horizon, sids, weights, pert_anchor),
-                # Not a nudge. Asks whether a view that has left ±1 still drives
-                # the anchor and the expression, and how fast the view re-saturates.
-                "desat": fork_horizon(snap, tr, age, horizon, sids, weights, pert_desat),
-            }
+            forks[age] = {}
+            for which in fork_names:
+                forks[age][which] = fork_horizon(
+                    snap, tr, age, horizon, sources, sids, weights, pert_of[which])
             if progress:
-                for which in ("field", "anchor", "desat"):
-                    f = forks[age][which]
+                for which, f in forks[age].items():
                     print(f"  fork {which:6s} @ {age}: kick view {f['immediate']['view']:.3e}"
                           f" anchor {f['immediate']['anchor']:.3e} expr {f['immediate']['expr']:.3e}",
                           flush=True)
@@ -888,27 +931,24 @@ def run_seed(seed, steps, ages, horizon, repeat_spacing, repeat_hits, progress=T
 
         repeat = None
         if cal_age in plain["snaps"] and repeat_hits > 0:
-            def pert_field(cycle, _n=nudges):
-                apply_field(cycle.field, _n["d_field"], _n["s_field"])
-
-            def pert_anchor(cycle, _n=nudges):
-                apply_anchor(cycle.witness, _n["d_anchor"], _n["s_anchor"])
-
-            repeat = {
-                "field": repeated_exposure(
+            repeat = {}
+            if "field" in fork_names:
+                repeat["field"] = repeated_exposure(
                     plain["snaps"][cal_age], tr, cal_age, repeat_spacing, repeat_hits,
-                    pert_field, "raw", sids, weights, progress=progress, label="field"),
-                "anchor": repeated_exposure(
+                    pert_field, "raw", sources, sids, weights, progress=progress, label="field")
+            if "anchor" in fork_names:
+                repeat["anchor"] = repeated_exposure(
                     plain["snaps"][cal_age], tr, cal_age, repeat_spacing, repeat_hits,
-                    pert_anchor, "anchor", sids, weights, progress=progress, label="anchor"),
-            }
+                    pert_anchor, "anchor", sources, sids, weights, progress=progress, label="anchor")
+            if not repeat:
+                repeat = None
         # Drop the pickled cycles before returning; the caller saves arrays.
         plain["snaps"] = {a: len(blob["cycle"]) for a, blob in plain["snaps"].items()}
         return {"seed": seed, "plain": plain, "nudges": nudges, "forks": forks,
                 "repeat": repeat, "verify": verify, "ages": ages}
 
 
-def repeated_exposure(snap0, tr, start, spacing, hits, perturb, kick, sids, weights,
+def repeated_exposure(snap0, tr, start, spacing, hits, perturb, kick, sources, sids, weights,
                       progress=True, label=""):
     """Same nudge, `spacing` steps apart, on one lineage.
 
@@ -943,10 +983,10 @@ def repeated_exposure(snap0, tr, start, spacing, hits, perturb, kick, sids, weig
             # the plain run would have drawn on this step; then the stream
             # advances once.
             rng_before = capture_rng()
-            st_t, src_t, toks_t, _ = _step(twin, pick_t, sids, weights)
+            st_t, src_t, toks_t, _ = _step(twin, pick_t, sources, sids, weights)
             rng_after = capture_rng()
             restore_rng(rng_before)
-            st_e, src_e, toks_e, _ = _step(exposed, pick_e, sids, weights)
+            st_e, src_e, toks_e, _ = _step(exposed, pick_e, sources, sids, weights)
             restore_rng(rng_after)
             if (src_t, tuple(toks_t)) != (src_e, tuple(toks_e)):
                 raise RuntimeError(f"repeated exposure inputs diverged at hit {k} step {h}")
@@ -1462,7 +1502,7 @@ def save_summary(path, results):
 # Commands
 # ---------------------------------------------------------------------------
 
-def cmd_time(steps, seed):
+def cmd_time(steps, seed, workload="canonical"):
     print("estimator self-check", flush=True)
     problems = self_check_estimators()
     if problems:
@@ -1472,12 +1512,24 @@ def cmd_time(steps, seed):
         return 1
     print("  diffusion ~1, drift ~2, constant frozen, AR tau, xcorr lag: OK", flush=True)
     # Confirm effective_lr is exactly what witness.update computes, on one step.
-    print(f"timing seed {seed}, {steps} steps", flush=True)
-    sids, weights = workload_sources()
+    sources, sids, weights = workload_sources(workload)
+    n_tok = len({t for s in sids for seq in sources[s] for t in seq})
+    print(f"timing seed {seed}, {steps} steps, workload {workload}, "
+          f"sequences {sum(len(sources[s]) for s in sids)}, distinct {n_tok}", flush=True)
     with determinism.deterministic(seed):
         t0 = time.perf_counter()
         gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on()
         print(f"  build_all_on {time.perf_counter() - t0:.1f}s  pretrained={pretrained}", flush=True)
+        if workload == "wide":
+            rep = workload_coverage(gen, sources)
+            print(
+                f"  known tokens {rep['tokens_known']}/{rep['tokens']} "
+                f"({rep['token_known_frac']:.4f})  "
+                f"known sequences {rep['sequences_known']}/{rep['sequences']} "
+                f"({rep['sequence_known_frac']:.4f})  "
+                f"distinct {rep['distinct_known']}/{rep['distinct']}",
+                flush=True,
+            )
         seen = {}
         orig = cycle.witness.update
 
@@ -1488,7 +1540,7 @@ def cmd_time(steps, seed):
 
         cycle.witness.update = wrap
         pick = random.Random(seed)
-        state, src, toks, _ = _step(cycle, pick, sids, weights)
+        state, src, toks, _ = _step(cycle, pick, sources, sids, weights)
         cycle.witness.update = orig
         recon = float(np.clip(state.coherence ** 2, 0.01, 1.0))
         ok = abs(seen.get("lr", -1) - recon) == 0.0 and seen.get("coh") == state.coherence
@@ -1507,7 +1559,7 @@ def cmd_time(steps, seed):
         buckets = []
         bucket_t = t_step
         for i in range(1, steps):
-            state, src, toks, boredom = _step(cycle, pick, sids, weights)
+            state, src, toks, boredom = _step(cycle, pick, sources, sids, weights)
             record_step(tr, i, cycle, ve, state, src, toks, boredom)
             if (i + 1) == snap_at:
                 tr.weights_at[snap_at] = weight_digest(gen)
@@ -1523,7 +1575,7 @@ def cmd_time(steps, seed):
         # Vector equality is the check. Weight hashes are only compared when the
         # plain run stored one, which this short timing path does not do at the
         # horizon end.
-        v = verify_unperturbed(snap, tr, snap_at, horizon, sids, weights)
+        v = verify_unperturbed(snap, tr, snap_at, horizon, sources, sids, weights)
         print(f"  bit-exact unperturbed fork @{snap_at} for {horizon} steps: "
               f"{'OK' if v['ok'] else 'FAIL'} {v['mismatches'][:4]}", flush=True)
         per = step_s / max(remain, 1)
@@ -1561,7 +1613,8 @@ def cmd_time(steps, seed):
         return 0 if v["ok"] else 1
 
 
-def cmd_run(steps, seeds, ages, horizon, repeat_spacing, repeat_hits, scratch, summary):
+def cmd_run(steps, seeds, ages, horizon, repeat_spacing, repeat_hits, scratch, summary,
+            workload="canonical", fork_names=FORKS):
     problems = self_check_estimators()
     if problems:
         print("estimator self-check FAIL")
@@ -1573,7 +1626,8 @@ def cmd_run(steps, seeds, ages, horizon, repeat_spacing, repeat_hits, scratch, s
     results = []
     for seed in seeds:
         res = run_seed(seed, steps, ages, horizon, repeat_spacing, repeat_hits,
-                       progress=True, checkpoint_dir=scratch)
+                       progress=True, checkpoint_dir=scratch, workload=workload,
+                       fork_names=fork_names)
         save_scratch(scratch, res)
         results.append(res)
         text = write_report(scratch / f"seed{seed}_report.txt", [res])
@@ -1596,6 +1650,7 @@ def main(argv=None):
     t = sub.add_parser("time", help="cost, estimator check, one bit-exact fork")
     t.add_argument("--steps", type=int, default=400)
     t.add_argument("--seed", type=int, default=42)
+    t.add_argument("--workload", choices=("canonical", "wide"), default="canonical")
 
     r = sub.add_parser("run", help="long run plus forks")
     r.add_argument("--steps", type=int, default=20000)
@@ -1606,19 +1661,33 @@ def main(argv=None):
     r.add_argument("--repeat-hits", type=int, default=6)
     r.add_argument("--scratch", type=str, default="")
     r.add_argument("--summary", type=str, default="")
+    r.add_argument("--workload", choices=("canonical", "wide"), default="canonical")
+    r.add_argument("--forks", default="field,anchor,desat",
+                   help="perturbations to fork after the plain trace "
+                        "(field,anchor,desat). 'none' keeps the plain trace only.")
 
     args = p.parse_args(argv)
     if args.cmd == "time":
-        return cmd_time(args.steps, args.seed)
+        return cmd_time(args.steps, args.seed, args.workload)
+    try:
+        fork_names = _parse_forks(args.forks)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
     stamp = time.strftime("%Y%m%d-%H%M%S")
     scratch = Path(args.scratch) if args.scratch else REPO / "scratch" / "h0" / stamp
     summary = args.summary
     if summary == "auto":
+        if args.workload != "canonical":
+            print("refusing --summary auto on a non-canonical workload; "
+                  "that name is the canonical npz. Pass a path.", file=sys.stderr)
+            return 2
         summary = str(REPO / "docs" / "findings" / "data" / "2026-10-15-h0-summary.npz")
     seeds = [int(s) for s in args.seeds.split(",") if s.strip()]
     ages = [int(s) for s in args.ages.split(",") if s.strip()]
     return cmd_run(args.steps, seeds, ages, args.horizon, args.repeat_spacing,
-                   args.repeat_hits, scratch, summary)
+                   args.repeat_hits, scratch, summary, workload=args.workload,
+                   fork_names=fork_names)
 
 
 if __name__ == "__main__":

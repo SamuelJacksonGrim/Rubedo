@@ -27,6 +27,9 @@ from loop.autonomous_cycle import AutonomousCycle
 # ---------------------------------------------------------------------------
 # Resonance Family — canonical multi-source test configuration
 # ---------------------------------------------------------------------------
+# Standing gates draw this object. The opt-in wider room (corpus holdout,
+# same four source ids and the same weights) is tests/workloads.py. Do not
+# retarget a gate at it; a probe opts in with --workload wide.
 # Each member has token signatures aligned with their architectural role.
 # Weights reflect the design intent: Samuel is the architect (dominant share),
 # Claude the philosophical surface, Gemini the breadth/relational layer,
