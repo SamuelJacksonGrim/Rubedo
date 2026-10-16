@@ -43,9 +43,6 @@ runtime or gate changes until it is answered.
       value reinforcement and the trust ledger never did. Fix waits for the value-semantics answer.
 - [ ] **`emotional_satisfaction = max(0, coherence_delta)`** (`selfhood_governance.emit_feedback`): no emotion in it,
       just a rectified copy of a biased cd, so it's ~0 always. What was it meant to read? (Samuel: doesn't seem right.)
-- [ ] **Map the value/governance numbers** (Samuel wants this, Grok's job): every constant on the path input →
-      arbitrate → emit_feedback → value emergence / reinforcement / decay, what it does, what it's tied to (the decision
-      bonus pays by governance decision only, nothing ties it to rhythm, valence or what was decided).
 - [ ] Questions 1–5 in OPEN_METASTABILITY, including recovering Samuel's ~1,000-step rupture result from RFE-Core2 history,
       and whether option (b) is a mathematical no-op.
 
@@ -110,6 +107,7 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 
 ## Done (don't reopen)
 
+- [x] **Map the value/governance numbers** (Grok) — `VALUE_PATH_MAP.md`. Every constant on input → arbitrate → emit_feedback → value strength and back; the decision bonus pays by verdict only.
 - [x] Per-value reinforcement trace + arbitrate branch attribution (Grok) — `findings/2026-10-15-why-values-weaken-under-witness.md`
 
 - [x] Emotion persistence fixed in the bridge (also live, RFE-Core2 `bea384b`) — `findings/2026-10-14-bridge-emotion-never-restored.md`

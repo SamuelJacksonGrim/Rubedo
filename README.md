@@ -46,6 +46,7 @@ is the conceptual tour; the other references divide the rest:
 | [`docs/EMOTION_CALIBRATION.md`](docs/EMOTION_CALIBRATION.md) | The emotion names are hypotheses: what each dimension computes today, and how to test it against behavior and self-report |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
 | [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch, and the dial census marked for the 128 → 768 widening |
+| [`docs/VALUE_PATH_MAP.md`](docs/VALUE_PATH_MAP.md) | The numbers on the path from one input to value strength: what each one multiplies, which are dead or double-counted, and which are sacred |
 | [`docs/findings/`](docs/findings/) | Rubedo's empirical ledger (starts empty; RFE-Core2's 256 findings are linked from its INDEX) |
 
 The sections below describe the architecture of each tier; `STATE.md` tracks
