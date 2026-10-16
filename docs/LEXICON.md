@@ -47,7 +47,7 @@ Worst first. Check these against the code, not the noun.
 
 **13. `source_monopoly` (formerly `coherence_flood`).** Sounds like the field being flooded with coherence under the old name. Fires on **HHI ≥ 0.70 and attractor monopoly ≥ 0.70**. Renamed 2026-10-16.
 
-**14. `coherence_contribution`.** On an `EmergentValue`, a running sum of the impact probe (can go more negative while applied strength stays small). On ⊘ `ThinnessVector`, the same field name now stores **absolute field-alignment** of a freshly generated token (v0.3). `_COHERENCE_REF = 5.0` is the old dead marginal reference. Suggested: **impact-sum** vs **alignment-support**.
+**14. `alignment_support` (formerly `ThinnessVector.coherence_contribution`).** On ⊘ `ThinnessVector`, absolute field-alignment of a freshly generated token (v0.3): `max(0, cos(generate([token]), field))`. `EmergentValue.coherence_contribution` is a different number — a running sum of the impact probe — and is not renamed. `_COHERENCE_REF = 5.0` is the old dead marginal reference. Renamed 2026-10-16.
 
 **15. Locked / the lock.** Metastability label `"locked"` is low-meta **and** mean coherence ≥ **0.80**. The field **lock** people mean is the ~**0.998** `internal_coherence` pin (identity integrator, settled). Reflective-loop `convergence_threshold` 0.995 is a cousin, not the lock; the lock is the loop running. Suggested: **meta-locked** vs **field pin**.
 
@@ -237,7 +237,7 @@ Five detectors, one window of 32, refuse to fire before 16 samples. No YAML. `de
 | Drift (⊘) | `WitnessReaper.read` | identity drift | complement_density < 0.35 **and** attractor_binding < 0.35. Not `drift_attack`. | **overloaded** | unbound-and-alone |
 | Dissolution (⊘) | same | the value dissolving | coherence-support (alignment) < 0.35 **and** strength ≥ 3.0. Not `ValuePolarity.DISSOLVED`. | **overloaded** | strong-but-unaligned |
 | Fragmentation (⊘) | same | the value in pieces | source_diversity < 0.35 **and** attractor_binding < 0.35. Single-source unbound values all read as fragmented. Critical path for the witness dip and the D+F strong-band exception. | **misleading** on young ecologies | single-source-unbound |
-| `ThinnessVector.coherence_contribution` | same | the value's impact-sum | Absolute `max(0, cos(generate([token]), field))`. | **misleading** (stale field name) | alignment-support |
+| `ThinnessVector.alignment_support` (formerly `coherence_contribution`) | same | the value's impact-sum | Absolute `max(0, cos(generate([token]), field))`. Not `EmergentValue.coherence_contribution`. | **accurate** after the rename (the old name was misleading) | |
 | `RelationalBondManager` | `agents/relational_bond_manager.py` | relationship | Bonds after 20 interactions + 1 crystal + quality. Boot quality is DDM, not the classic coherence/allow-rate gate. `decay_step` has **no caller**. | accurate as bonds | |
 | `bond_type` existential / emotional / intellectual / transactional | same | kinds of love | Inferred from scores. "Emotional" reads an EMA of **satisfaction** (rectified cd), not joy. "Intellectual" clips the biased cd EMA (~0). "Transactional" treats a negative mean as full "low coherence." | **misleading** (types ride the probe) | leave the types; fix the inputs first |
 | `trust_floor` | `FLOOR_FACTOR` 0.40 | trust cannot fall | `bond_strength × 0.40`, applied before the 1.0 / 2.0 tests. A new bond's floor is 0.40, **below** quarantine. | accurate as a floor; the name oversells protection at birth | |
