@@ -6,6 +6,13 @@ sha256 per run and a combined digest. A rename that only moves a label must
 leave these hex strings bit-identical. A digest change means a missed call
 site or a real behaviour change.
 
+Compare digests only at the SAME math-thread count (OMP_NUM_THREADS /
+MKL_NUM_THREADS, and torch threads). BLAS reductions sum in a different order
+at a different thread count and change the low bits, so the same code gives a
+different digest at 4 threads than at 8 (seen 2026-10-16: batch 1 hashed
+5d53e7ad... at Grok's setting and 61fabe05... at 8 threads, identical between
+main and the renamed branch at each setting). Pin the threads for both sides.
+
 Runs (seed 42, substrate.determinism, a few hundred steps):
 
   all_on_cg   build_all_on: corpus pretrain, ignition, ⊘ read + consumer, λ.
