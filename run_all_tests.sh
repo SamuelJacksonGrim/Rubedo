@@ -79,6 +79,7 @@ run_test "tests.integration.bond_ddm_invariants"
 run_test "tests.integration.fix0b_invariants"
 run_test "tests.integration.six_rhythm_selector_invariants"
 run_test "tests.integration.determinism_replay"
+run_test "tests.integration.wide_workload"
 
 echo
 echo -e "${BOLD}ADVERSARIAL PROBES${RESET}"

@@ -215,6 +215,7 @@ Rubedo/
 │   ├── README.md                          How to run tests and read the output
 │   ├── __init__.py                        Package marker
 │   ├── _common.py                         build_full_stack and the Resonance Family runner
+│   ├── workloads.py                       Opt-in wide probe room: corpus holdout, canonical source ids and weights
 │   │
 │   ├── smoke/
 │   │   ├── full_stack_minimal.py          All 4 tiers attach without error
@@ -237,7 +238,8 @@ Rubedo/
 │   │   ├── bond_ddm_invariants.py         Bond-DDM gate (OFF parity, ACCEPT-only commit, asymmetry)
 │   │   ├── fix0b_invariants.py            Fix 0-B gate (OFF parity, observe-only, leaky credit)
 │   │   ├── six_rhythm_selector_invariants.py  Selector gate (inert = byte-identical, read-only peek, mode wiring)
-│   │   └── determinism_replay.py          Exact replay in/across processes; production clock untouched; guard
+│   │   ├── determinism_replay.py          Exact replay in/across processes; production clock untouched; guard
+│   │   └── wide_workload.py               Holdout room is a deterministic partition; canonical object untouched
 │   │
 │   ├── adversarial/
 │   │   ├── sacred_shield.py               SACRED_SHIELD fires at all trust levels
@@ -295,6 +297,7 @@ Rubedo/
 ├── CONTRIBUTING.md                        How to send a change
 ├── LICENSE                                AGPL-3.0-only
 ├── LICENSING.md                           How the two tracks relate
+├── NOTES-wide.md                          Wide-workload handoff: vocabulary, known fraction, measurement commands
 ├── NOTICE                                 Copyright, SPDX, provenance
 ├── README.md                              Conceptual tour
 ├── STATE.md                               You are here: shipped, settled, parked, open

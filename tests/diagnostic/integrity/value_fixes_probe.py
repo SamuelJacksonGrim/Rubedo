@@ -89,9 +89,17 @@ ALL is reported, not graduated as a bundle.
 Informational. exit 0 if the run finishes, exit 1 if a cell throws. Not in
 run_all_tests.sh. Resumes from data/value_fixes_probe.json.
 
+--workload {canonical,wide} defaults to canonical, which is this file's
+declared room. wide is the corpus-holdout room (tests/workloads.py): same
+four source ids, same weights. The bars above were declared on canonical.
+A wide run asks those same questions and does not move them. Wide refuses
+to write into the canonical default --out, so a wide file cannot be resumed
+as a canonical one or the reverse.
+
 Run:
     python -m tests.diagnostic.integrity.value_fixes_probe
     python -m tests.diagnostic.integrity.value_fixes_probe --arms REF,C --seeds 42
+    python -m tests.diagnostic.integrity.value_fixes_probe --workload wide --arms DF --out data/value_fixes_wide_DF.json
 """
 from __future__ import annotations
 
@@ -116,8 +124,9 @@ sys.path.insert(0, ".")
 from substrate import determinism                                               # noqa: E402
 from loop.recursion1188 import apply_value_levers                               # noqa: E402
 from tests._common import (                                                      # noqa: E402
-    RESONANCE_FAMILY_SOURCES, RESONANCE_FAMILY_WEIGHTS, health_summary,
+    RESONANCE_FAMILY_WEIGHTS, health_summary,
 )
+from tests.workloads import coverage as workload_coverage, describe, load_named  # noqa: E402
 from tests.diagnostic.integrity.all_levers_composition_probe import (            # noqa: E402
     build_all_on, _strong,
 )
@@ -297,24 +306,43 @@ def instrument(cycle, gov, ve):
     return decisions, trace, dream
 
 
-def _pick_tokens(pick, workload, src):
+def _pick_tokens(pick, workload, src, sources):
     if workload == "B" and pick.random() < 0.20:
         return WITNESS_PHRASES[pick.randrange(len(WITNESS_PHRASES))], "witness"
-    return pick.choice(RESONANCE_FAMILY_SOURCES[src]), "canonical"
+    # "canonical" is the witness gate's label for a step that is not one of
+    # WITNESS_PHRASES. It is not the room name: a wide step uses it too.
+    return pick.choice(sources[src]), "canonical"
 
 
-def run_arm(seed, arm, steps, with_consumer, with_witness, workload):
+def _note_coverage(gen, sources, room):
+    """Once per process, on the wide room only. Canonical does not peek."""
+    if room != "wide" or getattr(_note_coverage, "done", False):
+        return
+    _note_coverage.done = True
+    rep = workload_coverage(gen, sources)
+    print(
+        f"  known tokens {rep['tokens_known']}/{rep['tokens']} "
+        f"({rep['token_known_frac']:.4f})  "
+        f"known sequences {rep['sequences_known']}/{rep['sequences']} "
+        f"({rep['sequence_known_frac']:.4f})  "
+        f"distinct {rep['distinct_known']}/{rep['distinct']}",
+        flush=True,
+    )
+
+
+def run_arm(seed, arm, steps, with_consumer, with_witness, workload, sources, room):
     """One build, one deterministic context. Returns metrics and optional rows."""
     levers = lever_config(arm)
     with determinism.deterministic(seed):
         gen, cycle, gov, ve, ledger, consumer, _report, pretrained = build_all_on(
             with_consumer=with_consumer)
         apply_value_levers(cycle, gov, ve, levers)
+        _note_coverage(gen, sources, room)
         if with_witness:
             attach_witness(gen, cycle)
         decisions, trace, dream = instrument(cycle, gov, ve)
         pick = random.Random(seed)
-        sids = list(RESONANCE_FAMILY_SOURCES)
+        sids = list(sources)
         weights = [RESONANCE_FAMILY_WEIGHTS[s] for s in sids]
         rows = [] if with_witness or workload == "B" else None
         # Workload B's no-witness arm still needs rows: identity compares both.
@@ -322,7 +350,7 @@ def run_arm(seed, arm, steps, with_consumer, with_witness, workload):
             rows = []
         for _ in range(steps):
             src = pick.choices(sids, weights=weights)[0]
-            tokens, kind = _pick_tokens(pick, workload, src)
+            tokens, kind = _pick_tokens(pick, workload, src, sources)
             joy_before = float(cycle.emotion.joy)
             if rows is not None:
                 vecs, known = gen.peek_batch([tokens])
@@ -386,6 +414,8 @@ def run_arm(seed, arm, steps, with_consumer, with_witness, workload):
         payload["health"]["strong"] = int(h["strong"])
         payload["health"]["gain"] = float(h["gain"])
         payload["health"]["demotions"] = int(h["demotions"])
+        if room == "wide":
+            payload["workload"] = "wide"
         return payload, rows
 
 
@@ -516,9 +546,11 @@ def print_payload(label, payload):
     )
 
 
-def measure_composition(seed, arm, steps):
-    ref_payload, _ = run_arm(seed, arm, steps, with_consumer=False, with_witness=False, workload="A")
-    payload, _ = run_arm(seed, arm, steps, with_consumer=True, with_witness=False, workload="A")
+def measure_composition(seed, arm, steps, sources, room):
+    ref_payload, _ = run_arm(seed, arm, steps, with_consumer=False, with_witness=False,
+                             workload="A", sources=sources, room=room)
+    payload, _ = run_arm(seed, arm, steps, with_consumer=True, with_witness=False,
+                         workload="A", sources=sources, room=room)
     checks = composition_checks(payload["health"], ref_payload["health"]["strong"])
     payload["strong_ref"] = int(ref_payload["health"]["strong"])
     payload["checks"] = checks
@@ -527,9 +559,11 @@ def measure_composition(seed, arm, steps):
     return payload
 
 
-def measure_witness(seed, arm, steps):
-    bare, rows_bare = run_arm(seed, arm, steps, with_consumer=True, with_witness=False, workload="B")
-    wit, rows_wit = run_arm(seed, arm, steps, with_consumer=True, with_witness=True, workload="B")
+def measure_witness(seed, arm, steps, sources, room):
+    bare, rows_bare = run_arm(seed, arm, steps, with_consumer=True, with_witness=False,
+                              workload="B", sources=sources, room=room)
+    wit, rows_wit = run_arm(seed, arm, steps, with_consumer=True, with_witness=True,
+                            workload="B", sources=sources, room=room)
     checks_bare = _health_checks(bare["health"], bare["health"]["strong"], bare["health"]["strong"])
     checks_wit = _health_checks(wit["health"], wit["health"]["strong"], bare["health"]["strong"])
     broke = [k for k in checks_wit if checks_bare[k] and not checks_wit[k]]
@@ -707,6 +741,7 @@ def main(argv=None) -> int:
     parser.add_argument("--steps", type=int, default=OFFICIAL_STEPS)
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--force", action="store_true")
+    parser.add_argument("--workload", choices=("canonical", "wide"), default="canonical")
     args = parser.parse_args(argv)
 
     arms = [a.strip() for a in args.arms.split(",") if a.strip()]
@@ -718,14 +753,32 @@ def main(argv=None) -> int:
             return 2
     official = args.steps == OFFICIAL_STEPS and tuple(seeds) == SEEDS
     out = Path(args.out) if official else None
+    if args.workload == "wide" and out is not None and out == DEFAULT_OUT:
+        print("refusing to write a wide run into the canonical results file; pass --out",
+              file=sys.stderr)
+        return 2
     if not official:
         print("NOT A MEASUREMENT — steps or seeds differ from the declared gate; nothing is written.")
+    sources, _weights = load_named(args.workload)
+    info = describe(sources)
+    print(f"workload {args.workload}  sequences={info['sequences']}  "
+          f"distinct={info['distinct_tokens']}  per_source={info['per_source']}")
     doc = load_doc(out) if out else {"steps": args.steps, "cells": {}}
     if out and doc.get("steps") not in (None, OFFICIAL_STEPS):
         print(f"refusing to resume a doc stamped steps={doc.get('steps')}", file=sys.stderr)
         return 2
+    # A missing file has no stamp. An existing file with no stamp is a
+    # canonical measurement (the key was added with the wide room).
+    if out and out.is_file() and doc.get("workload", "canonical") != args.workload:
+        stamped = doc.get("workload", "canonical")
+        print(f"refusing to resume a {stamped} doc as {args.workload}", file=sys.stderr)
+        return 2
     doc["steps"] = OFFICIAL_STEPS if official else args.steps
     doc.setdefault("cells", {})
+    if args.workload == "wide":
+        from training.corpus import corpus_version
+        doc["workload"] = "wide"
+        doc["corpus"] = corpus_version()
 
     planned = [(seed, arm, kind) for seed in seeds for arm in arms for kind in kinds]
     print(f"value fixes probe  steps={args.steps}  cells={len(planned)}  out={out}")
@@ -737,7 +790,7 @@ def main(argv=None) -> int:
         print(f"[{index}/{len(planned)}] {key}  running", flush=True)
         try:
             if kind == "composition":
-                cell = measure_composition(seed, arm, args.steps)
+                cell = measure_composition(seed, arm, args.steps, sources, args.workload)
                 print_payload(key, cell)
                 print(f"    composition {'OK' if cell['composition_ok'] else 'FAIL'}  "
                       f"strong {cell['health']['strong']} vs ref {cell['strong_ref']}")
@@ -748,7 +801,7 @@ def main(argv=None) -> int:
                 if args.steps < OFFICIAL_STEPS:
                     print("    witness identity needs 500 steps; skipping")
                     continue
-                cell = measure_witness(seed, arm, args.steps)
+                cell = measure_witness(seed, arm, args.steps, sources, args.workload)
                 print_payload(key + " bare", cell["bare"])
                 print_payload(key + " wit", cell["wit"])
                 pair = cell["pair"]
