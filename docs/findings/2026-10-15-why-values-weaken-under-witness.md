@@ -98,7 +98,7 @@ comparisons stay valid because both arms carry the same disturbance.
   it can only be starved or carried by the decision bonus.
 
 ## Open
-- [ ] Numbers map of the value/governance path (BACKLOG §0).
+- [x] Numbers map of the value/governance path — [`docs/VALUE_PATH_MAP.md`](../VALUE_PATH_MAP.md).
 - [ ] Whether identity_erosion should distinguish the dream band from erosion (semantic; with question 4).
 - [ ] What value reinforcement and `emotional_satisfaction` should read (question 4); any fix waits for that.
 - [ ] H0 / H0′ measurements, still unmeasured.
