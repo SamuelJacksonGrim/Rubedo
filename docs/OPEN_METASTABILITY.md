@@ -143,7 +143,11 @@ production; curriculum learning; adaptive circuit breakers; progressive autonomy
   temporary and reopens as health recovers. One that stays shut is the wall.
 
 ## The work, in order
-0. **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
+0. **DONE 2026-10-15 → `findings/2026-10-15-why-values-weaken-under-witness.md`.** The drop is the decision bonus:
+   witness moves steps into the dream band, whose ordinary geometric/temporal split fires systemic `identity_erosion`,
+   which damps to ALLOW_WEAKENED (smaller bonus, missed emergence). coherence_delta is mostly a raw-vs-tanh artifact,
+   satisfaction is max(0, coherence_delta), and options (a)/(b) aim at the wrong thing. This corrects the suspects
+   listed under "Starting points" below (satisfaction does not read joy). Original item: **Finish the step-by-step reinforcement trace** (planned before the pause): one replay-exact pair (REF vs WIT, all-ON
    stack, workload B), per step and per value: reinforcement sign and size, *which term moved it* (coherence_delta,
    emotional_satisfaction, decision bonus, bond weight), any ⊘ demotion, and whether values recover later. Distinguish
    less reinforcement / active demotion / later recovery (GPT/Raphael).

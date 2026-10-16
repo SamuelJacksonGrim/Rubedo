@@ -22,6 +22,7 @@ recorded below.
 
 | Finding | One-line verdict | Status |
 |---|---|---|
+| `2026-10-15-why-values-weaken-under-witness` | The drop is the decision bonus (70–90%): witness moves steps into the dream band, whose ordinary G/T split fires systemic `identity_erosion` → ALLOW_WEAKENED → smaller bonus + missed emergence. Not negative reinforcement, no recovery. coherence_delta is mostly a raw-vs-tanh measurement artifact (input's own effect ≈0 at saturation); satisfaction = max(0, coherence_delta). Identity PASS partly the c² write-slowing. Options (a)/(b) aim at the wrong thing; value semantics is the question | **standing** |
 | `2026-10-15-witness-composition-gate` | Witness on the all-ON stack: identity 3/3, receptivity 3/3 (~2×), composition FAIL: every value weakens (ACTIVE tier 5→0, 7→0) because value = coherence contribution and witness lowers coherence. Baseline healthy (standing gate passes everywhere). Witness stays OFF; value formation is an architect question | **standing** |
 | `2026-10-15-selector-identity-replay` | Replay-exact, pre-declared identity bars: WITNESS PASS 2/3 (anchor drifts less than OFF), RUPTURE-UP PASS 3/3, BOTH FAIL 0/3 (coherence costs add, −0.06). Levers stay OFF; BOTH needs a shared budget | **standing** |
 | `2026-10-15-reproducible-runs` | 36 wall-clock reads, 9 unseeded generators, 3 random-key sites routed through `substrate/determinism.py`; seeded runs now replay bit-for-bit in and across processes; production unchanged; guard test | resolved (same commit) |

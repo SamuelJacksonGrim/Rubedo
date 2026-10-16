@@ -13,9 +13,10 @@ this is where we bounce back to.
 The metastability question. Source: [`OPEN_METASTABILITY.md`](OPEN_METASTABILITY.md). Witness and rupture stay OFF; no
 runtime or gate changes until it is answered.
 
-- [ ] **Per-value reinforcement trace** (REF vs WIT, replay-exact, all-ON stack, workload B): which term moves each value
-      (coherence_delta / emotional_satisfaction / decision bonus / bond weight), ⊘ demotions, recovery. Also log the
-      witness `effective_lr` (c²) per step, to check whether witness's steadier anchor is partly mechanical (H0′).
+- [ ] **Does the system's own dreaming count as identity erosion?** (`findings/2026-10-15-why-values-weaken-under-witness.md`)
+      Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
+      `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
+      question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
 - [ ] **Long-run shape of the field and the anchor** (H0 test): displacement curve over a much longer window than 5,000
       steps, on the raw field *and* the tanh view, read as mean-squared displacement vs lag (bounded / diffusive /
       drifting), plus the fraction of saturated dimensions over time.
@@ -29,13 +30,10 @@ runtime or gate changes until it is answered.
       anchor could come from noticing or merely from abstaining. Probe-local arm: an "abstain" step that skips the same
       actions with ordinary content and no witness reading, vs witness, vs REF, plus the c² confound from the trace.
       Witness beats abstain → observation itself does something. Abstain matches witness → it's the not-acting.
-- [ ] **coherence_delta is ~99% measurement artifact** (Ember, 2026-10-15, seed 0 REF): `field.coherence_impact` compares
-      cos(RAW field, history) before with cos(TANH(field + 0.5·vec), history) after. A zero vector scores mean −0.057
-      (95% negative); the real input adds −0.0004 on top (45% negative, i.e. noise). Like-for-like (tanh both sides) the
-      input's effect is ~0, because 90% of dimensions are saturated (raw norm ~195). So cd measures the field's shape,
-      not the input. The step-10 comment already knows the marginal delta is ≈0 in a saturated field: bonds moved to
-      `field_alignment` on 2026-07-09, values and the trust ledger never did. Write up as a finding with a committed
-      probe; any fix waits for the value-semantics answer.
+- [ ] **coherence_delta is mostly measurement artifact** (recorded in `findings/2026-10-15-why-values-weaken-under-witness.md`,
+      probe `coherence_delta_bias.py`): raw field before vs tanh field after, so it reads the field's shape, not the
+      input; like-for-like the input's effect is ≈0 at saturation. Bonds moved to `field_alignment` on 2026-07-09;
+      value reinforcement and the trust ledger never did. Fix waits for the value-semantics answer.
 - [ ] **`emotional_satisfaction = max(0, coherence_delta)`** (`selfhood_governance.emit_feedback`): no emotion in it,
       just a rectified copy of a biased cd, so it's ~0 always. What was it meant to read? (Samuel: doesn't seem right.)
 - [ ] **Map the value/governance numbers** (Samuel wants this, Grok's job): every constant on the path input →
@@ -104,6 +102,8 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 ---
 
 ## Done (don't reopen)
+
+- [x] Per-value reinforcement trace + arbitrate branch attribution (Grok) — `findings/2026-10-15-why-values-weaken-under-witness.md`
 
 - [x] Emotion persistence fixed in the bridge (also live, RFE-Core2 `bea384b`) — `findings/2026-10-14-bridge-emotion-never-restored.md`
 - [x] FIELD_DIM single home (`substrate/dims.py`) + guard test
