@@ -55,10 +55,16 @@ What the numbers say:
    crystals, each credits several source symbols at 0.30 × quality, strengths hit the cap, and mass CORE promotion
    breaks trust, bonds and benign-quarantine checks. Dream credit needs a rate or a budget, not just an open channel.
 5. **G is indiscriminate.** Valence is nearly constant (~0.17–0.25), so it hands every value the same bonus.
-6. **The recurring failure is the ⊘ consumer.** Where D, E and their combinations fail composition, it is almost
-   always the "strong vs ref (−1)" check: the opt-in ⊘ consumer trims strong values harder when the ecology is
-   healthier (demotions roughly double). That is the consumer's ceiling, the same mechanism behind the original all-ON
-   break, not the levers degrading anything against today.
+6. **The recurring failure is the ⊘ consumer, and it is not the old ceiling.** Where D, E and their combinations fail
+   composition, it is almost always the "strong vs ref (−1)" check: the opt-in ⊘ consumer trims strong values harder
+   when the ecology is healthier (demotions roughly double). Attribution (Ember, 2026-10-16, seed 43, 500 steps): the
+   v0.3 alignment axis is healthy (mean 0.50, 11% below the 0.35 line), so the 2026-06-20 Dissolution ceiling has not
+   returned. Every named advisory is **Fragmentation** (single source AND thin attractor/crystal binding): 1,134 under
+   REF, 4,198 under D+F. Both inputs are artifacts of the test conditions: workload A gives 44 of its 46 tokens to
+   exactly one source, so nearly every value is single-source by construction, and the crystal store holds 1–4
+   crystals, so binding is thin for nearly every value. More values climbing means more Fragmentation demotions. The
+   wider workload (shared vocabulary across sources) and working crystal formation are what this check needs before
+   it can say anything about the levers.
 
 ## Calls
 - **A and B: landed, default on** (bug fixes; off-path digest unchanged; 25/25).

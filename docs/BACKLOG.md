@@ -20,7 +20,7 @@ runtime or gate changes until it is answered.
 - [ ] **Graduate D+F (then maybe E)?** (`findings/2026-10-15-value-fixes-measured.md`) D+F: witness starvation
       ~0.6→~0.9, composition = REF (2/3), no alarms. E: witness stops starving values, witness gate passes for the
       first time on one seed. Two gates before any default change: the wider-workload run below, and the architect's
-      call on the exception (the failing check is the opt-in ⊘ consumer's strong-band ceiling, not a regression).
+      call on the exception, which Samuel granted for D+F if needed but thinks may not be (2026-10-16). The failing check is ⊘ Fragmentation (single-source + unbound values), driven by workload A giving 44/46 tokens to one source and the crystal store being nearly empty: the wider workload may clear it on its own.
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new
       crystals pay) but floods: many new dream crystals × several symbols × 0.30 → strength cap → mass CORE promotion
       breaks trust and bonds. Needs a per-dream / per-symbol budget or diminishing credit.
