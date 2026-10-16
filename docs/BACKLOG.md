@@ -17,6 +17,11 @@ runtime or gate changes until it is answered.
       Dream-band steps split the watcher's geometric and temporal coherence (|G−T| ≈ 0.33–0.36), so systemic
       `identity_erosion` fires on 91–97% of them and damps them to ALLOW_WEAKENED, which starves every value. Semantic
       question, with question 4: should a G/T split with no source to blame cut value reinforcement at all?
+- [ ] **The pass/fail suite never boots the production stack** (Samuel caught it, 2026-10-16). No test in
+      `run_all_tests.sh` builds through `build_engine()`; they build components directly, so no CONFIG-graduated
+      lever (D+F, novelty attenuation, dream channel, bond DDM, eval mode, pretrain) is exercised by CI, and the ⊘
+      consumer appears only in hand-run diagnostics. Add a suite test that boots through `build_engine()` and runs
+      the attack checks and basic health on that stack. (Grok, 2026-10-16.)
 - [ ] **Re-run the witness composition gate with D+F on by default** (`findings/2026-10-16-wide-workload-and-df-graduation.md`).
       Witness was blocked on value formation; with D+F graduated, witness starvation is ~0.95. Then upstream rupture.
 - [ ] **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
