@@ -25,7 +25,10 @@ runtime or gate changes until it is answered.
 - [ ] **Witness: decide the active-count dip** (`findings/2026-10-16-witness-regate-with-df.md`). Re-gated with D+F:
       composition 0/3 → 1/3, identity and receptivity 3/3, no value collapse; only `active_values ≥ 30` breaks
       (34→22, 31→26). Accept as witness's cost for ~2× receptivity, or measure on a themes-plus-novelty workload where
-      the bar means something. Then upstream rupture.
+      the bar means something. Then upstream rupture. Samuel (2026-10-16): the dip is fine for 2× retention.
+- [ ] **Rubedo-A / Rubedo-B** (Samuel, 2026-10-16): once the trained encoder is in, two branches + project folders run
+      side by side, A with witness on (2× receptivity, the active-count dip), B with witness off, to compare as lived
+      systems rather than 500-step gates.
 - [ ] **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
       single-source, unbound values (12 strong → 2). Needs a workload with shared vocabulary per source, working crystal
       formation, or a Fragmentation rule that doesn't read every single-source value as fragmented.
