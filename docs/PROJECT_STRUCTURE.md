@@ -260,7 +260,8 @@ Rubedo/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── all_levers_composition_probe.py  All levers ON together
 │   │   │   ├── witness_composition_gate.py  Witness's graduation gate on the all-ON stack (composition, identity, receptivity)
-│   │   │   └── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
+│   │   │   ├── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
+│   │   │   └── value_reinforcement_trace.py  Step-by-step REF vs WIT reinforcement decomposition; arbitrate() return path
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
