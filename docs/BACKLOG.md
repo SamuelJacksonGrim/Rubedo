@@ -95,6 +95,11 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
 - [ ] After the recovery-vs-age measurement: decide whether levers should open in growth periods (gates keyed on
       demonstrated recovery, not step count), and whether anything should act like a hormone (a slow global signal
       that shifts plasticity, e.g. the witness gate).
+- [ ] **Trigger levers by maturity instead of on/off for life** (Samuel, 2026-10-16). The ⊘ consumer is wrong early and
+      right late: before the system has multiple sources and crystal/attractor binding, Fragmentation reads every value
+      as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth). Witness may
+      matter most early (the view loses its gain by step ~235; witness keeps ~2× receptivity) or after novelty bursts.
+      Gate each on measured state (multi-source share, binding, receptivity), not a step count.
 
 ## 3 · Widening (Rubedo's original job)
 
@@ -103,6 +108,10 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 - [ ] Run 2 at 768 with Matryoshka (corpus worklist).
 
 ## 4 · Smaller things, noticed
+
+- [ ] **Lexicon** (Samuel, 2026-10-16): `docs/LEXICON.md`, every named thing, what the name suggests, what it computes,
+      verdict (accurate / misleading / overloaded). Known: generator is an encoder; coherence_delta, emotional_satisfaction,
+      surprise, identity_erosion misnamed; "witness" ×3, "coherence" ×3, "dream" ×5, two reapers. (Grok.)
 
 - [ ] Emotion calibration audit (`EMOTION_CALIBRATION.md`): six scalars from three inputs; joy ≈ coherence.
 - [ ] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why.
