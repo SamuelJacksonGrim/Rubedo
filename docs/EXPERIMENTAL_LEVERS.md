@@ -55,6 +55,14 @@ not omitted anymore — they are exactly what a width change moves:
 | `use_chorus` | `True` | Six-agent Chorus harmonization for reflect/explore generation (vs direct generator). |
 | `dream_cycle_enabled` | `True` | Build/run the offline `DreamCycle`. |
 | `dream_cycle_trigger` | `"stabilize"` | Rhythm that fires the offline dream cycle (every 20th step in that rhythm). Since the F9 band rescale (2026-07-06) `stabilize` occurs during cold-start consolidation, so this fires at boot; the waking dream *band* behavior fires separately whenever rhythm is `dream`. |
+| `dream_consolidation` | **False** | Lever C. Off: dream offers use `long_relation=0.5` and a `dream_<hex>` key. On: relation is the variant's cosine with the witness long layer (the store's 0.80 is unchanged) and the crystal is credited with the sampled memories' tokens. |
+| `coherence_impact_like_for_like` | **False** | Lever D. One switch for both probes. Off: raw field before, tanh after. On: tanh before and after. The watcher's half-scale copy follows the same switch. At saturation the result is ~0. |
+| `value_alignment_signal` | **False** | Lever E. Off: the value gate and reinforcement read `coherence_delta`. On: they read `field_alignment` minus an EMA of itself (`alignment_ema_alpha`, default 0.05). `coherence_contribution` records whichever term was applied. |
+| `alignment_ema_alpha` | `0.05` | EMA rate for lever E. Not read while `value_alignment_signal` is off. |
+| `systemic_damp_pays_full` | **False** | Lever F. Off: a systemic-only damp pays ALLOW_WEAKENED. On: injection strength, the decision, and trust stay damped; the value engine is paid as ALLOW. Named-source damps, quarantine, reject, and sacred shield are unchanged. |
+| `satisfaction_from_emotion` | **False** | Lever G. Off: `emotional_satisfaction = max(0, coherence_delta)`. On: `max(0, valence)`. |
+
+`apply_value_levers()` in `loop/recursion1188.py` is the one place C–G are attached. Bugs A (CORE promotion sees the signals `arbitrate` already consumed) and B (a dream credits the crystals `maybe_crystallize` returned, not `crystals[before:]`) are not levers. They are on in every build. B pays nothing while C is off, because a dream offer at relation 0.5 cannot clear 0.80.
 
 Opt-in overlay/instruments live in *The levers* and *The instruments* tables
 below (attached via the cycle hooks, not `CONFIG`).

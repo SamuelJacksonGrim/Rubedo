@@ -338,8 +338,14 @@ class Watcher:
         history_window = list(field.history)[-16:]
         history_mean   = np.mean(history_window, axis=0)
 
+        # Same lever as ResonanceField.coherence_impact: tanh on both sides.
+        # Off keeps the raw-field before, which is what the ethical gate has
+        # always read. The value path does not read this copy.
+        before_field = field.field
+        if getattr(self, "coherence_like_for_like", False):
+            before_field = np.tanh(field.field)
         before = float(
-            (self._cosine(field.field, history_mean) + 1.0) / 2.0
+            (self._cosine(before_field, history_mean) + 1.0) / 2.0
         )
 
         # Simulate inject + resonate (mirrors ResonanceField behavior)

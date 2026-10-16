@@ -209,6 +209,19 @@ class SelfhoodGovernance:
         # Dream cycle trigger flag — set by compound severity ≥ 0.9
         self.force_dream_flag: bool = False
 
+        # Manipulation signals. `_pending_signals` is what detect() queued for
+        # the next arbitrate. `_step_signals` is the list that call consumed:
+        # review_core_promotion runs later in the same step, after pending
+        # has been cleared. `_last_systemic_damp` marks a systemic-only
+        # ALLOW_WEAKENED (no named source) so the value-payment lever can
+        # see it without changing the decision.
+        self._pending_signals: list = []
+        self._step_signals: list = []
+        self._last_systemic_damp: bool = False
+        # Lever F. Off: value learning follows the decision. On: a systemic-only
+        # damp still damps injection, but the value engine is paid as ALLOW.
+        self.systemic_damp_pays_full: bool = False
+
     # ------------------------------------------------------------------
     # Arbitrate — single source of truth
     # ------------------------------------------------------------------
@@ -238,6 +251,7 @@ class SelfhoodGovernance:
         strength_modifier is 0.0 for blocking decisions.
         """
         cfg = self.config
+        self._last_systemic_damp = False
 
         # ----------------------------------------------------------
         # 0. System rights — checked before anything else
@@ -250,7 +264,10 @@ class SelfhoodGovernance:
         # ----------------------------------------------------------
         # 1. Manipulation resistance — compound severity
         # ----------------------------------------------------------
-        manipulation_signals = getattr(self, '_pending_signals', [])
+        # Snapshot before clearing. emit_feedback → CORE review happens after
+        # this returns, and detect() does not refill the queue until step 18.
+        manipulation_signals = list(getattr(self, '_pending_signals', []) or [])
+        self._step_signals = manipulation_signals
         self._pending_signals = []
 
         if manipulation_signals:
@@ -289,6 +306,7 @@ class SelfhoodGovernance:
                     total_severity,
                     [s.detector for s in manipulation_signals],
                 )
+                self._last_systemic_damp = True
                 self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
                 return GovernanceDecision.ALLOW_WEAKENED, 0.3
 
@@ -300,12 +318,16 @@ class SelfhoodGovernance:
                     self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
                     return GovernanceDecision.QUARANTINE, 0.0
                 strength = float(max(0.3, 1.0 - total_severity))
+                self._last_systemic_damp = True
                 self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
                 return GovernanceDecision.ALLOW_WEAKENED, strength
 
             elif total_severity >= 0.30:
-                # Moderate — weaken injection
+                # Moderate — weaken injection. Named evidence stays a named
+                # damp; only a fully systemic queue is the dream-band case.
                 strength = float(max(0.3, 1.0 - total_severity))
+                if not named_signals:
+                    self._last_systemic_damp = True
                 self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
                 return GovernanceDecision.ALLOW_WEAKENED, strength
 
@@ -421,6 +443,7 @@ class SelfhoodGovernance:
         stable_ids:      List[int],
         coherence_delta: float,
         field_alignment: float = 0.0,
+        satisfaction:    Optional[float] = None,
     ) -> GovernanceFeedback:
         """
         Emit feedback after a governance decision.
@@ -441,20 +464,36 @@ class SelfhoodGovernance:
             coherence_delta is structurally ≈0 in a saturated field, so
             consumers that need a reachable signal (bond strength growth)
             read this instead. Default 0.0 keeps un-wired callers inert.
+        satisfaction : float or None
+            Lever G. None (default) keeps emotional_satisfaction =
+            max(0, coherence_delta). A float replaces that reading; the
+            cycle passes max(0, valence) when the lever is on.
 
         Returns
         -------
         GovernanceFeedback
         """
         trust_impact = _TRUST_IMPACT.get(decision, 0.0)
+        if satisfaction is None:
+            emotional_satisfaction = float(max(0.0, coherence_delta))
+        else:
+            emotional_satisfaction = float(satisfaction)
 
         outcome_metrics = {
             "coherence_delta":        coherence_delta,
             "trust_impact":           trust_impact,
-            "emotional_satisfaction": float(max(0.0, coherence_delta)),
+            "emotional_satisfaction": emotional_satisfaction,
             "surprise":               float(max(0.0, -coherence_delta)),
             "field_alignment":        float(np.clip(field_alignment, 0.0, 1.0)),
         }
+        # Lever F. The decision, the injection strength and trust_impact stay
+        # on the real verdict. Only the value engine's payment name changes,
+        # and only for a systemic-only damp (no named source).
+        if (self.systemic_damp_pays_full
+                and self._last_systemic_damp
+                and decision == GovernanceDecision.ALLOW_WEAKENED):
+            outcome_metrics["value_payment"] = "allow"
+        self._last_systemic_damp = False
 
         feedback = GovernanceFeedback(
             source_id       = source_id,
@@ -563,8 +602,14 @@ class SelfhoodGovernance:
             )
             return False
 
-        # 5. No active manipulation implicating contributing sources
-        pending = getattr(self, '_pending_signals', [])
+        # 5. No manipulation signal from this step implicating a contributor.
+        #    Pending (not yet arbitrated) and the signals arbitrate already
+        #    consumed (`_step_signals`) both count. A systemic signal has no
+        #    source_id and does not block.
+        pending = (
+            list(getattr(self, '_step_signals', []) or [])
+            + list(getattr(self, '_pending_signals', []) or [])
+        )
         for sig in pending:
             if sig.source_id and sig.source_id in request.contributing_sources:
                 logger.warning(

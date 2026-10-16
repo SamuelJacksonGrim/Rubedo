@@ -22,9 +22,12 @@ Run:
 
 import sys
 
+import numpy as np
+
 from tests._common import build_full_stack
 from agents.value_emergence import CorePromotionRequest
 from agents.manipulation_resistance import ManipulationSignal
+from tests.integration.governance_decision_flow import clean_ethical_result, trust_report
 
 
 def make_request(
@@ -181,6 +184,64 @@ def main():
     )
     result = governance.review_core_promotion(req)
     results.append(expect("Single-source value with dream reinforcement",
+                          result, True))
+
+    # ──────────────────────────────────────────────────────────────────
+    # Case 8: REJECT — contributor named in a signal arbitrate already ate
+    # ──────────────────────────────────────────────────────────────────
+    sid = registry.register("consumed_signal_value").stable_id
+    governance._pending_signals = [
+        ManipulationSignal(
+            detector="trust_wash", severity=0.5,
+            source_id="bad_actor", evidence={},
+        )
+    ]
+    governance.arbitrate(
+        clean_ethical_result(),
+        trust_report(source_id="speaker"),
+        np.zeros(4),
+        ["consumed_signal_value"],
+        "speaker",
+    )
+    pending_empty = governance._pending_signals == []
+    consumed = any(s.source_id == "bad_actor" for s in governance._step_signals)
+    mark = "✓" if pending_empty and consumed else "✗"
+    print(f'  {mark} {"Arbitrate consumed the signal into _step_signals":<52} → '
+          f'pending_empty={pending_empty} consumed={consumed}')
+    results.append(pending_empty and consumed)
+    req = make_request(
+        symbol_stable_id     = sid,
+        symbolic_core        = "consumed_signal_value",
+        contributing_sources = {"bad_actor": 0.6, "good_source": 0.4},
+    )
+    result = governance.review_core_promotion(req)
+    results.append(expect("Consumed signal from a contributor blocks promotion",
+                          result, False))
+
+    # ──────────────────────────────────────────────────────────────────
+    # Case 9: APPROVE — a consumed systemic signal names nobody
+    # ──────────────────────────────────────────────────────────────────
+    sid = registry.register("systemic_signal_value").stable_id
+    governance._pending_signals = [
+        ManipulationSignal(
+            detector="identity_erosion", severity=0.55,
+            source_id=None, evidence={},
+        )
+    ]
+    governance.arbitrate(
+        clean_ethical_result(),
+        trust_report(source_id="speaker"),
+        np.zeros(4),
+        ["systemic_signal_value"],
+        "speaker",
+    )
+    req = make_request(
+        symbol_stable_id     = sid,
+        symbolic_core        = "systemic_signal_value",
+        contributing_sources = {"source_a": 0.5, "source_b": 0.5},
+    )
+    result = governance.review_core_promotion(req)
+    results.append(expect("Consumed systemic signal does not block promotion",
                           result, True))
 
     print()

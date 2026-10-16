@@ -227,7 +227,9 @@ Rubedo/
 │   ├── integration/
 │   │   ├── tier1_revision_baseline.py     Fresh run vs baseline JSON ranges
 │   │   ├── governance_decision_flow.py    Every GovernanceDecision enum value verified
-│   │   ├── core_promotion_handshake.py    All 5 rejection paths + 2 approval paths
+│   │   ├── core_promotion_handshake.py    All 5 rejection paths + 2 approval paths; consumed signals still block
+│   │   ├── dream_crystal_collection.py    Dream credits crystals maybe_crystallize returned, not list length
+│   │   ├── value_lever_contracts.py       Levers C–G: off is the old quantity, on pays only what it claims
 │   │   ├── reflective_loop_lock_guard.py  Lock characteristic guard (loop on=RIGID, off=migrates)
 │   │   ├── attractor_merge_guard.py       Attractor merge/prune removal (array-__eq__ crash regression)
 │   │   ├── checkpoint_registry_identity.py  Checkpoint load preserves registry object
@@ -264,7 +266,8 @@ Rubedo/
 │   │   │   ├── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
 │   │   │   ├── value_reinforcement_trace.py  Step-by-step REF vs WIT reinforcement decomposition; arbitrate() return path
 │   │   │   ├── coherence_delta_bias.py    How much of coherence_delta is the raw-vs-tanh comparison, not the input
-│   │   │   └── dream_consolidation_probe.py  Why the post-dream value boost never pays (crystal gate, dream keys)
+│   │   │   ├── dream_consolidation_probe.py  Why the post-dream value boost never pays (crystal gate, dream keys)
+│   │   │   └── value_fixes_probe.py       Levers C–G alone and together vs REF, seeds 42–44; pre-declared bars
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
