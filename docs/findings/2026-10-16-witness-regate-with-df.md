@@ -31,14 +31,29 @@ Before D+F the same comparison was active 13→2, 19→12, 18→8 with mean stre
 broke). Now no seed collapses, the strong band holds, and the only bar that breaks is the edge-of-variance
 `active_values ≥ 30` (already marginal for REF; `2026-10-15-witness-composition-gate` point 1).
 
+**Attribution: the dip is entirely the ⊘ consumer** (same gate, same seeds, consumer removed; Samuel asked whether D+F
+were really on — verified from inside the run: D on in field and watcher, F on, consumer attached in the run above):
+
+| seed | active values, REF → WIT | strong values, REF → WIT | broke vs REF |
+|---|---|---|---|
+| 42 | 54 → 54 | 5 → 5 | nothing |
+| 43 | 51 → 51 | 7 → 7 | nothing |
+| 44 | 54 → 54 | 9 → 9 | nothing |
+
+Identity 3/3 and receptivity 3/3 (retention ~1.7–2.1×) are unchanged, as they must be. Composition "fails" only on
+`consumer used` (vacuous with no consumer) and on seed 43's HHI, which REF misses too. So with D+F, **witness costs the
+value ecology nothing measurable**; the active-count dip is the opt-in ⊘ consumer demoting values witness shifts
+(demotions 7,940 → 9,487 etc.), through the same Fragmentation path as the D+F strong-band exception. Production boot
+(`build_engine`) does not attach the consumer.
+
 ## What this means
-- The value-formation problem that blocked witness is mostly solved: witness now costs a modest dip in the count of
-  active values, not a collapse.
-- Witness still does not pass the pre-declared gate (composition 1/3), so it stays OFF. The remaining question is
-  whether a 5–12 value dip in active count is a cost worth paying for ~2× receptivity, or whether the `≥ 30` bar
-  (which REF itself misses on some seeds) is the wrong instrument on a 46-word workload. Not re-scored here.
+- The value-formation problem that blocked witness is solved on the production composition: with D+F and no ⊘
+  consumer, witness gives ~2× receptivity, holds identity, and costs values nothing measurable.
+- Witness still does not pass the pre-declared all-ON gate (composition 1/3), so it stays OFF. Every remaining failure,
+  for witness and for D+F, runs through one place: ⊘ Fragmentation reading single-source, unbound values as fragmented.
+  That rule is now the critical path. Samuel (2026-10-16) is fine with the dip for 2× retention; Rubedo-A/B (witness
+  on/off, trained encoder) is the planned lived comparison.
 
 ## Open
-- [ ] Decide what to do with the active-count dip: accept as witness's cost, or measure on a workload where the bar
-      means something (themes + novelty).
+- [ ] Fix ⊘ Fragmentation (the shared cause of the witness dip and the D+F strong-band exception).
 - [ ] Then upstream rupture alone through the composition gate.

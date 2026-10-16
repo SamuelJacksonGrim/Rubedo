@@ -29,7 +29,8 @@ runtime or gate changes until it is answered.
 - [ ] **Rubedo-A / Rubedo-B** (Samuel, 2026-10-16): once the trained encoder is in, two branches + project folders run
       side by side, A with witness on (2× receptivity, the active-count dip), B with witness off, to compare as lived
       systems rather than 500-step gates.
-- [ ] **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
+- [ ] **CRITICAL PATH: fix ⊘ Fragmentation.** It is the whole witness dip (without the consumer witness costs values
+      nothing, `findings/2026-10-16-witness-regate-with-df.md`) and the D+F strong-band exception. **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
       single-source, unbound values (12 strong → 2). Needs a workload with shared vocabulary per source, working crystal
       formation, or a Fragmentation rule that doesn't read every single-source value as fragmented.
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
