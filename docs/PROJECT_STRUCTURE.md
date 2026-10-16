@@ -193,6 +193,7 @@ Rubedo/
 │   ├── BACKLOG.md                         The work list: what's next, what's parked, what's done
 │   ├── EXPERIMENTAL_LEVERS.md             On/off switches and the dial census
 │   ├── VALUE_PATH_MAP.md                  Every number on the path from one input to value strength, and what it is tied to
+│   ├── LEXICON.md                         Names vs functions: what the name suggests, what the code computes, verdict
 │   ├── ARCHITECT_RULINGS_2026-07-03.md    F8 shield, checkpoint adoption, lever policy
 │   ├── ARCHITECT_RULINGS_2026-07-06.md    Trust posture: sources start TRUSTED
 │   ├── ARCHITECT_RULINGS_2026-07-08.md    Explain-then-ask; chambered governance

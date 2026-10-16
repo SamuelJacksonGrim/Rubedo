@@ -109,10 +109,6 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 
 ## 4 · Smaller things, noticed
 
-- [ ] **Lexicon** (Samuel, 2026-10-16): `docs/LEXICON.md`, every named thing, what the name suggests, what it computes,
-      verdict (accurate / misleading / overloaded). Known: generator is an encoder; coherence_delta, emotional_satisfaction,
-      surprise, identity_erosion misnamed; "witness" ×3, "coherence" ×3, "dream" ×5, two reapers. (Grok.)
-
 - [ ] Emotion calibration audit (`EMOTION_CALIBRATION.md`): six scalars from three inputs; joy ≈ coherence.
 - [ ] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why.
 - [ ] The `active_values ≥ 30` composition bar sits at the edge of seed variance.
@@ -122,6 +118,8 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 ---
 
 ## Done (don't reopen)
+
+- [x] **Lexicon** (Grok) — `docs/LEXICON.md`. Names vs what the code computes (accurate / misleading / overloaded / aspirational). Suggestions only; no rename.
 
 - [x] Wide workload + D+F graduated default-on (Grok + Ember) — `findings/2026-10-16-wide-workload-and-df-graduation.md`:
   the rattle is the system's (wide input widens the cone 15° → 20°, little else); D+F holds on both workloads, E doesn't
