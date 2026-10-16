@@ -94,6 +94,12 @@ def build_all_on(with_consumer: bool = True, with_bond_ddm: bool = True):
         consumer = IntegrityDecayConsumer(wr, ve, rate=0.05, named_only=True)
         cycle.attach_integrity_consumer(consumer)
 
+    # lever: value fixes D + F (graduated default-on 2026-10-16). Probes that
+    # compare lever arms re-apply their own flags after this, so REF stays REF.
+    from loop.recursion1188 import apply_value_levers
+    apply_value_levers(cycle, gov, ve, {"coherence_impact_like_for_like": True,
+                                        "systemic_damp_pays_full": True})
+
     return gen, cycle, gov, ve, ledger, consumer, report, pretrained
 
 

@@ -167,7 +167,8 @@ CONFIG = {
     "dream_consolidation":          False,
     # D. coherence_impact and the watcher's coherence_delta compare tanh
     # with tanh. At saturation the input's own effect is ~0.
-    "coherence_impact_like_for_like": False,
+    # GRADUATED default-on 2026-10-16 with F (findings/2026-10-15-value-fixes-measured.md).
+    "coherence_impact_like_for_like": True,
     # E. Value gate and reinforcement read field_alignment minus an EMA of
     # itself, not coherence_delta. Alpha is unused while the lever is off.
     "value_alignment_signal":       False,
@@ -175,7 +176,8 @@ CONFIG = {
     # F. A systemic-only manipulation damp still damps injection and trust.
     # The value engine is paid as ALLOW. Named sources, quarantine, reject
     # and sacred shield are unchanged.
-    "systemic_damp_pays_full":      False,
+    # GRADUATED default-on 2026-10-16 with D (needs D: alone it is inert).
+    "systemic_damp_pays_full":      True,
     # G. emotional_satisfaction reads max(0, valence) instead of max(0, cd).
     "satisfaction_from_emotion":    False,
 }
