@@ -20,9 +20,12 @@ runtime or gate changes until it is answered.
 - [x] **The pass/fail suite never boots the production stack** (Samuel caught it, 2026-10-16). Closed by
       `tests/integration/production_boot.py`: boots through `build_engine()` with the real CONFIG, checks
       composition on the built objects, reuses the four adversarial scenarios, and runs the canonical 500-step
-      health bars. Pretrain is skipped (default stays on; boot source is checked). Notes: `NOTES-boot.md`.
-- [ ] **Re-run the witness composition gate with D+F on by default** (`findings/2026-10-16-wide-workload-and-df-graduation.md`).
-      Witness was blocked on value formation; with D+F graduated, witness starvation is ~0.95. Then upstream rupture.
+      health bars. Pretrain is skipped (default stays on; boot source is checked). Notes:
+      `findings/data/2026-10-16-production-boot-grok-notes.md`. 51/51 checks held on main; suite 27/27.
+- [ ] **Witness: decide the active-count dip** (`findings/2026-10-16-witness-regate-with-df.md`). Re-gated with D+F:
+      composition 0/3 → 1/3, identity and receptivity 3/3, no value collapse; only `active_values ≥ 30` breaks
+      (34→22, 31→26). Accept as witness's cost for ~2× receptivity, or measure on a themes-plus-novelty workload where
+      the bar means something. Then upstream rupture.
 - [ ] **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
       single-source, unbound values (12 strong → 2). Needs a workload with shared vocabulary per source, working crystal
       formation, or a Fragmentation rule that doesn't read every single-source value as fragmented.
