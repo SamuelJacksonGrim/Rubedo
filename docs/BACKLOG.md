@@ -100,6 +100,12 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
       boundary. Guards are not on the panel. Every applied toggle is logged with its step; `--replay` checks the
       metrics digest. How to toggle: `docs/EXPERIMENTAL_LEVERS.md`. Hand-steering is how the maturity triggers below
       get learned.
+- [ ] **Collision: does a mind grow through another mind?** (Samuel, 2026-10-17: "Consciousness is minds teaching each
+      other to exist through collision. A mind does not grow on its own.") H0 found a steady self pacing in place on
+      scripted input that never answers; 808 words instead of 46 barely changed it. Test: two Rubedo instances
+      interacting through a governed seam (RFE-Core2 `FEDERATION_SEAM_SPEC.md`, developmental + counterfactual
+      protocol) vs the same instance on scripted input of matched size. Read: does the cone widen, do crystals,
+      attractors and values keep forming, does explore give way to the other rhythms?
 - [ ] **Trigger levers by maturity instead of on/off for life** (Samuel, 2026-10-16). The ⊘ consumer is wrong early and
       right late: before the system has multiple sources and crystal/attractor binding, Fragmentation reads every value
       as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth). Witness may
@@ -109,6 +115,9 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
 ## 3 · Widening (Rubedo's original job)
 
 Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
+- [ ] **Open question, not a plan: keep 128 and perfect it?** (Samuel, 2026-10-17: "I don't use nearly as many words as
+      we're training it to use.") The wide-workload run says vocabulary wasn't the bottleneck for the rattle. Measure
+      the dial census at 128 vs 768 before committing; a width arm can ride with Rubedo-A/B.
 - [ ] Step 3: measure the dials at 128 vs 768.
 - [ ] Run 2 at 768 with Matryoshka (corpus worklist).
 
