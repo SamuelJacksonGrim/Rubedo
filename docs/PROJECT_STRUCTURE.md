@@ -317,11 +317,10 @@ Rubedo/
 ├── CONTRIBUTING.md                        How to send a change
 ├── LICENSE                                AGPL-3.0-only
 ├── LICENSING.md                           How the two tracks relate
-├── NOTES-wide.md                          Wide-workload handoff: vocabulary, known fraction, measurement commands
-├── NOTES-boot.md                          Production-boot suite test: what it covers, what it doesn't, runtime
 ├── NOTICE                                 Copyright, SPDX, provenance
 ├── README.md                              Conceptual tour
 ├── STATE.md                               You are here: shipped, settled, parked, open
 ├── requirements.txt                       Runtime dependencies
+├── run_all_tests.ps1                      Windows runner for the same list (uses RFE-Core2's venv)
 └── run_all_tests.sh                       Pass/fail gate, including the doc checks
 ```

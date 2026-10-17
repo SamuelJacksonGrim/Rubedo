@@ -685,6 +685,8 @@ Configuration layers with precedence **component default < `configs/*.yaml` <
 bash run_all_tests.sh
 ```
 
+On Windows: `powershell -File run_all_tests.ps1` (same list; points at RFE-Core2's venv by default, `-Python` to override).
+
 Runs every pass/fail test — smoke (full-stack bring-up), integration (governance + promotion flow), adversarial (flood calibration, manipulation cascade, identity drift, sacred shield), and documentation accuracy. Exits 0 only if all pass. This is the gate.
 
 ### Physics validators (regression guards)

@@ -1,10 +1,48 @@
 # OPEN: metastability, change, and what values are built from
 
-**RESUME HERE** (marker set 2026-10-15, before a context compaction). Samuel paused the value-formation fix to ask a
-deeper question first. Nothing below is decided. **Witness and rupture stay OFF. Don't change the runtime or weaken
-any gate until this is answered.**
+**RESUME HERE.** Current state as of 2026-10-17 (written before a context compaction, so a fresh instance lands in the
+right place). The work list is `docs/BACKLOG.md`; the names that mislead are in `docs/LEXICON.md`.
 
-## Where we are
+## Where we are (2026-10-17)
+
+**What got answered (2026-10-15/16), with the finding for each:**
+- *Why every value weakened under witness* → `findings/2026-10-15-why-values-weaken-under-witness.md`: coherence_delta
+  was a raw-vs-tanh measurement artifact (the input's own effect was ~1/250th of it), and the system's own dreaming was
+  damped as `identity_erosion`, which cut the decision bonus and failed the emergence gate. Not joy, not negative
+  reinforcement.
+- *The dream consolidation channel* → `2026-10-15-dream-consolidation-closed.md`: closed three ways by construction.
+- *H0 (is the lock already the healthy equilibrium?)* → `2026-10-15-h0-steady-self-rattling-mind.md` and
+  `2026-10-16-wide-workload-and-df-graduation.md`: half yes. A steady self that does not stiffen with age (timescale
+  ratio on a shelf ~20–35, recovery the same at every age, robust not antifragile), with a mind that rattles: expression
+  is white jitter in a fixed ~15–20° cone, the system parks in explore, crystals and attractors close early. True on an
+  808-word workload too, so it is the system's. The field is constitutive and clamped.
+- *Value fixes* → `2026-10-15-value-fixes-measured.md`, `2026-10-16-wide-workload-and-df-graduation.md`: two bugs fixed
+  (CORE manipulation guard; dream crystals by identity, only new ones pay). **Levers D (honest coherence_delta) and F
+  (systemic damp pays full) graduated default-on** under an exception Samuel granted. C (dream credit) floods, E
+  (alignment signal) was workload-specific, G (valence satisfaction) is indiscriminate: all off.
+- *Witness* → `2026-10-16-witness-regate-with-df.md`: with D+F, witness gives ~2× receptivity, holds identity, and costs
+  values **nothing** once the opt-in ⊘ consumer is removed. Its remaining gate failure is the ⊘ consumer. Samuel is fine
+  with the dip for 2× retention; Rubedo-A/B (witness on/off, trained encoder) is planned. Witness stays OFF until the
+  gate passes or Samuel decides.
+
+**The critical path now: ⊘ Fragmentation.** The ⊘ consumer demotes any value that is single-source AND thinly bound.
+On the test workloads nearly every value is both (workload A gives 44/46 tokens to one source; the crystal store holds
+1–4 crystals). It is the whole witness dip and the D+F strong-band exception. Fix the rule or its inputs.
+
+**Also landed:** a suite test that boots the real production stack (`tests/integration/production_boot.py`); the
+lexicon and rename batch 1 (proven bit-identical with `tests/diagnostic/rename_digest.py`; pin math threads on both
+sides); the live board (`tools/board`, :8780, lever toggles at step boundaries, every toggle logged and replayable).
+
+**Still open from the five questions below:** 1 (what metastability means operationally) is mostly answered by H0;
+2 still lacks Samuel's ~1,000-step rupture result recovered from RFE-Core2 history; 3 answered (a stable equilibrium
+whose counterbalance is jitter, not reorganization); **4 (what values should read) is the real open question**; 5
+answered (option b was a no-op, and the drop was never mostly coherence_delta).
+
+**Next, in order:** rename batch 2 → ⊘ Fragmentation → re-gate witness → value semantics (question 4) → growth /
+maturity-triggered levers. Samuel also has a new idea to raise (2026-10-17) that he expects me to disagree with.
+
+## History: where we were on 2026-10-15 (kept as written)
+
 The witness composition gate (`findings/2026-10-15-witness-composition-gate.md`) found: identity PASS 3/3,
 receptivity PASS 3/3 (~2× retention, anchor steadier), composition FAIL 3/3 because **every** value weakens under
 witness (top ACTIVE tier 5→0, 7→0; no dissolution, reinforcement tips negative). Upstream rupture would tax values the
