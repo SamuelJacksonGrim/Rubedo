@@ -43,6 +43,17 @@ _BINDING_REF    = 4.0    # crystal+attractor binding sum giving full support
 _CONSERVATISM   = 0.8    # coverage-gap discount on support (Kimi: missing profile → more suspicion)
 _HEALTH_FLOOR   = 0.70   # overall support at/above which no advisory is emitted
 _READ_FLOOR     = 0.30   # values at/below this strength are dissolution-band, skipped
+# Crystal/attractor token-relays a value must have lived through before
+# Fragmentation may name it. Consulted only when fragmentation_grace is on.
+# A step age cannot: on the composition-gate trajectory mutation is still
+# readable and unbound at age 293, while witness seed 44 workload A leaves
+# governance readable and unbound at age 306 (finding 2026-10-18). Counted
+# from the value's first read(), one per token on signal_crystal /
+# signal_attractor. 1500 is above every measured strong value's count at
+# its last readable-unbound step (highest 1407, seed 44 A, both arms) and
+# below the composition tail (mutation / bifurcation / chaos at 1836).
+# Drift and Dissolution do not use it.
+_FRAGMENTATION_GRACE_SIGNALS = 1500
 
 
 @dataclass
@@ -163,16 +174,29 @@ class WitnessReaper:
         Type-expected support profiles. None today (the baseline registry carries
         aggregate ranges, not per-type thinness profiles) → every node hits the
         conservative coverage-gap fallback, logged. This is a tracked dependency.
+    fragmentation_grace : bool
+        Off (default): Fragmentation is the historical level check. On: a value
+        is not named Fragmentation until `_FRAGMENTATION_GRACE_SIGNALS`
+        crystal/attractor token-relays have happened since it was first read
+        (see that constant). Drift and Dissolution are unchanged either way.
+        `apply_value_levers` sets this from `CONFIG["fragmentation_grace"]`,
+        which defaults off, and arms the relay counter on the cycle's generator.
     """
 
     def __init__(self, value_engine, registry=None, bond_manager=None,
                  sacred_check: Optional[Callable[[int], bool]] = None,
-                 baseline_profiles: Optional[Dict] = None, field=None):
+                 baseline_profiles: Optional[Dict] = None, field=None,
+                 fragmentation_grace: bool = False):
         self.value_engine      = value_engine
         self.registry          = registry
         self.bond_manager      = bond_manager
         self.sacred_check      = sacred_check
         self.baseline_profiles = baseline_profiles or {}
+        self.fragmentation_grace = bool(fragmentation_grace)
+        # Relay counter for the grace. Stays 0 unless arm_binding_clock ran,
+        # which only happens when the flag is on. The off path never reads it.
+        self._binding_signals = 0
+        self._grace_birth_sig: Dict[str, int] = {}
         # ResonanceField handle for the absolute-alignment coherence read. When
         # None, the coherence axis degrades to neutral+flagged (no marginal-delta
         # fallback — that signal is dead by construction in a saturated field).
@@ -232,6 +256,56 @@ class WitnessReaper:
             return 0.0, (self.bond_manager is None)   # thin; coverage-limited w/o bonds
         return 0.0, False             # zero attributed sources
 
+    def arm_binding_clock(self, generator) -> None:
+        """Count crystal and attractor token relays on `generator`.
+
+        Installed only when the grace flag is on, so the off path does not
+        wrap these methods. A second call does not double-count.
+        """
+        if generator is None or getattr(generator, "_fragmentation_clock_armed", False):
+            return
+        crystal = generator.signal_crystal
+        attractor = generator.signal_attractor
+        reaper = self
+
+        def signal_crystal(tokens, *args, **kwargs):
+            seq = list(tokens)
+            reaper._binding_signals += len(seq)
+            return crystal(seq, *args, **kwargs)
+
+        def signal_attractor(tokens, *args, **kwargs):
+            seq = list(tokens)
+            reaper._binding_signals += len(seq)
+            return attractor(seq, *args, **kwargs)
+
+        generator.signal_crystal = signal_crystal
+        generator.signal_attractor = signal_attractor
+        generator._fragmentation_clock_armed = True
+
+    def _note_grace_births(self) -> None:
+        """Snapshot the relay count the first time each living value is seen.
+
+        Includes values under the read floor, so a value that is still weak
+        does not start its grace late. Read-only apart from this dict.
+        """
+        sig = self._binding_signals
+        births = self._grace_birth_sig
+        for value in self.value_engine.values.values():
+            if value.dissolved_at_step >= 0:
+                continue
+            births.setdefault(value.value_id, sig)
+
+    def _past_fragmentation_grace(self, value) -> bool:
+        """True once binding has had the grace's worth of relays since birth.
+
+        Birth is the relay count at the value's first read(), not its step
+        age. A value seen for the first time this call has a delta of 0.
+        """
+        born = self._grace_birth_sig.get(getattr(value, "value_id", None))
+        if born is None:
+            return False
+        return (self._binding_signals - born) >= _FRAGMENTATION_GRACE_SIGNALS
+
     def _binding_support(self, value):
         if self.registry is not None and hasattr(self.registry, "symbols"):
             state = self.registry.symbols.get(value.symbolic_core)
@@ -243,6 +317,10 @@ class WitnessReaper:
     # ---- the integrity-read -------------------------------------------------
 
     def read(self) -> List[DemotionAdvisory]:
+        # Off path does not snapshot. On path records births before the floor
+        # filter, then the Fragmentation branch below consults them.
+        if self.fragmentation_grace:
+            self._note_grace_births()
         values = [v for v in self.value_engine.values.values()
                   if v.dissolved_at_step < 0 and v.strength > _READ_FLOOR]
         active_ids = {v.value_id for v in values}
@@ -264,7 +342,11 @@ class WitnessReaper:
             if cc < _THIN_TAU and v.strength >= _HIGH_STRENGTH:
                 paths.append("Dissolution")
             if sd < _THIN_TAU and ab < _THIN_TAU:
-                paths.append("Fragmentation")
+                # Off: the historical level check, unchanged. On: the same
+                # check, but not while the value is still inside the grace.
+                # `not grace` is first so the off path does not read age.
+                if not self.fragmentation_grace or self._past_fragmentation_grace(v):
+                    paths.append("Fragmentation")
 
             support = tv.support()
             if coverage_gap:

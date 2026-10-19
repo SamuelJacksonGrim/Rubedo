@@ -66,6 +66,7 @@ def _check_config_defaults(results):
         ("dream_consolidation", "C"),
         ("value_alignment_signal", "E"),
         ("satisfaction_from_emotion", "G"),
+        ("fragmentation_grace", "Fragmentation grace"),
         ("six_rhythm_selector", "six-rhythm selector"),
         ("rupture_upstream", "upstream rupture"),
         ("fix0b_diversity_fitness", "Fix 0-B"),

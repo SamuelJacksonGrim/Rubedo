@@ -87,6 +87,116 @@ def _arbitrate(gov, signal):
     )
 
 
+def _fragmentation_grace():
+    """Grace holds Fragmentation only. Drift still names an unbound value."""
+    from cognition.integrity_read import WitnessReaper, _FRAGMENTATION_GRACE_SIGNALS
+    from loop.recursion1188 import apply_value_levers
+
+    class _Polarity:
+        value = "emergent"
+
+    class _Value:
+        def __init__(self):
+            self.value_id = "v"
+            self.symbolic_core = "tok"
+            self.dissolved_at_step = -1
+            self.strength = 2.0
+            self.counter_values = ["missing"]   # complement absent → Drift
+            self.source_weights = {"speaker": 1.0}
+            self.polarity = _Polarity()
+            self.promoted_to_sacred = False
+            self.symbol_stable_id = 1
+            self.birth_step = 1
+
+    class _Engine:
+        def __init__(self, value):
+            self.values = {"v": value}
+            self._step = 1
+
+    def paths(grace, signals):
+        value = _Value()
+        reaper = WitnessReaper(_Engine(value), fragmentation_grace=grace)
+        # Birth at 0 relays. read() will not overwrite an existing snapshot.
+        reaper._grace_birth_sig[value.value_id] = 0
+        reaper._binding_signals = signals
+        advisories = reaper.read()
+        return advisories[0].pathologies if advisories else []
+
+    young_off = paths(False, 0)
+    young_on = paths(True, _FRAGMENTATION_GRACE_SIGNALS - 1)
+    old_on = paths(True, _FRAGMENTATION_GRACE_SIGNALS)
+    out = [
+        expect(
+            "Fragmentation grace off still names a young single-source value",
+            "Fragmentation" in young_off and "Drift" in young_off,
+            detail=str(young_off),
+        ),
+        expect(
+            "Fragmentation grace on holds Fragmentation and still names Drift",
+            "Fragmentation" not in young_on and "Drift" in young_on
+            and "Dissolution" not in young_on,
+            detail=str(young_on),
+        ),
+        expect(
+            "Fragmentation grace on names Fragmentation once binding relays elapse",
+            "Fragmentation" in old_on and "Drift" in old_on,
+            detail=str(old_on),
+        ),
+    ]
+
+    class _Gen:
+        def __init__(self):
+            self.calls = []
+
+        def signal_crystal(self, tokens, delta=0.3):
+            self.calls.append(("crystal", list(tokens), delta))
+
+        def signal_attractor(self, tokens, delta=0.5):
+            self.calls.append(("attractor", list(tokens), delta))
+
+    gen = _Gen()
+    clocked = WitnessReaper(_Engine(_Value()), fragmentation_grace=True)
+    clocked.arm_binding_clock(gen)
+    gen.signal_crystal(["a", "b"], delta=0.3)
+    gen.signal_attractor(["c"], delta=0.1)
+    clocked.arm_binding_clock(gen)   # second arm must not double-count
+    gen.signal_crystal(["d"])
+    out.append(expect(
+        "binding clock counts token relays once",
+        clocked._binding_signals == 4
+        and gen.calls[0] == ("crystal", ["a", "b"], 0.3)
+        and gen.calls[1] == ("attractor", ["c"], 0.1),
+        detail=str(clocked._binding_signals),
+    ))
+
+    class _Flag:
+        coherence_like_for_like = False
+
+    class _Cycle:
+        def __init__(self, reaper):
+            self.field = _Flag()
+            self.watcher = _Flag()
+            self.integrity_read = reaper
+
+    class _Gov:
+        systemic_damp_pays_full = False
+
+    class _VE:
+        value_alignment_signal = False
+        alignment_ema_alpha = 0.05
+
+    reaper = WitnessReaper(_Engine(_Value()))
+    cycle = _Cycle(reaper)
+    apply_value_levers(cycle, _Gov(), _VE(), {"fragmentation_grace": True})
+    on = reaper.fragmentation_grace is True
+    apply_value_levers(cycle, _Gov(), _VE(), {})
+    out.append(expect(
+        "apply_value_levers sets fragmentation_grace, default off",
+        on and reaper.fragmentation_grace is False,
+    ))
+    return out
+
+
 def main():
     print("=" * 72)
     print("  INTEGRATION: value-path lever contracts")
@@ -221,6 +331,8 @@ def main():
         and abs(second - 0.05) < 1e-9,
         detail=f"off={off_sum:.4f} first={first:.4f} second={second:.4f}",
     ))
+
+    results.extend(_fragmentation_grace())
 
     print()
     passed = sum(results)

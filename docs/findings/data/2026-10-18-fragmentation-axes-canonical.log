@@ -1,0 +1,46 @@
+fragmentation axes probe  consumer=OFF  tau=0.35 binding_ref=4.0 recurring>=8 strong>=3.5
+
+== canonical overlap distinct=46 shared=2 (0.043) by_n={'1': 44, '2': 2}
+   pretrained=True consumer=OFF seed=42 steps=2000
+   canonical step    50  alive= 43 above= 43 strong=  0 healthy=  0 bottom= 19 frag= 38 frag_healthy=- frag_strong=- bound=  3 xls=1 attr=2 raw_max=4.00 raw_p50=0.00 cc_p50=0.56 drops=0
+   canonical step   100  alive= 46 above= 46 strong=  0 healthy=  0 bottom=  3 frag= 33 frag_healthy=- frag_strong=- bound= 12 xls=1 attr=1 raw_max=4.90 raw_p50=0.00 cc_p50=0.58 drops=0
+   canonical step   150  alive= 46 above= 46 strong=  0 healthy=  0 bottom=  0 frag= 33 frag_healthy=- frag_strong=- bound= 12 xls=1 attr=1 raw_max=5.20 raw_p50=0.00 cc_p50=0.56 drops=0
+   canonical step   200  alive= 46 above= 46 strong=  0 healthy=  0 bottom=  0 frag= 33 frag_healthy=- frag_strong=- bound= 12 xls=1 attr=1 raw_max=7.30 raw_p50=0.00 cc_p50=0.59 drops=0
+   canonical step   250  alive= 46 above= 46 strong=  0 healthy=  0 bottom=  0 frag= 27 frag_healthy=- frag_strong=- bound= 18 xls=2 attr=2 raw_max=9.20 raw_p50=0.60 cc_p50=0.59 drops=0
+   canonical step   300  alive= 46 above= 46 strong=  2 healthy=  2 bottom=  0 frag= 12 frag_healthy=0.0 frag_strong=0.0 bound= 34 xls=2 attr=2 raw_max=13.00 raw_p50=3.60 cc_p50=0.57 drops=0
+   canonical step   350  alive= 46 above= 46 strong=  2 healthy=  2 bottom=  0 frag=  6 frag_healthy=0.0 frag_strong=0.0 bound= 40 xls=2 attr=2 raw_max=17.50 raw_p50=6.00 cc_p50=0.56 drops=0
+   canonical step   400  alive= 46 above= 46 strong=  2 healthy=  2 bottom=  0 frag=  3 frag_healthy=0.0 frag_strong=0.0 bound= 43 xls=2 attr=2 raw_max=20.00 raw_p50=8.70 cc_p50=0.55 drops=0
+   canonical step   450  alive= 46 above= 46 strong=  5 healthy=  5 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=10.50 cc_p50=0.54 drops=0
+   canonical step   500  alive= 46 above= 46 strong= 12 healthy= 12 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=12.60 cc_p50=0.53 drops=0
+   canonical step   550  alive= 46 above= 46 strong= 12 healthy= 12 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=13.80 cc_p50=0.52 drops=0
+   canonical step   600  alive= 46 above= 46 strong= 12 healthy= 12 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=14.70 cc_p50=0.52 drops=0
+   canonical step   650  alive= 46 above= 46 strong= 12 healthy= 12 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=15.90 cc_p50=0.52 drops=0
+   canonical step   700  alive= 46 above= 46 strong= 17 healthy= 17 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=17.65 cc_p50=0.51 drops=0
+   canonical step   750  alive= 46 above= 46 strong= 20 healthy= 20 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=18.55 cc_p50=0.51 drops=0
+   canonical step   800  alive= 46 above= 46 strong= 20 healthy= 20 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=19.55 cc_p50=0.51 drops=0
+   canonical step   850  alive= 46 above= 46 strong= 23 healthy= 23 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step   900  alive= 46 above= 46 strong= 25 healthy= 25 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.50 drops=0
+   canonical step   950  alive= 46 above= 46 strong= 25 healthy= 25 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1000  alive= 46 above= 46 strong= 28 healthy= 28 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1050  alive= 46 above= 46 strong= 31 healthy= 31 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1100  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=2 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.50 drops=0
+   canonical step  1150  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1200  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1250  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1300  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1350  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1400  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1450  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1500  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1550  alive= 46 above= 46 strong= 34 healthy= 34 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1600  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1650  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1700  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1750  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1800  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1850  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1900  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  1950  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   canonical step  2000  alive= 46 above= 46 strong= 46 healthy= 46 bottom=  0 frag=  0 frag_healthy=0.0 frag_strong=0.0 bound= 46 xls=3 attr=2 raw_max=20.00 raw_p50=20.00 cc_p50=0.51 drops=0
+   wrote C:\Users\spamw\grok\workspace\rubedo-fragmentation\docs\findings\data\2026-10-18-fragmentation-axes-canonical.json
+done

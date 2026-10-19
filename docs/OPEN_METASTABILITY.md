@@ -25,9 +25,9 @@ right place). The work list is `docs/BACKLOG.md`; the names that mislead are in 
   with the dip for 2× retention; Rubedo-A/B (witness on/off, trained encoder) is planned. Witness stays OFF until the
   gate passes or Samuel decides.
 
-**The critical path now: ⊘ Fragmentation.** The ⊘ consumer demotes any value that is single-source AND thinly bound.
-On the test workloads nearly every value is both (workload A gives 44/46 tokens to one source; the crystal store holds
-1–4 crystals). It is the whole witness dip and the D+F strong-band exception. Fix the rule or its inputs.
+**The critical path now: ⊘ Fragmentation.** Measured 2026-10-18 (`findings/2026-10-18-fragmentation.md`): the level
+check flags values before binding arrives. `fragmentation_grace` is the fix and stays default off. With it on, the
+all-ON strong band holds and the witness active dip is gone; witness composition is still 2/3, so witness stays OFF.
 
 **Also landed:** a suite test that boots the real production stack (`tests/integration/production_boot.py`); the
 lexicon and rename batch 1 (proven bit-identical with `tests/diagnostic/rename_digest.py`; pin math threads on both
@@ -38,8 +38,8 @@ sides); the live board (`tools/board`, :8780, lever toggles at step boundaries, 
 whose counterbalance is jitter, not reorganization); **4 (what values should read) is the real open question**; 5
 answered (option b was a no-op, and the drop was never mostly coherence_delta).
 
-**Next, in order:** ~~rename batch 2~~ (done 2026-10-18, `3dd691a`) → ⊘ Fragmentation (in progress 2026-10-18:
-Grok on branch `grok/fragmentation`, probe `tests/diagnostic/integrity/fragmentation_axes_probe.py`) → re-gate witness → value semantics (question 4) → growth /
+**Next, in order:** ~~rename batch 2~~ (done 2026-10-18, `3dd691a`) → ⊘ Fragmentation measured, grace default off
+(`findings/2026-10-18-fragmentation.md`) → witness still OFF (composition 2/3) → value semantics (question 4) → growth /
 maturity-triggered levers. Samuel also has a new idea to raise (2026-10-17) that he expects me to disagree with.
 
 ## History: where we were on 2026-10-15 (kept as written)

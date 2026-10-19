@@ -289,7 +289,8 @@ Rubedo/
 │   │   │   ├── value_reinforcement_trace.py  Step-by-step REF vs WIT reinforcement decomposition; arbitrate() return path
 │   │   │   ├── coherence_delta_bias.py    How much of coherence_delta is the raw-vs-tanh comparison, not the input
 │   │   │   ├── dream_consolidation_probe.py  Why the post-dream value boost never pays (crystal gate, dream keys)
-│   │   │   └── value_fixes_probe.py       Levers C–G alone and together vs REF, seeds 42–44; pre-declared bars
+│   │   │   ├── value_fixes_probe.py       Levers C–G alone and together vs REF, seeds 42–44; pre-declared bars
+│   │   │   └── fragmentation_axes_probe.py  Source, binding and thinness over time, consumer off; what Fragmentation fires on
 │   │   ├── metastability/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   └── h0_probe.py                H0 long run: field shape, timescale ratio, who leads, recovery vs age

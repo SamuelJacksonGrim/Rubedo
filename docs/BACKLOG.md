@@ -30,9 +30,11 @@ runtime or gate changes until it is answered.
       side by side, A with witness on (2× receptivity, the active-count dip), B with witness off, to compare as lived
       systems rather than 500-step gates.
 - [ ] **CRITICAL PATH: fix ⊘ Fragmentation.** It is the whole witness dip (without the consumer witness costs values
-      nothing, `findings/2026-10-16-witness-regate-with-df.md`) and the D+F strong-band exception. **Make the ⊘ strong-band check meaningful again.** The all-ON gate's one failing check is ⊘ Fragmentation trimming
-      single-source, unbound values (12 strong → 2). Needs a workload with shared vocabulary per source, working crystal
-      formation, or a Fragmentation rule that doesn't read every single-source value as fragmented.
+      nothing, `findings/2026-10-16-witness-regate-with-df.md`) and the D+F strong-band exception. Measured 2026-10-18:
+      the level check is a youth detector. `fragmentation_grace` (default **off**, not graduated; not on the board)
+      waits for 1,500 crystal/attractor relays before Fragmentation may name a value. With it on, the all-ON gate
+      passes (strong 12 vs 12, demotions 90) and the witness active dip is gone; witness composition is 2/3 because
+      seed 43 workload B HHI is 0.307 on both arms. `findings/2026-10-18-fragmentation.md`.
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
       words), wide starves them of repetition (808 words for 64 slots).
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new

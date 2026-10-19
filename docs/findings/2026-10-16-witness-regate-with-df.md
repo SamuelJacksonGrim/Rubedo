@@ -55,5 +55,5 @@ value ecology nothing measurable**; the active-count dip is the opt-in ⊘ consu
   on/off, trained encoder) is the planned lived comparison.
 
 ## Open
-- [ ] Fix ⊘ Fragmentation (the shared cause of the witness dip and the D+F strong-band exception).
+- [ ] Fix ⊘ Fragmentation (the shared cause of the witness dip and the D+F strong-band exception). A default-off grace exists (`2026-10-18-fragmentation`); the dip is gone with it on, and the flag is not graduated.
 - [ ] Then upstream rupture alone through the composition gate.

@@ -180,6 +180,12 @@ CONFIG = {
     "systemic_damp_pays_full":      True,
     # G. emotional_satisfaction reads max(0, valence) instead of max(0, cd).
     "satisfaction_from_emotion":    False,
+    # Fragmentation grace (finding 2026-10-18). Off: the historical level
+    # check (single-source and unbound). On: that check waits until
+    # _FRAGMENTATION_GRACE_SIGNALS crystal/attractor relays have happened
+    # since the value was first read. Drift and Dissolution are not gated.
+    # Default off. Not graduated.
+    "fragmentation_grace":          False,
 }
 
 # Default token sequences — replace with your own input pipeline
@@ -415,6 +421,15 @@ def apply_value_levers(cycle, governance, value_engine, config: dict = None) -> 
     governance.systemic_damp_pays_full = bool(config.get("systemic_damp_pays_full", False))
     value_engine.value_alignment_signal = bool(config.get("value_alignment_signal", False))
     value_engine.alignment_ema_alpha = float(config.get("alignment_ema_alpha", 0.05))
+    # The reaper is opt-in and usually not attached yet. When it is (the
+    # all-ON probes attach it before this call), the flag reaches the read.
+    reaper = getattr(cycle, "integrity_read", None)
+    if reaper is not None:
+        reaper.fragmentation_grace = bool(config.get("fragmentation_grace", False))
+        # Arm only while on. Off leaves signal_crystal / signal_attractor
+        # as the generator defined them.
+        if reaper.fragmentation_grace:
+            reaper.arm_binding_clock(getattr(cycle, "generator", None))
 
 
 def build_dream_channel(generator, config: dict = None):

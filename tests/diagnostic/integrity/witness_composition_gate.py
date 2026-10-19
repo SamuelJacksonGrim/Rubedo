@@ -74,9 +74,10 @@ def attach_witness(gen, cycle):
     cycle.attach_rhythm_reader(reader)
 
 
-def run(seed, workload, with_witness):
+def run(seed, workload, with_witness, fragmentation_grace=False):
     with determinism.deterministic(seed):
-        gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on()
+        gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on(
+            fragmentation_grace=fragmentation_grace)
         if with_witness:
             attach_witness(gen, cycle)
         pick = random.Random(seed)
@@ -132,14 +133,17 @@ def health_checks(h, strong_ref):
 
 
 def main():
-    seeds = [int(a) for a in sys.argv[1:]] or [42, 43, 44]
+    grace = "--fragmentation-grace" in sys.argv[1:]
+    seeds = [int(a) for a in sys.argv[1:] if a != "--fragmentation-grace"] or [42, 43, 44]
+    if grace:
+        print("fragmentation_grace=ON")
     tally = Counter()
     for seed in seeds:
         print(f"\n=== seed {seed}")
         comp_ok = True
         for wl in ("A", "B"):
-            h_ref, r_ref = run(seed, wl, False)
-            h_wit, r_wit = run(seed, wl, True)
+            h_ref, r_ref = run(seed, wl, False, fragmentation_grace=grace)
+            h_wit, r_wit = run(seed, wl, True, fragmentation_grace=grace)
             c_ref, c_wit = health_checks(h_ref, h_ref["strong"]), health_checks(h_wit, h_ref["strong"])
             fired = sum(1 for x in r_wit if x["behavior"] == "witness")
             broke = [k for k in c_wit if c_ref[k] and not c_wit[k]]

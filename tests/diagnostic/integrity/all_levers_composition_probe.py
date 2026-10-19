@@ -48,7 +48,8 @@ from tests._common import (RESONANCE_FAMILY_SOURCES, RESONANCE_FAMILY_WEIGHTS,  
 DIM = 128
 
 
-def build_all_on(with_consumer: bool = True, with_bond_ddm: bool = True):
+def build_all_on(with_consumer: bool = True, with_bond_ddm: bool = True,
+                 fragmentation_grace: bool = False):
     """The full stack with EVERY behaviour-bearing lever turned on together."""
     gen = Generator(vocab_size=4096, dim=DIM, depth=3, heads=4)
 
@@ -98,7 +99,8 @@ def build_all_on(with_consumer: bool = True, with_bond_ddm: bool = True):
     # compare lever arms re-apply their own flags after this, so REF stays REF.
     from loop.recursion1188 import apply_value_levers
     apply_value_levers(cycle, gov, ve, {"coherence_impact_like_for_like": True,
-                                        "systemic_damp_pays_full": True})
+                                        "systemic_damp_pays_full": True,
+                                        "fragmentation_grace": fragmentation_grace})
 
     return gen, cycle, gov, ve, ledger, consumer, report, pretrained
 
@@ -136,6 +138,7 @@ def main() -> int:
     # on (or cleared of) that one lever by paired comparison.
     import sys
     with_bond_ddm = "--bond-ddm-off" not in sys.argv
+    fragmentation_grace = "--fragmentation-grace" in sys.argv
 
     print("=" * 78)
     print(f"  ALL LEVERS ON — composition probe   spec: v0.3   dim {DIM}"
@@ -152,18 +155,20 @@ def main() -> int:
     # plasticity, so the old `≥2` constant was calibrated to a baseline that no
     # longer exists.)
     _g, _c, _gov, _ve, _l, _cons, _r, _p = build_all_on(
-        with_consumer=False, with_bond_ddm=with_bond_ddm)
+        with_consumer=False, with_bond_ddm=with_bond_ddm,
+        fragmentation_grace=fragmentation_grace)
     run_resonance(_c, _gov, _ve, n_steps=500, seed=42)
     strong_ref = _strong(_ve)
 
     gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on(
-        with_bond_ddm=with_bond_ddm)
+        with_bond_ddm=with_bond_ddm, fragmentation_grace=fragmentation_grace)
 
     print("\n  levers active:")
     print(f"    eval_mode=ON  corpus_pretrain={'ON' if pretrained else 'unavail'}  "
           f"novelty_attenuation=ON")
     print(f"    ignition(A)=ON (eff_rank {report.eff_rank_before:.2f}->{report.eff_rank_after:.2f})  "
-          f"λ_gate(B)=ON (gain={ledger.gain():.3f})  ⊘_consumer=ON (named_only)")
+          f"λ_gate(B)=ON (gain={ledger.gain():.3f})  ⊘_consumer=ON (named_only)  "
+          f"fragmentation_grace={'ON' if fragmentation_grace else 'off'}")
 
     decisions = run_resonance(cycle, gov, ve, n_steps=500, seed=42)
     h = health_summary(cycle, gov, ve, decisions)
