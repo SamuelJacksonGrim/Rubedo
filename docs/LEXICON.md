@@ -368,6 +368,7 @@ A rename must not change behaviour. The proof, before and after, is `python -m t
 | `coherence_flood` | `source_monopoly` | 2026-10-16 | `c1b92c7` | **done.** The detector (HHI ≥ 0.70 and attractor monopoly ≥ 0.70): the string, the method, and the docs that name the live detector. `canonical_detector()` still accepts `coherence_flood` on read. |
 | `ThinnessVector.coherence_contribution` | `alignment_support` | 2026-10-16 | `7bf2428` | **done.** The ⊘ axis, absolute field-alignment. `as_dict` writes the new key. The constructor keyword and `from_dict` still accept the old key. Not `EmergentValue.coherence_contribution`. |
 | `Dreamer` docstring "offline" | runs live inside the step | 2026-10-16 | `454e4ef` | **done.** Text only. The class is called from the cycle step. |
+| Batch 2, the aspirational names: `dream_pressure`, `crystal_pressure`, `entropy_drift`, `ReflectiveLoop.attractor_blend`, `CoherenceReport.stable` | names kept; their docstrings now say nothing reads the first four, and that `stable` is the reflective-loop entry floor (composite ≥ 0.40), not a stability verdict. CLAUDE.md no longer says the emotions scale `crystal_pressure` / `dream_pressure` every step | 2026-10-18 | `3dd691a` | **done.** Text only; each "unread" claim checked against every call site first. Digest bit-identical (combined `48f877d8…` at OMP/MKL = 1). `agents/rhythm_config.json` still lists `dream_pressure` under `wonder_drives` / `boredom_drives`; no code reads those lists. |
 
 Held, on purpose:
 
