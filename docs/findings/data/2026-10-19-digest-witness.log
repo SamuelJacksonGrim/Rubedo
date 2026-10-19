@@ -1,0 +1,17 @@
+rename-digest  steps=400  seed=42
+  run all_on_cg ...
+  all_on_cg e7c7468512d4605cf387af91bf47869d88b7454f354be8b641e386aea4109ff6  (206.5s)
+  coverage all_on_cg: dreams=180 witness=58 rupture=66 rupture_read=66 advisories=20999 signals=224 crystals=5 attractors=9 demotions=10073 values=61 pretrained=1
+  run default ...
+  epoch  1/20  loss=0.1515
+  epoch  5/20  loss=0.0197
+  epoch 10/20  loss=0.0168
+  epoch 15/20  loss=0.0155
+  epoch 20/20  loss=0.0152
+  default 085876af3e2fe2cd124a9423ebbb1e89bee41d10e1ccdb27be1b414996f7f74b  (270.5s)
+  coverage default: dreams=247 witness=63 self_dialogue=82 dream_cycles=1 crystals=3 attractors=3 values=64 pretrained=1
+  combined ae907b9aa94ee4736cd4c4c9c4f40e19fb07c0421c7178263dd7e047e351420d
+  elapsed 477.0s
+  BAR all_on_cg: ok
+  BAR default: ok
+DIGEST BARS MET

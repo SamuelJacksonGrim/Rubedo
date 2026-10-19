@@ -57,6 +57,7 @@ def _check_config_defaults(results):
         ("coherence_impact_like_for_like", "D"),
         ("systemic_damp_pays_full", "F"),
         ("fragmentation_grace", "Fragmentation grace (graduated 2026-10-18)"),
+        ("six_rhythm_selector", "six-rhythm selector, witness only (activated 2026-10-19)"),
         ("reflect_novelty_attenuation", "novelty attenuation"),
         ("bond_ddm_formation", "bond DDM"),
         ("pretrain_on_corpus", "corpus pretrain"),
@@ -67,7 +68,6 @@ def _check_config_defaults(results):
         ("dream_consolidation", "C"),
         ("value_alignment_signal", "E"),
         ("satisfaction_from_emotion", "G"),
-        ("six_rhythm_selector", "six-rhythm selector"),
         ("rupture_upstream", "upstream rupture"),
         ("fix0b_diversity_fitness", "Fix 0-B"),
         ("stream_recorder", "stream recorder"),
@@ -162,8 +162,26 @@ def _check_composition(gen, cycle, gov, ve, results):
                           getattr(ve, "value_alignment_signal", None) is False))
     results.append(expect("G off (satisfaction_from_emotion)",
                           getattr(cycle, "satisfaction_from_emotion", None) is False))
-    results.append(expect("six-rhythm selector off",
-                          cycle.six_rhythm_selector is False and cycle.rhythm_reader is None))
+    # Witness activated 2026-10-19. This boot skips pretraining, so the reader can't
+    # build its centroids and the selector stays inert by design (build_engine logs it).
+    results.append(expect("six-rhythm selector on (witness activated 2026-10-19)",
+                          cycle.six_rhythm_selector is True))
+    results.append(expect("six_rhythm_stances is witness only (rupture stays off)",
+                          list(CONFIG.get("six_rhythm_stances", [])) == ["witness"]))
+    from loop.recursion1188 import stance_filtered
+    from cognition.rhythm_reader import RhythmRead
+
+    class _FakeReader:
+        def __init__(self, rhythm):
+            self.rhythm = rhythm
+        def read(self, generator, tokens):
+            return RhythmRead(self.rhythm, 0.9, 0.9)
+
+    _rup = stance_filtered(_FakeReader("rupture"), CONFIG["six_rhythm_stances"]).read(None, ["x"])
+    _wit = stance_filtered(_FakeReader("witness"), CONFIG["six_rhythm_stances"]).read(None, ["x"])
+    results.append(expect("a rupture read is neutralised (margin 0)",
+                          _rup.rhythm == "rupture" and _rup.margin == 0.0))
+    results.append(expect("a witness read passes through (margin kept)", _wit.margin == 0.9))
     results.append(expect("upstream rupture off",
                           cycle.rupture_upstream is False))
     results.append(expect("Fix 0-B off",

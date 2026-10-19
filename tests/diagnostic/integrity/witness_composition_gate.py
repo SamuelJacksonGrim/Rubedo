@@ -30,6 +30,12 @@ requirements):
   PASS = all four. Passing makes witness a candidate for activation, not an
   automatic default (the activation decision is made separately, on the record).
 
+AMENDED (--amended, added 2026-10-19 AFTER seeing 12 seeds; post-hoc, Samuel's option 3, it does not replace the
+pre-declared gate above, which stays the record): identity = anchor drift + field lock only (the two clauses that
+measure identity); the coherence gap is reported as a separate cost (mean, worst 10-step mean, the step it
+happened at, how many 10-step windows fall below -0.10); composition counts only workloads where witness fired
+>= 50 times, and only checks that REF holds and WIT breaks. Printed beside the pre-declared verdict.
+
 Informational. exit 0. Not in run_all_tests.sh (minutes per seed).
 Run:  python -m tests.diagnostic.integrity.witness_composition_gate [seeds...]
 """
@@ -136,12 +142,14 @@ def main():
     # grace graduated default-on 2026-10-18; --fragmentation-grace-off reruns the historical level check.
     grace = "--fragmentation-grace-off" not in sys.argv[1:]
     seeds = [int(a) for a in sys.argv[1:] if not a.startswith("--")] or [42, 43, 44]
+    amended = "--amended" in sys.argv[1:]
     if grace:
         print("fragmentation_grace=ON")
     tally = Counter()
     for seed in seeds:
         print(f"\n=== seed {seed}")
         comp_ok = True
+        comp_amended = True
         for wl in ("A", "B"):
             h_ref, r_ref = run(seed, wl, False, fragmentation_grace=grace)
             h_wit, r_wit = run(seed, wl, True, fragmentation_grace=grace)
@@ -150,6 +158,8 @@ def main():
             broke = [k for k in c_wit if c_ref[k] and not c_wit[k]]
             ok = all(c_wit.values()) and not broke
             comp_ok &= ok
+            if fired >= 50:                      # amended: judge composition only where witness acts
+                comp_amended &= not broke
             print(f"  workload {wl}: witness fired {fired}   composition {'OK' if ok else 'FAIL'}"
                   + (f"  (failing: {[k for k, v in c_wit.items() if not v]}; broke vs REF: {broke})" if not ok else ""))
             print(f"    REF inj {h_ref['injection_rate']:.3f} q {h_ref['quarantine_rate']:.3f} HHI {h_ref['hhi']:.3f} "
@@ -166,7 +176,11 @@ def main():
                                                      for t in range(len(rows) - 200, len(rows))]))
                 l_ref, l_wit = lock(r_ref), lock(r_wit)
                 gap = np.array([b["coh"] - a["coh"] for a, b in zip(r_ref, r_wit)])
-                worst10 = min(gap[i:i + 10].mean() for i in range(len(gap) - 9))
+                windows = [gap[i:i + 10].mean() for i in range(len(gap) - 9)]
+                worst10 = min(windows)
+                worst_at = int(np.argmin(windows))
+                below = sum(1 for m in windows if m < -0.10)
+                ident_amended = d_wit <= 2 * d_ref + 0.01 and l_wit <= 2 * l_ref + 1e-5
                 ident = (d_wit <= 2 * d_ref + 0.01 and l_wit <= 2 * l_ref + 1e-5
                          and gap.mean() >= -0.05 and worst10 >= -0.10)
                 ev = [t for t, x in enumerate(r_wit) if x["behavior"] == "witness" and x["u"] is not None
@@ -176,12 +190,18 @@ def main():
                 ret_ref, ret_wit = ret(r_ref), ret(r_wit)
                 recept = ret_wit > ret_ref
                 tally["identity"] += ident
+                tally["identity_amended"] += ident_amended
                 tally["receptivity"] += recept
                 tally["nonvacuous"] += fired >= 50
                 print(f"    identity: anchor {d_wit:.4f} vs {d_ref:.4f}  lock {l_wit:.2e} vs {l_ref:.2e}  "
                       f"coh mean {gap.mean():+.4f} worst10 {worst10:+.4f}  -> {'OK' if ident else 'FAIL'}")
                 print(f"    receptivity: retention d1 WIT {ret_wit:+.5f} vs REF {ret_ref:+.5f}  -> {'OK' if recept else 'FAIL'}")
+                if amended:
+                    print(f"    amended identity (drift + lock): {'OK' if ident_amended else 'FAIL'}   cost: coh mean "
+                          f"{gap.mean():+.4f}, worst10 {worst10:+.4f} at steps {worst_at}-{worst_at + 9}, "
+                          f"{below} of {len(windows)} windows below -0.10")
         tally["composition"] += comp_ok
+        tally["composition_amended"] += comp_amended
     n = len(seeds)
     print("\nGATE:")
     rows = [("composition (3/3)", "composition", tally["composition"] == n),
@@ -193,6 +213,16 @@ def main():
         print(f"  {label:22s} {tally[key]}/{n}  {'PASS' if ok else 'FAIL'}")
     print("  VERDICT:", "PASS: witness composes; candidate for activation." if all(verdict.values())
           else "HOLD: witness does not pass the gate; see FAILs.")
+    if amended:
+        need = max(2, -(-2 * n // 3))         # >= 2/3 of the seeds, at least 2
+        arows = [("composition, where witness fires (all)", "composition_amended", tally["composition_amended"] == n),
+                 ("identity, drift + lock (>=2/3)", "identity_amended", tally["identity_amended"] >= need),
+                 ("receptivity (>=2/3)", "receptivity", tally["receptivity"] >= need),
+                 ("non-vacuous (all)", "nonvacuous", tally["nonvacuous"] == n)]
+        print("\nAMENDED GATE (post-hoc, 2026-10-19; the pre-declared verdict above is the record):")
+        for label, key, ok in arows:
+            print(f"  {label:40s} {tally[key]}/{n}  {'PASS' if ok else 'FAIL'}")
+        print("  AMENDED VERDICT:", "PASS" if all(ok for _, _, ok in arows) else "HOLD")
 
 
 if __name__ == "__main__":

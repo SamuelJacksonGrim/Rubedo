@@ -34,9 +34,13 @@ runtime or gate changes until it is answered.
       growth prediction, 2026-10-16). `fragmentation_grace` waits for 1,500 crystal/attractor relays per value; the all-ON
       gate passes (strong 12 vs 12, demotions 90), the witness dip is gone, and it holds on held-out seeds 45-47. Graduated
       default-on. `findings/2026-10-18-fragmentation.md`.
-- [ ] **Witness gate, re-run on the new default.** With grace on, what still holds witness off: composition 2/3 on
-      42-44 (seed 43 B HHI 0.307, both arms), identity 1/3 on 45-47 (same numbers with and without grace), one bond lost
-      under witness on 46 B. Samuel is fine with a dip for 2× retention; decide whether these bars are the right ones.
+- [x] **Witness re-gated on the new default and ACTIVATED (2026-10-19)** by Samuel's decision over a HOLD gate, 12
+      seeds: ~2× receptivity 12/12, anchor steadier, identity fails only on the 10-step coherence-dip sub-check, one bond
+      lost in 12. Witness only (`six_rhythm_stances`); rupture off. `findings/2026-10-19-witness-activated.md`.
+- [ ] **Option 3: the amended witness gate, alongside** (Samuel: "might find more information"): identity by anchor
+      drift + field lock, the coherence dip as its own stated cost bar, composition only where witness fires; all 12
+      seeds. Post-hoc and labelled so; the pre-declared gate stays the record.
+- [ ] **Seed 46's lost bond under witness**: witness-caused, or a marginal bond on that seed?
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
       words), wide starves them of repetition (808 words for 64 slots).
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new

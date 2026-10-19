@@ -285,6 +285,7 @@ Rubedo/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── all_levers_composition_probe.py  All levers ON together
 │   │   │   ├── witness_composition_gate.py  Witness's graduation gate on the all-ON stack (composition, identity, receptivity)
+│   │   │   ├── witness_production_check.py  Witness fires on the real build_engine path, rupture never (activated 2026-10-19)
 │   │   │   ├── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
 │   │   │   ├── value_reinforcement_trace.py  Step-by-step REF vs WIT reinforcement decomposition; arbitrate() return path
 │   │   │   ├── coherence_delta_bias.py    How much of coherence_delta is the raw-vs-tanh comparison, not the input

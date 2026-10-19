@@ -150,7 +150,14 @@ CONFIG = {
     # acting) and rupture (held-direction push through the reflective loop).
     # OPT-IN pending the off/on measurement + the all-ON composition gate.
     # rhythm_read_margin: act only when the read beats the runner-up by this much.
-    "six_rhythm_selector":          False,
+    # ACTIVATED 2026-10-19 for witness only, by the architect's decision over a
+    # HOLD gate (findings/2026-10-19-witness-activated.md): 12/12 seeds ~2x
+    # receptivity, identity anchor steadier on every seed measured; the gate's
+    # identity bar fails only on its worst-10-step coherence dip sub-check, and
+    # witness broke one bond in 12 runs. six_rhythm_stances limits which
+    # read-driven stances may act: rupture stays OFF.
+    "six_rhythm_selector":          True,
+    "six_rhythm_stances":           ["witness"],
     "rhythm_read_margin":           0.10,
     # Rupture variant (a): bend the generator's raw output toward the held
     # direction and let the ordinary path carry it (no forced reflective loop).
@@ -237,6 +244,29 @@ SOURCES: "dict[str, List[List[str]]]" = {
 }
 SOURCE_WEIGHTS = {"source_samuel": 0.40, "source_claude": 0.25,
                   "source_gemini": 0.20, "source_grok": 0.15}
+
+
+def stance_filtered(reader, stances):
+    """Limit which read-driven stances a RhythmReader can trigger.
+
+    A read of witness or rupture that isn't in `stances` comes back with margin
+    0, so `AutonomousCycle._select_mode` never takes it and the energy stance runs
+    as before. Same idea as witness_composition_gate.attach_witness. With both
+    stances allowed the reader is returned untouched (byte-identical)."""
+    from cognition.rhythm_reader import RhythmRead
+    allowed = frozenset(stances)
+    if {"witness", "rupture"} <= allowed:
+        return reader
+    real_read = reader.read
+
+    def allowed_read(generator, tokens):
+        rd = real_read(generator, tokens)
+        if rd.rhythm in ("witness", "rupture") and rd.rhythm not in allowed:
+            return RhythmRead(rd.rhythm, 0.0, rd.cosine)
+        return rd
+
+    reader.read = allowed_read
+    return reader
 
 
 # ---------------------------------------------------------------------------
@@ -391,9 +421,19 @@ def build_engine(config: dict = None):
     if config.get("six_rhythm_selector"):
         from cognition.rhythm_reader import RhythmReader
         from training.corpus import load_corpus, TRAIN_PATH, RHYTHMS
-        cycle.attach_rhythm_reader(
-            RhythmReader.from_corpus(generator, load_corpus(TRAIN_PATH), RHYTHMS))
-        logger.info("Six-rhythm selector ON (read margin %.2f).", config["rhythm_read_margin"])
+        stances = set(config.get("six_rhythm_stances", ("witness", "rupture")))
+        try:
+            reader = RhythmReader.from_corpus(generator, load_corpus(TRAIN_PATH), RHYTHMS)
+        except ValueError as exc:
+            # The centroids need a generator that knows the corpus tokens. A fast
+            # cold start (pretrain_on_corpus False) has none, so the selector stays
+            # inert (no reader: the energy stance runs as before) instead of failing
+            # the boot.
+            logger.warning("Six-rhythm selector inert: %s", exc)
+        else:
+            cycle.attach_rhythm_reader(stance_filtered(reader, stances))
+            logger.info("Six-rhythm selector ON (read margin %.2f, stances %s).",
+                        config["rhythm_read_margin"], sorted(stances))
 
     # Optional instrument: observe-only stream recorder — the operational-
     # vocabulary coverage census (data_curation.md §5). Terminal sink; the

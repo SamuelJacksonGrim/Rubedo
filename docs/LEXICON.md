@@ -383,4 +383,7 @@ Held, on purpose:
 | coherence | A pin, a composite, and a probe. No rename until that split is decided. |
 | dream, past the Dreamer docstring | The band, the waking channel, `DreamCycle`, and `DreamSession` stay. Only the in-step class's "offline" wording moved. |
 
+Current digest baseline (2026-10-19, after witness activation, OMP/MKL = 1): combined `ae907b9a…`
+(`findings/2026-10-19-witness-activated.md`). A rename batch records its own before/after on the same machine.
+
 When a name and a function disagree, believe the function, and leave the name until this table says **done**.
