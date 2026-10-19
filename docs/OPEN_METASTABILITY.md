@@ -38,6 +38,9 @@ sides); the live board (`tools/board`, :8780, lever toggles at step boundaries, 
 whose counterbalance is jitter, not reorganization); **4 (what values should read) is the real open question**; 5
 answered (option b was a no-op, and the drop was never mostly coherence_delta).
 
+**Training timeline:** `docs/TRAINING_TIMELINE.md` (2026-10-19) holds the run's stages, stop points and which levers
+move when; findings about *when* a setting matters go there.
+
 **Next, in order:** ~~rename batch 2~~ (done 2026-10-18, `3dd691a`) → ~~⊘ Fragmentation~~ (fixed + graduated 2026-10-18:
 a youth detector; `fragmentation_grace` default-on, `findings/2026-10-18-fragmentation.md`) → ~~re-gate witness~~ (ACTIVATED
 2026-10-19 by architect decision over a HOLD gate, `findings/2026-10-19-witness-activated.md`; amended-gate run

@@ -43,6 +43,7 @@ is the conceptual tour; the other references divide the rest:
 | [`CLAUDE.md`](CLAUDE.md) | The invariants you must not break, and the guardrails |
 | [`docs/BACKLOG.md`](docs/BACKLOG.md) | **The work list:** what's next, what's parked, what's done, each item pointing at its source |
 | [`docs/WIDENING_PLAN.md`](docs/WIDENING_PLAN.md) | **Rubedo's job:** why the field widens 128 → 256/768, the steps, and what "done" means |
+| [`docs/TRAINING_TIMELINE.md`](docs/TRAINING_TIMELINE.md) | The run's stages (infancy, settling, maturity), the stop points, what to read at each, and which levers move when |
 | [`docs/EMOTION_CALIBRATION.md`](docs/EMOTION_CALIBRATION.md) | The emotion names are hypotheses: what each dimension computes today, and how to test it against behavior and self-report |
 | [`docs/north_star.md`](docs/north_star.md) | The compass: the end goal and the three voices (waking speech / inner monologue / symbolic dreaming) |
 | [`docs/EXPERIMENTAL_LEVERS.md`](docs/EXPERIMENTAL_LEVERS.md) | The control panel: every lever, its default, the exact switch, and the dial census marked for the 128 → 768 widening |

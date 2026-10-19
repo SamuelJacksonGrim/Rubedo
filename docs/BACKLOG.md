@@ -114,6 +114,8 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
       interacting through a governed seam (RFE-Core2 `FEDERATION_SEAM_SPEC.md`, developmental + counterfactual
       protocol) vs the same instance on scripted input of matched size. Read: does the cone widen, do crystals,
       attractors and values keep forming, does explore give way to the other rhythms?
+- [ ] **Training timeline gaps** (`docs/TRAINING_TIMELINE.md`, Samuel 2026-10-19): binding-share gauge and
+      `fragmentation_grace` on the board, a witness weight knob (taper test), S1-S4 stop markers shown on the board.
 - [ ] **Trigger levers by maturity instead of on/off for life** (Samuel, 2026-10-16). The ⊘ consumer is wrong early and
       right late: before the system has multiple sources and crystal/attractor binding, Fragmentation reads every value
       as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth); **that half is done**:
