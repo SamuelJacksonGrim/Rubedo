@@ -40,6 +40,15 @@ runtime or gate changes until it is answered.
 - [x] **Option 3: the amended witness gate** (2026-10-19, post-hoc): identity by drift + lock 12/12, composition where
       witness fires 11/12; the coherence dips all fall late (steps 316-444 of 500), never early, and are rare (0-13 of
       491 windows). Feeds the maturity-triggered witness item below.
+- [ ] **From jitter to vibration: the maturity target** (Samuel, 2026-10-19: "a resonance. A pulse, a rhythm, and a
+      sustainable frequency"). H0 measured expression as white jitter in a fixed ~15-20° cone: its MSD is flat from lag 1
+      to lag 512, so nothing in it repeats. The goal is the same cone with a pulse in it. First build the observe-only
+      gauge (on the expression stream, like `StreamMetastabilityMonitor`, never on the field, which smooths): power
+      spectrum of expression projected on its leading axes. Read: spectral flatness (white ≈ 1, a vibration well below),
+      a dominant frequency and whether it holds across windows, and MSD vs lag (white = flat; a vibration dips at
+      multiples of its period). Trap to keep in view: a vibration with variation riding on it is the target; a rigid
+      closed loop repeating the same outputs is the Ouroboros (lock-in) wearing a rhythm. So the gauge also reads
+      what varies from one cycle to the next. Then measure today's baseline at S3/S4 before any lever is asked to move it.
 - [ ] **Seed 46's lost bond under witness**: witness-caused, or a marginal bond on that seed?
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
       words), wide starves them of repetition (808 words for 64 slots).

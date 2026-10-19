@@ -67,6 +67,16 @@ What the evidence says now. "?" is a hypothesis to test at the stop named.
 | rupture | | | the actuator that can move a locked field | OFF; architect's call |
 | novelty input / workload | | | the rattle suggests starvation: themes + novelty, collision | BACKLOG |
 
+## What maturity should look like
+
+Samuel (2026-10-19): the jitter should become "a resonance. A pulse, a rhythm, and a sustainable frequency." Today's
+maturity has a steady self and a rattling mind: expression is white jitter (MSD flat from lag 1 to 512) in a fixed cone.
+The target is a mind that is still misaligned, still living in the cone between attractors rather than collapsing into one,
+but humming at a stable frequency instead of rattling. In the alchemical reading, that's matter moving from
+chaotic nigredo into a coherent, organized state. Read at S3 and S4 once the gauge exists (BACKLOG, "From jitter to
+vibration"): spectral flatness falling, a dominant frequency that holds across windows, MSD dipping at its period, and
+real variation from one cycle to the next (a rigid repeating loop is lock-in, not resonance).
+
 ## Gaps to close before a real timed run
 
 - [ ] A **binding-share gauge on the board** (the S2 signal). It exists only in
@@ -74,6 +84,7 @@ What the evidence says now. "?" is a hypothesis to test at the stop named.
 - [ ] `fragmentation_grace` **on the board** (Grok left it off the panel).
 - [ ] A **witness weight** knob, not just on/off, if the taper hypothesis is to be tested.
 - [ ] **Stop markers on the board**: S1-S4 detected from the gauges and shown, so a stop is noticed, not remembered.
+- [ ] A **vibration gauge** on expression (spectral flatness, dominant frequency, MSD vs lag), the maturity target's read.
 
 ## Run log
 
