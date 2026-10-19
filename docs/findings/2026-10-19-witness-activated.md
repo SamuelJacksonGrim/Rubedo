@@ -53,9 +53,26 @@ Suite 28/28. `tests.diagnostic.rename_digest` (OMP/MKL = 1) moves on purpose: co
 `ae907b9aa94ee4736cd4c4c9c4f40e19fb07c0421c7178263dd7e047e351420d` (was `48f877d8…`); it is the baseline for the next
 rename batch.
 
+## Option 3: the amended gate (post-hoc, run alongside the decision)
+Samuel (2026-10-19): "might find more information that may come in handy later." `witness_composition_gate
+--amended` (added after seeing the 12 seeds, labelled post-hoc; the pre-declared verdict stays the record): identity =
+anchor drift + field lock; the coherence gap reported as a separate cost; composition counted only on workloads where
+witness fired >= 50 times and only for checks REF holds. Same 12 seeds, four processes
+(`data/2026-10-19-witness-amended-*.log`).
+
+| | 12 seeds |
+|---|---|
+| amended identity (drift + lock) | **12/12** |
+| composition where witness fires | **11/12** (seed 46: bonds 1 → 0) |
+| amended verdict per three-seed set | PASS, HOLD (46), PASS, PASS |
+| worst 10-step coherence dip, step range | **steps 316-444 of 500 on every seed; never early** |
+| 10-step windows below −0.10 | 0, 0, 0, 3, 4, 0, 3, 5, 0, 0, 2, 13 of 491 (6 seeds have none) |
+
+The new information is **when** witness costs: its coherence dips are rare and come only late, after the view has
+saturated (~step 235 in `2026-10-15-h0-steady-self-rattling-mind.md`), never while the system is young. That bears
+directly on the maturity-triggered lever: witness looks cheapest early and costliest once the field has settled, so
+one testable shape is witness at full weight early, tapering after saturation. Hypothesis, not a change.
+
 ## Open
-- [ ] Option 3 run alongside (Samuel, 2026-10-19: "might find more information"): an amended gate that judges
-  identity by anchor drift + field lock, states the coherence dip as a separate cost bar, and judges composition
-  only where witness fires, run on all 12 seeds. Labelled post-hoc; it does not replace the pre-declared gate.
 - [ ] Seed 46's lost bond: is witness ever the reason a bond doesn't form, or was 46 B marginal?
 - [ ] Maturity-triggered witness (BACKLOG): witness may matter most early, before the view saturates (~step 235).

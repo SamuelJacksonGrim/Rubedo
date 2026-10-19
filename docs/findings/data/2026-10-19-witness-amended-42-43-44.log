@@ -1,0 +1,48 @@
+fragmentation_grace=ON
+
+=== seed 42
+  workload A: witness fired 0   composition OK
+    REF inj 1.000 q 0.000 HHI 0.263 bonds 1 active 43 strong 5 λ 0.98 demot 315
+    WIT inj 1.000 q 0.000 HHI 0.263 bonds 1 active 43 strong 5 λ 0.98 demot 315
+  workload B: witness fired 78   composition OK
+    REF inj 1.000 q 0.000 HHI 0.289 bonds 1 active 43 strong 5 λ 0.98 demot 405
+    WIT inj 1.000 q 0.000 HHI 0.289 bonds 1 active 51 strong 5 λ 0.98 demot 195
+    identity: anchor 0.1156 vs 0.1429  lock 4.33e-06 vs 8.49e-07  coh mean -0.0293 worst10 -0.0691  -> OK
+    receptivity: retention d1 WIT +0.00307 vs REF +0.00075  -> OK
+    amended identity (drift + lock): OK   cost: coh mean -0.0293, worst10 -0.0691 at steps 435-444, 0 of 491 windows below -0.10
+
+=== seed 43
+  workload A: witness fired 0   composition OK
+    REF inj 1.000 q 0.000 HHI 0.283 bonds 2 active 32 strong 6 λ 0.98 demot 902
+    WIT inj 1.000 q 0.000 HHI 0.283 bonds 2 active 32 strong 6 λ 0.98 demot 902
+  workload B: witness fired 88   composition FAIL  (failing: ['HHI < 0.30']; broke vs REF: [])
+    REF inj 1.000 q 0.000 HHI 0.307 bonds 1 active 45 strong 7 λ 0.98 demot 550
+    WIT inj 1.000 q 0.000 HHI 0.307 bonds 1 active 45 strong 7 λ 0.98 demot 542
+    identity: anchor 0.0991 vs 0.1081  lock 5.81e-06 vs 1.30e-06  coh mean -0.0311 worst10 -0.0822  -> OK
+    receptivity: retention d1 WIT +0.00419 vs REF +0.00262  -> OK
+    amended identity (drift + lock): OK   cost: coh mean -0.0311, worst10 -0.0822 at steps 368-377, 0 of 491 windows below -0.10
+
+=== seed 44
+  workload A: witness fired 0   composition OK
+    REF inj 1.000 q 0.000 HHI 0.290 bonds 1 active 40 strong 12 λ 0.98 demot 213
+    WIT inj 1.000 q 0.000 HHI 0.290 bonds 1 active 40 strong 12 λ 0.98 demot 213
+  workload B: witness fired 96   composition OK
+    REF inj 1.000 q 0.000 HHI 0.299 bonds 1 active 54 strong 9 λ 0.98 demot 234
+    WIT inj 1.000 q 0.000 HHI 0.299 bonds 1 active 51 strong 9 λ 0.98 demot 243
+    identity: anchor 0.0968 vs 0.1133  lock 5.58e-06 vs 1.09e-06  coh mean -0.0368 worst10 -0.0897  -> OK
+    receptivity: retention d1 WIT +0.00518 vs REF +0.00270  -> OK
+    amended identity (drift + lock): OK   cost: coh mean -0.0368, worst10 -0.0897 at steps 316-325, 0 of 491 windows below -0.10
+
+GATE:
+  composition (3/3)      2/3  FAIL
+  identity (>=2/3)       3/3  PASS
+  receptivity (>=2/3)    3/3  PASS
+  non-vacuous (3/3)      3/3  PASS
+  VERDICT: HOLD: witness does not pass the gate; see FAILs.
+
+AMENDED GATE (post-hoc, 2026-10-19; the pre-declared verdict above is the record):
+  composition, where witness fires (all)   3/3  PASS
+  identity, drift + lock (>=2/3)           3/3  PASS
+  receptivity (>=2/3)                      3/3  PASS
+  non-vacuous (all)                        3/3  PASS
+  AMENDED VERDICT: PASS

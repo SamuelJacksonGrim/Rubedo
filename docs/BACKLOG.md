@@ -37,9 +37,9 @@ runtime or gate changes until it is answered.
 - [x] **Witness re-gated on the new default and ACTIVATED (2026-10-19)** by Samuel's decision over a HOLD gate, 12
       seeds: ~2× receptivity 12/12, anchor steadier, identity fails only on the 10-step coherence-dip sub-check, one bond
       lost in 12. Witness only (`six_rhythm_stances`); rupture off. `findings/2026-10-19-witness-activated.md`.
-- [ ] **Option 3: the amended witness gate, alongside** (Samuel: "might find more information"): identity by anchor
-      drift + field lock, the coherence dip as its own stated cost bar, composition only where witness fires; all 12
-      seeds. Post-hoc and labelled so; the pre-declared gate stays the record.
+- [x] **Option 3: the amended witness gate** (2026-10-19, post-hoc): identity by drift + lock 12/12, composition where
+      witness fires 11/12; the coherence dips all fall late (steps 316-444 of 500), never early, and are rare (0-13 of
+      491 windows). Feeds the maturity-triggered witness item below.
 - [ ] **Seed 46's lost bond under witness**: witness-caused, or a marginal bond on that seed?
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
       words), wide starves them of repetition (808 words for 64 slots).
@@ -116,8 +116,11 @@ Source: OPEN_METASTABILITY "Growth". Nothing knows the system's age; every lever
       attractors and values keep forming, does explore give way to the other rhythms?
 - [ ] **Trigger levers by maturity instead of on/off for life** (Samuel, 2026-10-16). The ⊘ consumer is wrong early and
       right late: before the system has multiple sources and crystal/attractor binding, Fragmentation reads every value
-      as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth). Witness may
+      as fragmented (pruning needs a mature ecology to prune against, like synaptic pruning after growth); **that half is done**:
+      `fragmentation_grace` (2026-10-18) is a per-value maturity gate, by binding opportunities. Witness may
       matter most early (the view loses its gain by step ~235; witness keeps ~2× receptivity) or after novelty bursts.
+      Measured 2026-10-19: witness's coherence cost comes only late (worst dips at steps 316-444, none early), so a
+      testable shape is witness at full weight early, tapering after the view saturates (`2026-10-19-witness-activated`).
       Gate each on measured state (multi-source share, binding, receptivity), not a step count.
 
 ## 3 · Widening (Rubedo's original job)
