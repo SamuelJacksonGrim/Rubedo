@@ -126,8 +126,10 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 - [ ] **Port proven fixes to live RFE-Core2** (Koneko's home): the CORE manipulation guard (A), dream crystals by
       identity (B), and honest coherence_delta (D) are bug fixes; F rides with D. Live boots through the bridge, so check
       the bridge path first. Names have diverged in Rubedo (rename batch 1); port by behaviour, not by diff.
-- [ ] **Rename batch 2** (`docs/LEXICON.md` → Renames; the protocol and held list are there). Next candidates are the
-      ones not waiting on a design decision; pin math threads for the digest on both sides.
+- [x] **Rename batch 2** (2026-10-18, `3dd691a`): the aspirational names, text only, digest bit-identical. Every
+      name still in code is now held by a design decision (coherence / dream / witness splits, `Generator`,
+      `EmergentValue.coherence_contribution`, `emotional_satisfaction`, `surprise`, `identity_erosion`), so batch 3
+      waits on those decisions, not on effort.
 
 - [ ] Emotion calibration audit (`EMOTION_CALIBRATION.md`): six scalars from three inputs; joy ≈ coherence.
 - [ ] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why.

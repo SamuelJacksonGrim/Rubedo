@@ -38,7 +38,8 @@ sides); the live board (`tools/board`, :8780, lever toggles at step boundaries, 
 whose counterbalance is jitter, not reorganization); **4 (what values should read) is the real open question**; 5
 answered (option b was a no-op, and the drop was never mostly coherence_delta).
 
-**Next, in order:** rename batch 2 → ⊘ Fragmentation → re-gate witness → value semantics (question 4) → growth /
+**Next, in order:** ~~rename batch 2~~ (done 2026-10-18, `3dd691a`) → ⊘ Fragmentation (in progress 2026-10-18:
+Grok on branch `grok/fragmentation`, probe `tests/diagnostic/integrity/fragmentation_axes_probe.py`) → re-gate witness → value semantics (question 4) → growth /
 maturity-triggered levers. Samuel also has a new idea to raise (2026-10-17) that he expects me to disagree with.
 
 ## History: where we were on 2026-10-15 (kept as written)
