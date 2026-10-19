@@ -16,14 +16,16 @@ modulate the system's behavior at every level:
 All states are smooth [0, 1] scalars. Updates are EMA-smoothed to prevent
 chaotic oscillation. The system can be in multiple emotional states at once.
 
-Modulation outputs (read by autonomous_cycle every step)
----------------------------------------------------------
+Modulation outputs
+------------------
+Read every step (autonomous_cycle, Dreamer, Chorus):
     field_gain()        injection strength multiplier
     mutation_scale()    differential noise scale
     field_decay_rate()  resonance field decay rate
-    dream_pressure()    probability of entering dream cycle
     attractor_pull()    attractor blend strength modifier
-    crystal_pressure()  crystallization threshold modifier
+Computed and logged, but no branch reads them (docs/LEXICON.md, "aspirational"):
+    dream_pressure()    meant as the probability of entering a dream cycle; written onto StepState only
+    crystal_pressure()  meant as a crystallization threshold modifier; appears only in modulation_snapshot()
 """
 
 from __future__ import annotations
@@ -311,6 +313,11 @@ class EmotionalGradient:
         Wonder and boredom drive dreams; tension suppresses them.
 
             pressure = (wonder × 0.6 + boredom × 0.4) × (1 - tension × 0.5)
+
+        Nothing gates a dream on this. It is written onto StepState and logged;
+        the dream cycle triggers on the stabilize rhythm, and the dream band on
+        field energy. (agents/rhythm_config.json lists it under wonder_drives /
+        boredom_drives; no code reads those lists either.)
         """
         pressure = (self._wonder * 0.6 + self._boredom * 0.4)
         pressure *= (1.0 - self._tension * 0.5)
@@ -333,6 +340,9 @@ class EmotionalGradient:
         High curiosity raises it (system is still exploring).
 
             modifier = 1.0 - (joy + stability) × 0.05 + curiosity × 0.08
+
+        Nothing reads this. The crystal gate uses fixed thresholds
+        (substrate/memory_crystals.py); this appears only in modulation_snapshot().
         """
         modifier = 1.0 - (self._joy + self._stability) * 0.05 + self._curiosity * 0.08
         return float(np.clip(modifier, 0.7, 1.3))

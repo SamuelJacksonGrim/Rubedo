@@ -132,8 +132,9 @@ errors.
 - Emotions are modulation dynamics, not metaphor. `cognition/emotional_gradient.py`
   exposes `curiosity / wonder / joy / tension / boredom / stability` as
   `@property` accessors that directly scale `field_gain`, `mutation_scale`,
-  `decay_rate`, `attractor_pull`, `crystal_pressure`, and `dream_pressure` every
-  step.
+  `decay_rate`, and `attractor_pull` every step. `crystal_pressure` and
+  `dream_pressure` are computed and logged, but no branch reads them
+  (`docs/LEXICON.md`, aspirational).
 
 **Expression de-collapse (recursive attention)**
 - `RecursiveAttention` runs **untrained** under `no_grad`; its attention behaves

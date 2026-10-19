@@ -14,6 +14,7 @@ Composite score
 
 Additional diagnostics
   entropy_drift            — rate of change in the vector's information distribution
+                             (recorded on the report; nothing reads it. T uses the variance of H, not this)
   coherence_delta          — how much injecting this vector stabilizes / destabilizes the field
   crystallization_pressure — G × T, candidate signal for MemoryCrystal promotion
 
@@ -53,10 +54,11 @@ class CoherenceReport:
     temporal:                float   # T — stability through time
     resonance:               float   # R — field harmonic compatibility
     composite:               float   # C = α·G + β·T + γ·R
-    entropy_drift:           float   # rate of change in vector entropy
+    entropy_drift:           float   # rate of change in vector entropy (unread; T uses var(H))
     coherence_delta:         float   # field coherence change post-injection (signed)
     crystallization_pressure: float  # G × T — crystallization candidate score
-    stable:                  bool    # composite >= threshold
+    stable:                  bool    # composite >= threshold (0.40): the reflective-loop entry floor,
+                                     # not a stability verdict; nearly always true at live values
 
     def as_dict(self) -> dict:
         return {

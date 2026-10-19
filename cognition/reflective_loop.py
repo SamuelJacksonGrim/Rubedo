@@ -49,7 +49,8 @@ class ReflectiveLoop:
     field_blend : float
         How strongly the field state pulls each pass.
     attractor_blend : float
-        How strongly the nearest attractor pulls each pass.
+        Stored, never read. The per-pass attractor pull is ``Attractor.pull``
+        with its own strength; this value does not scale it.
     coherence_gate : float
         Minimum coherence to continue refining. Below this, reflection halts.
     novelty_attenuation : bool
