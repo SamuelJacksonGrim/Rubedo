@@ -41,7 +41,8 @@ answered (option b was a no-op, and the drop was never mostly coherence_delta).
 **Next, in order:** ~~rename batch 2~~ (done 2026-10-18, `3dd691a`) → ~~⊘ Fragmentation~~ (fixed + graduated 2026-10-18:
 a youth detector; `fragmentation_grace` default-on, `findings/2026-10-18-fragmentation.md`) → re-gate witness on the new
 default (still OFF: composition 2/3 on 42-44, identity 1/3 on 45-47) → value semantics (question 4) → growth /
-maturity-triggered levers. Samuel also has a new idea to raise (2026-10-17) that he expects me to disagree with.
+maturity-triggered levers. (Samuel's 2026-10-17 idea was raised and settled that day: a mind as forward pass + state ingestion, the
+strobe/filament frame. Ember agreed with the core, disagreed on plasticity/drives and emulate-vs-enact.)
 
 ## History: where we were on 2026-10-15 (kept as written)
 
