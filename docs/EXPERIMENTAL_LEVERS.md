@@ -61,7 +61,7 @@ not omitted anymore — they are exactly what a width change moves:
 | `alignment_ema_alpha` | `0.05` | EMA rate for lever E. Not read while `value_alignment_signal` is off. |
 | `systemic_damp_pays_full` | **True** | Lever F, **graduated default-on 2026-10-16 with D** (alone it is inert: the coherence_delta artifact nets dream-band reinforcement to ~0). Off: a systemic-only damp pays ALLOW_WEAKENED. On: injection strength, the decision, and trust stay damped; the value engine is paid as ALLOW. Named-source damps, quarantine, reject, and sacred shield are unchanged. |
 | `satisfaction_from_emotion` | **False** | Lever G. Off: `emotional_satisfaction = max(0, coherence_delta)`. On: `max(0, valence)`. |
-| `fragmentation_grace` | **False** | Fragmentation path only (`findings/2026-10-18-fragmentation.md`). Off: a value is Fragmentation when source support and binding support are both below 0.35. On: that same check waits until `_FRAGMENTATION_GRACE_SIGNALS` (1500) crystal/attractor token-relays have happened since the value was first read. Drift and Dissolution are not gated. Default off. With it on, the all-ON composition gate passes (strong 12 vs 12, demotions 90). Not graduated. |
+| `fragmentation_grace` | **True** (graduated 2026-10-18) | Fragmentation path only (`findings/2026-10-18-fragmentation.md`). Off: a value is Fragmentation when source support and binding support are both below 0.35. On: that same check waits until `_FRAGMENTATION_GRACE_SIGNALS` (1500) crystal/attractor token-relays have happened since the value was first read. Drift and Dissolution are not gated. With it on, the all-ON composition gate passes (strong 12 vs 12, demotions 90), and it holds on held-out seeds 45-47 (active values 37-54 vs 19-37 off). Graduated default-on 2026-10-18; set False for the historical level check. |
 
 `apply_value_levers()` in `loop/recursion1188.py` is the one place C–G are attached. Bugs A (CORE promotion sees the signals `arbitrate` already consumed) and B (a dream credits the crystals `maybe_crystallize` returned, not `crystals[before:]`) are not levers. They are on in every build. B pays nothing while C is off, because a dream offer at relation 0.5 cannot clear 0.80.
 
@@ -653,7 +653,7 @@ does not pass a config dict.
 | `_CONSERVATISM` | `:43` | 0.8 | Coverage-gap discount | no | same |
 | `_HEALTH_FLOOR` | `:44` | 0.70 | | **yes** (includes cos support) | same |
 | `_READ_FLOOR` | `:45` | 0.30 | Skip dissolved-band values | no | same |
-| `_FRAGMENTATION_GRACE_SIGNALS` | `integrity_read.py` | 1500 | Crystal/attractor token-relays before Fragmentation may fire, only if `fragmentation_grace` is on | no | module const; flag default off |
+| `_FRAGMENTATION_GRACE_SIGNALS` | `integrity_read.py` | 1500 | Crystal/attractor token-relays before Fragmentation may fire, only if `fragmentation_grace` is on | no | module const; flag default on since 2026-10-18 |
 | consumer `rate` | `:297` | 0.05 | Pull toward honest floor | no | constructor |
 | `named_only` | `:298` | True | Act only on named pathologies | no | constructor |
 | `solvent_gain` k | `lambda_ledger.py:23` | 2.0 | 1−exp(−k·λ) | no | function kwarg |

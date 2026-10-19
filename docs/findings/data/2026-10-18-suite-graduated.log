@@ -1,0 +1,30 @@
+PASS tests.smoke.full_stack_minimal
+PASS tests.smoke.single_source_100step
+PASS tests.smoke.multi_source_500step
+PASS tests.smoke.stream_recorder_smoke
+PASS tests.smoke.emotion_checkpoint_roundtrip
+PASS tests.integration.tier1_revision_baseline
+PASS tests.integration.governance_decision_flow
+PASS tests.integration.core_promotion_handshake
+PASS tests.integration.dream_crystal_collection
+PASS tests.integration.value_lever_contracts
+PASS tests.integration.checkpoint_registry_identity
+PASS tests.integration.config_loading_neutrality
+PASS tests.integration.bond_ddm_invariants
+PASS tests.integration.fix0b_invariants
+PASS tests.integration.six_rhythm_selector_invariants
+PASS tests.integration.determinism_replay
+PASS tests.integration.wide_workload
+FAIL tests.integration.production_boot (exit 1)
+PASS tests.integration.live_board
+PASS tests.adversarial.sacred_shield
+PASS tests.adversarial.flood_calibration
+PASS tests.adversarial.manipulation_cascade
+PASS tests.adversarial.identity_drift
+PASS tests.diagnostic.tier4.dilation_response_curve
+PASS tests.diagnostic.tier4.rhythm_dilation_curve
+PASS tests.diagnostic.training.corpus_integrity_check
+PASS tests.doc_accuracy.verify_docs
+PASS tests.doc_accuracy.hardcoded_dim
+passed 27 / 28
+FAILED: tests.integration.production_boot

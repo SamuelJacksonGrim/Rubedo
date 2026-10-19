@@ -29,12 +29,14 @@ runtime or gate changes until it is answered.
 - [ ] **Rubedo-A / Rubedo-B** (Samuel, 2026-10-16): once the trained encoder is in, two branches + project folders run
       side by side, A with witness on (2× receptivity, the active-count dip), B with witness off, to compare as lived
       systems rather than 500-step gates.
-- [ ] **CRITICAL PATH: fix ⊘ Fragmentation.** It is the whole witness dip (without the consumer witness costs values
-      nothing, `findings/2026-10-16-witness-regate-with-df.md`) and the D+F strong-band exception. Measured 2026-10-18:
-      the level check is a youth detector. `fragmentation_grace` (default **off**, not graduated; not on the board)
-      waits for 1,500 crystal/attractor relays before Fragmentation may name a value. With it on, the all-ON gate
-      passes (strong 12 vs 12, demotions 90) and the witness active dip is gone; witness composition is 2/3 because
-      seed 43 workload B HHI is 0.307 on both arms. `findings/2026-10-18-fragmentation.md`.
+- [x] **⊘ Fragmentation fixed (2026-10-18, Grok + Ember).** The level check was a youth detector: it flagged values
+      before binding could reach them, and every flagged value grows up bound when left alone (Samuel's pruning-after-
+      growth prediction, 2026-10-16). `fragmentation_grace` waits for 1,500 crystal/attractor relays per value; the all-ON
+      gate passes (strong 12 vs 12, demotions 90), the witness dip is gone, and it holds on held-out seeds 45-47. Graduated
+      default-on. `findings/2026-10-18-fragmentation.md`.
+- [ ] **Witness gate, re-run on the new default.** With grace on, what still holds witness off: composition 2/3 on
+      42-44 (seed 43 B HHI 0.307, both arms), identity 1/3 on 45-47 (same numbers with and without grace), one bond lost
+      under witness on 46 B. Samuel is fine with a dip for 2× retention; decide whether these bars are the right ones.
 - [ ] **A workload with recurring themes plus novelty**, for what values mean: canonical starves values of novelty (46
       words), wide starves them of repetition (808 words for 64 slots).
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new

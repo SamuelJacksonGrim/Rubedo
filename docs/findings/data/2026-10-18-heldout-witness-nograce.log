@@ -1,0 +1,37 @@
+
+=== seed 45
+  workload A: witness fired 0   composition FAIL  (failing: ['HHI < 0.30']; broke vs REF: [])
+    REF inj 1.000 q 0.000 HHI 0.321 bonds 1 active 31 strong 6 λ 0.98 demot 5069
+    WIT inj 1.000 q 0.000 HHI 0.321 bonds 1 active 31 strong 6 λ 0.98 demot 5069
+  workload B: witness fired 97   composition FAIL  (failing: ['active_values >= 30']; broke vs REF: [])
+    REF inj 1.000 q 0.000 HHI 0.283 bonds 1 active 29 strong 2 λ 0.98 demot 5614
+    WIT inj 1.000 q 0.000 HHI 0.283 bonds 1 active 26 strong 2 λ 0.98 demot 6839
+    identity: anchor 0.0795 vs 0.1058  lock 5.88e-06 vs 1.31e-06  coh mean -0.0347 worst10 -0.1042  -> FAIL
+    receptivity: retention d1 WIT +0.00384 vs REF +0.00238  -> OK
+
+=== seed 46
+  workload A: witness fired 0   composition FAIL  (failing: ['HHI < 0.30', 'active_values >= 30']; broke vs REF: [])
+    REF inj 1.000 q 0.000 HHI 0.319 bonds 1 active 29 strong 2 λ 0.98 demot 6968
+    WIT inj 1.000 q 0.000 HHI 0.319 bonds 1 active 29 strong 2 λ 0.98 demot 6968
+  workload B: witness fired 115   composition FAIL  (failing: ['bonds >= 1', 'active_values >= 30']; broke vs REF: ['bonds >= 1', 'active_values >= 30'])
+    REF inj 1.000 q 0.000 HHI 0.268 bonds 1 active 37 strong 1 λ 0.98 demot 6648
+    WIT inj 1.000 q 0.000 HHI 0.268 bonds 0 active 19 strong 2 λ 0.98 demot 9028
+    identity: anchor 0.1242 vs 0.1349  lock 6.85e-06 vs 1.23e-06  coh mean -0.0425 worst10 -0.1020  -> FAIL
+    receptivity: retention d1 WIT +0.00591 vs REF +0.00304  -> OK
+
+=== seed 47
+  workload A: witness fired 0   composition FAIL  (failing: ['active_values >= 30']; broke vs REF: [])
+    REF inj 1.000 q 0.000 HHI 0.297 bonds 2 active 29 strong 6 λ 0.98 demot 5905
+    WIT inj 1.000 q 0.000 HHI 0.297 bonds 2 active 29 strong 6 λ 0.98 demot 5905
+  workload B: witness fired 94   composition FAIL  (failing: ['active_values >= 30', 'strong vs ref (-1)']; broke vs REF: ['strong vs ref (-1)'])
+    REF inj 1.000 q 0.000 HHI 0.276 bonds 1 active 29 strong 6 λ 0.98 demot 6178
+    WIT inj 1.000 q 0.000 HHI 0.276 bonds 1 active 26 strong 3 λ 0.98 demot 7022
+    identity: anchor 0.0771 vs 0.1131  lock 6.96e-06 vs 1.88e-06  coh mean -0.0324 worst10 -0.0996  -> OK
+    receptivity: retention d1 WIT +0.00472 vs REF +0.00272  -> OK
+
+GATE:
+  composition (3/3)      0/3  FAIL
+  identity (>=2/3)       1/3  FAIL
+  receptivity (>=2/3)    3/3  PASS
+  non-vacuous (3/3)      3/3  PASS
+  VERDICT: HOLD: witness does not pass the gate; see FAILs.

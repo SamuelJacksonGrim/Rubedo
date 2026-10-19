@@ -49,7 +49,7 @@ DIM = 128
 
 
 def build_all_on(with_consumer: bool = True, with_bond_ddm: bool = True,
-                 fragmentation_grace: bool = False):
+                 fragmentation_grace: bool = True):
     """The full stack with EVERY behaviour-bearing lever turned on together."""
     gen = Generator(vocab_size=4096, dim=DIM, depth=3, heads=4)
 
@@ -138,7 +138,8 @@ def main() -> int:
     # on (or cleared of) that one lever by paired comparison.
     import sys
     with_bond_ddm = "--bond-ddm-off" not in sys.argv
-    fragmentation_grace = "--fragmentation-grace" in sys.argv
+    # fragmentation_grace graduated default-on 2026-10-18; --fragmentation-grace-off is the historical control.
+    fragmentation_grace = "--fragmentation-grace-off" not in sys.argv
 
     print("=" * 78)
     print(f"  ALL LEVERS ON — composition probe   spec: v0.3   dim {DIM}"

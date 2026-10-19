@@ -184,8 +184,11 @@ CONFIG = {
     # check (single-source and unbound). On: that check waits until
     # _FRAGMENTATION_GRACE_SIGNALS crystal/attractor relays have happened
     # since the value was first read. Drift and Dissolution are not gated.
-    # Default off. Not graduated.
-    "fragmentation_grace":          False,
+    # GRADUATED default-on 2026-10-18: all-ON composition gate passes (strong
+    # 12 vs 12), and on held-out seeds 45-47 it holds (active values 37-54 vs
+    # 19-37 off; demotions 36-700 vs 5,000-9,000). Acts only when the opt-in
+    # IntegrityDecayConsumer is attached.
+    "fragmentation_grace":          True,
 }
 
 # Default token sequences — replace with your own input pipeline

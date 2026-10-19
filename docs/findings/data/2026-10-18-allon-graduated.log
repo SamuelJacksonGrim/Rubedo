@@ -1,0 +1,27 @@
+==============================================================================
+  ALL LEVERS ON — composition probe   spec: v0.3   dim 128
+==============================================================================
+
+  levers active:
+    eval_mode=ON  corpus_pretrain=ON  novelty_attenuation=ON
+    ignition(A)=ON (eff_rank 4.78->4.17)  λ_gate(B)=ON (gain=0.982)  ⊘_consumer=ON (named_only)  fragmentation_grace=ON
+
+  health under full composition:
+    injection_rate=1.000  allow_rate=0.610  quarantine_rate=0.000  HHI=0.282  bonds=1  active=46  strong=12  mean_strength=2.470
+    ⊘ consumer: demotions_total=39  skipped_unnamed=21879  sacred_skipped=258
+
+------------------------------------------------------------------------------
+  injection_rate ≥ 0.95            OK
+  no benign quarantines            OK
+  all sources trust maxed          OK
+  HHI < 0.30                       OK
+  bonds ≥ 1                        OK
+  active_values ≥ 30               OK
+  ⊘ preserves strong (12 vs ref 12) OK
+  λ gate open (gain>0.5)           OK
+  ⊘ consumer used (≥1)             OK
+  ⊘ selective (sacred safe)        OK
+  no field collapse (mean>1.0)     OK
+
+  VERDICT: PASS — the levers COMPOSE: all-ON holds the all-OFF baseline ranges,
+==============================================================================

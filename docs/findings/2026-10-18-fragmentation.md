@@ -52,8 +52,32 @@ Flag off, `python -m tests.diagnostic.rename_digest` (OMP/MKL=1): combined `48f8
 ## What this means
 Fragmentation, as a level check, reads "binding has not arrived yet." With the consumer on, those values are pulled down before the relays that would have bound them. Waiting for 1,500 relays lets the step-500 strong band bind and still pulls a tail that is single-source and unbound after that many opportunities (90 demotions, not zero). Drift and Dissolution are the same checks they were.
 
-The flag is not the production default. The consumer stays off the production boot. Witness still fails one pre-declared bar.
+## Held-out seeds and graduation (Ember, 2026-10-18)
+
+`_FRAGMENTATION_GRACE_SIGNALS = 1500` was chosen between two ages measured on seeds 42-44, so before graduating it
+was checked on seeds it never saw: `witness_composition_gate 45 46 47`, with grace and without, same build, OMP/MKL=1
+(logs `data/2026-10-18-heldout-witness-{grace,nograce}.log`).
+
+| seed / workload | demotions, off → on | active values (bar 30), off → on | strong (REF), off → on | witness dip in active, off → on |
+|---|---|---|---|---|
+| 45 A | 5069 → 361 | 31 → 40 | 6 → 14 | (witness did not fire) |
+| 45 B | 5614 → 594 | 29 → 48 | 2 → 8 | 29→26 → 48→42 |
+| 46 A | 6968 → 474 | 29 → 40 | 2 → 12 | (witness did not fire) |
+| 46 B | 6648 → 36 | 37 → 54 | 1 → 2 | 37→19 → 54→52 |
+| 47 A | 5905 → 621 | 29 → 37 | 6 → 12 | (witness did not fire) |
+| 47 B | 6178 → 700 | 29 → 43 | 6 → 6 | 29→26 → 43→43 |
+
+The grace generalises: off, the active-values bar fails on five of six runs; on, it passes on all six, and the
+witness dip is gone or small. What still fails is identical in both arms, so it is not the grace: HHI 0.319 / 0.321
+on workload A for seeds 45 and 46 (REF fails it the same), bonds 1 → 0 under witness on 46 B, and the witness identity
+check (same numbers off and on). Counting binding opportunities instead of steps is what lets the constant travel.
+
+**Decision:** `fragmentation_grace` graduates default-on. It passes the all-ON composition gate (the graduation rule)
+and holds on held-out seeds; it acts only when the opt-in consumer is attached; `False` restores the historical
+level check. The witness lever is separate and stays off: its own gate is still HOLD (identity 1/3 on 45-47).
+The all-ON probe and the witness gate now run grace by default; `--fragmentation-grace-off` is the control.
 
 ## Open
-- [ ] Graduate `fragmentation_grace` only by a separate call. Witness composition is 2/3, not 3/3.
+- [x] Graduate `fragmentation_grace` by a separate call: done, above.
+- [ ] Witness composition is 2/3 on 42-44 and identity 1/3 on 45-47; witness stays off until its own gate passes or Samuel decides.
 - [ ] Seed 43 workload B HHI 0.307 is both arms. Not a witness-versus-reference dip, and not fixed by loosening the bar.

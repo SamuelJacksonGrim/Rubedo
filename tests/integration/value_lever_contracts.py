@@ -191,7 +191,7 @@ def _fragmentation_grace():
     on = reaper.fragmentation_grace is True
     apply_value_levers(cycle, _Gov(), _VE(), {})
     out.append(expect(
-        "apply_value_levers sets fragmentation_grace, default off",
+        "apply_value_levers sets fragmentation_grace; an absent key leaves it off (CONFIG holds the default)",
         on and reaper.fragmentation_grace is False,
     ))
     return out

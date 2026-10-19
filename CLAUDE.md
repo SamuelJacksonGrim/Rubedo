@@ -12,8 +12,9 @@ can't infer from reading the tree.
 (new open items go there first, then back to the task; check items off in the same commit that lands them). Witness and
 rupture stay off. Value fixes landed 2026-10-15/16 (`findings/2026-10-15-value-fixes-measured.md`,
 `2026-10-16-wide-workload-and-df-graduation.md`): the CORE manipulation guard and dream-crystal identity are fixed, and
-levers D + F are graduated default-on under an architect-granted exception (the all-ON gate's ⊘ strong-band check
-reports HOLD on purpose until ⊘ Fragmentation is made meaningful). Levers C, E, G stay off.
+levers D + F are graduated default-on. ⊘ Fragmentation was a youth detector; `fragmentation_grace` (graduated
+2026-10-18, `findings/2026-10-18-fragmentation.md`) makes the all-ON gate's strong-band check pass, so D + F no longer
+need the exception. Levers C, E, G stay off.
 
 **What Rubedo is for:** widening the field from 128 to 256/768 so a real encoder (the
 corpus encoder, or EmbeddingGemma-2 at 768) can plug in without being squashed, then

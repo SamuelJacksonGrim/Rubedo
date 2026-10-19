@@ -56,6 +56,7 @@ def _check_config_defaults(results):
     on = (
         ("coherence_impact_like_for_like", "D"),
         ("systemic_damp_pays_full", "F"),
+        ("fragmentation_grace", "Fragmentation grace (graduated 2026-10-18)"),
         ("reflect_novelty_attenuation", "novelty attenuation"),
         ("bond_ddm_formation", "bond DDM"),
         ("pretrain_on_corpus", "corpus pretrain"),
@@ -66,7 +67,6 @@ def _check_config_defaults(results):
         ("dream_consolidation", "C"),
         ("value_alignment_signal", "E"),
         ("satisfaction_from_emotion", "G"),
-        ("fragmentation_grace", "Fragmentation grace"),
         ("six_rhythm_selector", "six-rhythm selector"),
         ("rupture_upstream", "upstream rupture"),
         ("fix0b_diversity_fitness", "Fix 0-B"),

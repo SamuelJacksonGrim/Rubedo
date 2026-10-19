@@ -74,7 +74,7 @@ def attach_witness(gen, cycle):
     cycle.attach_rhythm_reader(reader)
 
 
-def run(seed, workload, with_witness, fragmentation_grace=False):
+def run(seed, workload, with_witness, fragmentation_grace=True):
     with determinism.deterministic(seed):
         gen, cycle, gov, ve, ledger, consumer, report, pretrained = build_all_on(
             fragmentation_grace=fragmentation_grace)
@@ -133,8 +133,9 @@ def health_checks(h, strong_ref):
 
 
 def main():
-    grace = "--fragmentation-grace" in sys.argv[1:]
-    seeds = [int(a) for a in sys.argv[1:] if a != "--fragmentation-grace"] or [42, 43, 44]
+    # grace graduated default-on 2026-10-18; --fragmentation-grace-off reruns the historical level check.
+    grace = "--fragmentation-grace-off" not in sys.argv[1:]
+    seeds = [int(a) for a in sys.argv[1:] if not a.startswith("--")] or [42, 43, 44]
     if grace:
         print("fragmentation_grace=ON")
     tally = Counter()
