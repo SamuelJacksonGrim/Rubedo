@@ -140,8 +140,13 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
       the dial census at 128 vs 768 before committing; a width arm can ride with Rubedo-A/B.
 - [x] Step 3: measure the dials at 128 vs 768. Done 2026-10-31 at 128/256/768 (`findings/2026-10-31-dial-census-widths.md`):
       after the step-260 youth cut, the retune that survives is the rhythm bands on canonical (settled energy falls
-      off the 300 explore edge as width grows); the cosine gates move only in youth; lattice, binding, pattern 0.7,
-      witness crystallization, bonds, sacred promotions and metastability still need a youth split.
+      off the 300 explore edge as width grows); the cosine gates move only in youth.
+- [ ] Step 4: retune only what that measurement showed, as one co-tuned set. The youth split landed and the bands
+      did not ship (`findings/2026-10-31-settled-half-and-f9-gate.md`). Lattice, binding, and the 0.7 cutoff were
+      youth. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after
+      step 260. Dim-128 pinned equilibria are outside the F9 gate, so no band moved and 5 / 150 / 300 stays. Next
+      measurement is July's own equilibria probe, unchanged, on this tree — the pins cannot tell a stale gate from
+      a different harness.
 - [ ] Run 2 at 768 with Matryoshka (corpus worklist): position balance + the structural order head, launchers written
       (`corpus\scripts\run2.ps1`, `run2_throughput.ps1`); starts when run 1c (run 1b + the head, full corpus) confirms
       the head at scale. Run 1b is the current best encoder. `findings/2026-10-30-encoder-word-order.md`.

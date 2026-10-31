@@ -1,0 +1,28 @@
+{
+  "blocked": 0,
+  "boredom_overrides": 0,
+  "decisions": 0,
+  "degraded": false,
+  "device": "cpu",
+  "dim": 512,
+  "eq_drift": 11.119179,
+  "eq_lo_step": 301,
+  "eq_mean": 259.525786,
+  "eq_p10": 250.084683,
+  "eq_p50": 260.286151,
+  "eq_p90": 267.769982,
+  "field_dim_constant": 128,
+  "kind": "pin",
+  "not_basin": true,
+  "rhythm": "reflect",
+  "schema": 1,
+  "seed": 44,
+  "steps": 400,
+  "thresholds": {
+    "dream": 150.0,
+    "reflect": 300.0,
+    "stabilize": 5.0
+  },
+  "weakened_already": 0,
+  "weakened_forced": 0
+}

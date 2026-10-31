@@ -1,0 +1,92 @@
+{
+  "ship": false,
+  "reason": "dim 128 pinned equilibria are outside the F9 calibration gate",
+  "form": "none",
+  "calibration": {
+    "stabilize": {
+      "mean": 65.311664,
+      "bounds": [
+        30.0,
+        45.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        43
+      ],
+      "per_seed": {
+        "42": 67.288875,
+        "43": 65.426878,
+        "44": 63.219238
+      }
+    },
+    "degraded": {
+      "mean": 69.136951,
+      "bounds": [
+        8.0,
+        20.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        43
+      ],
+      "per_seed": {
+        "42": 71.605805,
+        "43": 70.181952,
+        "44": 65.623096
+      }
+    },
+    "dream": {
+      "mean": 273.412953,
+      "bounds": [
+        160.0,
+        240.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        42,
+        44
+      ],
+      "per_seed": {
+        "42": 232.115162,
+        "43": 272.530685,
+        "44": 315.593011
+      }
+    },
+    "reflect": {
+      "mean": 252.183765,
+      "bounds": [
+        270.0,
+        320.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        42,
+        43,
+        44
+      ],
+      "per_seed": {
+        "42": 250.932777,
+        "43": 253.231838,
+        "44": 252.386679
+      }
+    },
+    "explore": {
+      "mean": 292.139832,
+      "bounds": [
+        280.0,
+        330.0
+      ],
+      "inside": true,
+      "drifted_seeds": [
+        42,
+        43,
+        44
+      ],
+      "per_seed": {
+        "42": 291.763427,
+        "43": 292.893009,
+        "44": 291.763059
+      }
+    }
+  }
+}

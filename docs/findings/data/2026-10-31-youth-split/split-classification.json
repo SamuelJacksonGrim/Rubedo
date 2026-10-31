@@ -1,0 +1,1153 @@
+{
+  "rule": "abs(mean_late_W - mean_late_128) > span_late_128",
+  "workloads": {
+    "canonical": [
+      {
+        "id": "pattern_identity",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.993056,
+            "span": 0.020833,
+            "min": 0.979167,
+            "max": 1.0,
+            "values": [
+              0.979167,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "witness_crystal",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.691667,
+            "span": 0.2375,
+            "min": 0.5625,
+            "max": 0.8,
+            "values": [
+              0.5625,
+              0.7125,
+              0.8
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.258333,
+            "span": 0.391667,
+            "min": 0.083333,
+            "max": 0.475,
+            "values": [
+              0.083333,
+              0.475,
+              0.216667
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "witness_snapshot",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.990278,
+            "span": 0.029167,
+            "min": 0.970833,
+            "max": 1.0,
+            "values": [
+              0.970833,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "lattice_edges",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 2880.0,
+            "span": 0.0,
+            "min": 2880.0,
+            "max": 2880.0,
+            "values": [
+              2880.0,
+              2880.0,
+              2880.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 2880.0,
+            "span": 0.0,
+            "min": 2880.0,
+            "max": 2880.0,
+            "values": [
+              2880.0,
+              2880.0,
+              2880.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 2880.0,
+            "span": 0.0,
+            "min": 2880.0,
+            "max": 2880.0,
+            "values": [
+              2880.0,
+              2880.0,
+              2880.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "lattice_nodes",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "binding_total",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.333333,
+            "span": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "binding_established",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.333333,
+            "span": 1.0,
+            "min": 0.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "bonds",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.333333,
+            "span": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "values": [
+              1.0,
+              2.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "values_core",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 2.0,
+            "span": 0.0,
+            "min": 2.0,
+            "max": 2.0,
+            "values": [
+              2.0,
+              2.0,
+              2.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.333333,
+            "span": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "values": [
+              1.0,
+              2.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "expr_regimes",
+        "kind": "end-window",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.333333,
+            "span": 1.0,
+            "min": 1.0,
+            "max": 2.0,
+            "values": [
+              2.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 15.0,
+            "span": 0.0,
+            "min": 15.0,
+            "max": 15.0,
+            "values": [
+              15.0,
+              15.0,
+              15.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 16.0,
+            "span": 0.0,
+            "min": 16.0,
+            "max": 16.0,
+            "values": [
+              16.0,
+              16.0,
+              16.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "gen_regimes",
+        "kind": "end-window",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 5.0,
+            "span": 3.0,
+            "min": 3.0,
+            "max": 6.0,
+            "values": [
+              6.0,
+              3.0,
+              6.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 16.0,
+            "span": 0.0,
+            "min": 16.0,
+            "max": 16.0,
+            "values": [
+              16.0,
+              16.0,
+              16.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 16.0,
+            "span": 0.0,
+            "min": 16.0,
+            "max": 16.0,
+            "values": [
+              16.0,
+              16.0,
+              16.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      }
+    ],
+    "wide": [
+      {
+        "id": "pattern_identity",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.984722,
+            "span": 0.033333,
+            "min": 0.966667,
+            "max": 1.0,
+            "values": [
+              0.966667,
+              0.9875,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "witness_crystal",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.920833,
+            "span": 0.141666,
+            "min": 0.829167,
+            "max": 0.970833,
+            "values": [
+              0.829167,
+              0.9625,
+              0.970833
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.484722,
+            "span": 0.3,
+            "min": 0.35,
+            "max": 0.65,
+            "values": [
+              0.35,
+              0.454167,
+              0.65
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.058334,
+            "span": 0.0875,
+            "min": 0.004167,
+            "max": 0.091667,
+            "values": [
+              0.004167,
+              0.091667,
+              0.079167
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "witness_snapshot",
+        "kind": "rate",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.980556,
+            "span": 0.033333,
+            "min": 0.966667,
+            "max": 1.0,
+            "values": [
+              0.966667,
+              0.975,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "lattice_edges",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 2880.0,
+            "span": 0.0,
+            "min": 2880.0,
+            "max": 2880.0,
+            "values": [
+              2880.0,
+              2880.0,
+              2880.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 2880.0,
+            "span": 0.0,
+            "min": 2880.0,
+            "max": 2880.0,
+            "values": [
+              2880.0,
+              2880.0,
+              2880.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 2797.333333,
+            "span": 106.0,
+            "min": 2746.0,
+            "max": 2852.0,
+            "values": [
+              2746.0,
+              2794.0,
+              2852.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "lattice_nodes",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 240.0,
+            "span": 0.0,
+            "min": 240.0,
+            "max": 240.0,
+            "values": [
+              240.0,
+              240.0,
+              240.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "binding_total",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 4.666667,
+            "span": 9.0,
+            "min": 0.0,
+            "max": 9.0,
+            "values": [
+              9.0,
+              5.0,
+              0.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "binding_established",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "bonds",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 2.666667,
+            "span": 2.0,
+            "min": 2.0,
+            "max": 4.0,
+            "values": [
+              4.0,
+              2.0,
+              2.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 1.0,
+            "span": 0.0,
+            "min": 1.0,
+            "max": 1.0,
+            "values": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": true
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": true
+          }
+        }
+      },
+      {
+        "id": "values_core",
+        "kind": "stock-increment",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 0.0,
+            "span": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+            "values": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": false
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "expr_regimes",
+        "kind": "end-window",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 3.666667,
+            "span": 4.0,
+            "min": 2.0,
+            "max": 6.0,
+            "values": [
+              6.0,
+              2.0,
+              3.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 15.333333,
+            "span": 6.0,
+            "min": 13.0,
+            "max": 19.0,
+            "values": [
+              14.0,
+              13.0,
+              19.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 4.0,
+            "span": 6.0,
+            "min": 2.0,
+            "max": 8.0,
+            "values": [
+              2.0,
+              2.0,
+              8.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          },
+          "768": {
+            "class": "youth-only",
+            "unresolved": false
+          }
+        }
+      },
+      {
+        "id": "gen_regimes",
+        "kind": "end-window",
+        "reads": {
+          "128": {
+            "n": 3,
+            "mean": 12.666667,
+            "span": 5.0,
+            "min": 10.0,
+            "max": 15.0,
+            "values": [
+              15.0,
+              10.0,
+              13.0
+            ]
+          },
+          "256": {
+            "n": 3,
+            "mean": 7.666667,
+            "span": 12.0,
+            "min": 2.0,
+            "max": 14.0,
+            "values": [
+              2.0,
+              7.0,
+              14.0
+            ]
+          },
+          "768": {
+            "n": 3,
+            "mean": 4.0,
+            "span": 6.0,
+            "min": 2.0,
+            "max": 8.0,
+            "values": [
+              2.0,
+              2.0,
+              8.0
+            ]
+          }
+        },
+        "flags": {
+          "256": {
+            "class": "youth-only",
+            "unresolved": true
+          },
+          "768": {
+            "class": "moves-when-settled",
+            "unresolved": false
+          }
+        }
+      }
+    ]
+  }
+}

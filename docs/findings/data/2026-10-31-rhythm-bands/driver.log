@@ -1,0 +1,895 @@
+10:39:41 BEGIN batch-split
+batch-split 18 arms, 2 workers, steps 500
+dim=128 seed=43 canonical step=50/500 14 ms/step
+dim=128 seed=42 canonical step=50/500 16 ms/step
+dim=128 seed=43 canonical step=100/500 18 ms/step
+dim=128 seed=42 canonical step=100/500 20 ms/step
+dim=128 seed=42 canonical step=150/500 23 ms/step
+dim=128 seed=43 canonical step=150/500 24 ms/step
+dim=128 seed=42 canonical step=200/500 25 ms/step
+dim=128 seed=43 canonical step=200/500 25 ms/step
+dim=128 seed=42 canonical step=250/500 26 ms/step
+dim=128 seed=43 canonical step=250/500 27 ms/step
+dim=128 seed=42 canonical step=300/500 27 ms/step
+dim=128 seed=43 canonical step=300/500 28 ms/step
+dim=128 seed=42 canonical step=350/500 27 ms/step
+dim=128 seed=43 canonical step=350/500 28 ms/step
+dim=128 seed=42 canonical step=400/500 28 ms/step
+dim=128 seed=43 canonical step=400/500 28 ms/step
+dim=128 seed=43 canonical step=450/500 29 ms/step
+dim=128 seed=42 canonical step=450/500 29 ms/step
+dim=128 seed=42 canonical step=500/500 29 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d128-s42.json
+dim=128 seed=43 canonical step=500/500 29 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d128-s43.json
+dim=256 seed=42 canonical step=50/500 16 ms/step
+dim=128 seed=44 canonical step=50/500 18 ms/step
+dim=256 seed=42 canonical step=100/500 21 ms/step
+dim=128 seed=44 canonical step=100/500 22 ms/step
+dim=256 seed=42 canonical step=150/500 24 ms/step
+dim=128 seed=44 canonical step=150/500 26 ms/step
+dim=256 seed=42 canonical step=200/500 26 ms/step
+dim=128 seed=44 canonical step=200/500 28 ms/step
+dim=256 seed=42 canonical step=250/500 28 ms/step
+dim=128 seed=44 canonical step=250/500 29 ms/step
+dim=256 seed=42 canonical step=300/500 29 ms/step
+dim=128 seed=44 canonical step=300/500 29 ms/step
+dim=128 seed=44 canonical step=350/500 30 ms/step
+dim=256 seed=42 canonical step=350/500 30 ms/step
+dim=128 seed=44 canonical step=400/500 30 ms/step
+dim=256 seed=42 canonical step=400/500 31 ms/step
+dim=128 seed=44 canonical step=450/500 30 ms/step
+dim=256 seed=42 canonical step=450/500 32 ms/step
+dim=128 seed=44 canonical step=500/500 31 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d128-s44.json
+dim=256 seed=43 canonical step=50/500 18 ms/step
+dim=256 seed=42 canonical step=500/500 32 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d256-s42.json
+dim=256 seed=43 canonical step=100/500 20 ms/step
+dim=256 seed=44 canonical step=50/500 25 ms/step
+dim=256 seed=43 canonical step=150/500 23 ms/step
+dim=256 seed=44 canonical step=100/500 26 ms/step
+dim=256 seed=43 canonical step=200/500 25 ms/step
+dim=256 seed=44 canonical step=150/500 28 ms/step
+dim=256 seed=44 canonical step=200/500 29 ms/step
+dim=256 seed=43 canonical step=250/500 27 ms/step
+dim=256 seed=44 canonical step=250/500 29 ms/step
+dim=256 seed=43 canonical step=300/500 31 ms/step
+dim=256 seed=44 canonical step=300/500 31 ms/step
+dim=256 seed=43 canonical step=350/500 32 ms/step
+dim=256 seed=44 canonical step=350/500 32 ms/step
+dim=256 seed=43 canonical step=400/500 32 ms/step
+dim=256 seed=44 canonical step=400/500 33 ms/step
+dim=256 seed=43 canonical step=450/500 32 ms/step
+dim=256 seed=44 canonical step=450/500 33 ms/step
+dim=256 seed=43 canonical step=500/500 33 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d256-s43.json
+dim=256 seed=44 canonical step=500/500 33 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d256-s44.json
+dim=768 seed=42 canonical step=50/500 32 ms/step
+dim=768 seed=43 canonical step=50/500 30 ms/step
+dim=768 seed=42 canonical step=100/500 35 ms/step
+dim=768 seed=43 canonical step=100/500 34 ms/step
+dim=768 seed=42 canonical step=150/500 37 ms/step
+dim=768 seed=43 canonical step=150/500 35 ms/step
+dim=768 seed=42 canonical step=200/500 39 ms/step
+dim=768 seed=43 canonical step=200/500 36 ms/step
+dim=768 seed=42 canonical step=250/500 41 ms/step
+dim=768 seed=43 canonical step=250/500 43 ms/step
+dim=768 seed=42 canonical step=300/500 52 ms/step
+dim=768 seed=43 canonical step=300/500 54 ms/step
+dim=768 seed=42 canonical step=350/500 58 ms/step
+dim=768 seed=43 canonical step=350/500 60 ms/step
+dim=768 seed=42 canonical step=400/500 63 ms/step
+dim=768 seed=43 canonical step=400/500 64 ms/step
+dim=768 seed=42 canonical step=450/500 67 ms/step
+dim=768 seed=43 canonical step=450/500 68 ms/step
+dim=768 seed=42 canonical step=500/500 70 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d768-s42.json
+dim=768 seed=43 canonical step=500/500 71 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d768-s43.json
+dim=768 seed=44 canonical step=50/500 40 ms/step
+dim=128 seed=42 wide step=50/500 37 ms/step
+dim=768 seed=44 canonical step=100/500 42 ms/step
+dim=768 seed=44 canonical step=150/500 39 ms/step
+dim=128 seed=42 wide step=100/500 50 ms/step
+dim=768 seed=44 canonical step=200/500 40 ms/step
+dim=768 seed=44 canonical step=250/500 42 ms/step
+dim=128 seed=42 wide step=150/500 59 ms/step
+dim=128 seed=42 wide step=200/500 66 ms/step
+dim=768 seed=44 canonical step=300/500 54 ms/step
+dim=128 seed=42 wide step=250/500 70 ms/step
+dim=768 seed=44 canonical step=350/500 58 ms/step
+dim=128 seed=42 wide step=300/500 74 ms/step
+dim=768 seed=44 canonical step=400/500 62 ms/step
+dim=128 seed=42 wide step=350/500 77 ms/step
+dim=768 seed=44 canonical step=450/500 64 ms/step
+dim=768 seed=44 canonical step=500/500 67 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\canonical-d768-s44.json
+dim=128 seed=42 wide step=400/500 81 ms/step
+dim=128 seed=43 wide step=50/500 37 ms/step
+dim=128 seed=43 wide step=100/500 51 ms/step
+dim=128 seed=42 wide step=450/500 83 ms/step
+dim=128 seed=43 wide step=150/500 60 ms/step
+dim=128 seed=42 wide step=500/500 85 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d128-s42.json
+dim=128 seed=43 wide step=200/500 63 ms/step
+dim=128 seed=44 wide step=50/500 46 ms/step
+dim=128 seed=44 wide step=100/500 53 ms/step
+dim=128 seed=43 wide step=250/500 67 ms/step
+dim=128 seed=44 wide step=150/500 60 ms/step
+dim=128 seed=43 wide step=300/500 70 ms/step
+dim=128 seed=44 wide step=200/500 64 ms/step
+dim=128 seed=43 wide step=350/500 73 ms/step
+dim=128 seed=44 wide step=250/500 67 ms/step
+dim=128 seed=43 wide step=400/500 75 ms/step
+dim=128 seed=44 wide step=300/500 70 ms/step
+dim=128 seed=43 wide step=450/500 77 ms/step
+dim=128 seed=44 wide step=350/500 73 ms/step
+dim=128 seed=43 wide step=500/500 78 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d128-s43.json
+dim=128 seed=44 wide step=400/500 74 ms/step
+dim=256 seed=42 wide step=50/500 35 ms/step
+dim=256 seed=42 wide step=100/500 53 ms/step
+dim=128 seed=44 wide step=450/500 77 ms/step
+dim=256 seed=42 wide step=150/500 61 ms/step
+dim=128 seed=44 wide step=500/500 79 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d128-s44.json
+dim=256 seed=42 wide step=200/500 63 ms/step
+dim=256 seed=43 wide step=50/500 38 ms/step
+dim=256 seed=43 wide step=100/500 54 ms/step
+dim=256 seed=42 wide step=250/500 68 ms/step
+dim=256 seed=43 wide step=150/500 63 ms/step
+dim=256 seed=42 wide step=300/500 73 ms/step
+dim=256 seed=43 wide step=200/500 68 ms/step
+dim=256 seed=42 wide step=350/500 79 ms/step
+dim=256 seed=43 wide step=250/500 71 ms/step
+dim=256 seed=42 wide step=400/500 81 ms/step
+dim=256 seed=43 wide step=300/500 78 ms/step
+dim=256 seed=42 wide step=450/500 82 ms/step
+dim=256 seed=43 wide step=350/500 81 ms/step
+dim=256 seed=42 wide step=500/500 84 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d256-s42.json
+dim=256 seed=44 wide step=50/500 44 ms/step
+dim=256 seed=43 wide step=400/500 85 ms/step
+dim=256 seed=44 wide step=100/500 59 ms/step
+dim=256 seed=43 wide step=450/500 86 ms/step
+dim=256 seed=44 wide step=150/500 63 ms/step
+dim=256 seed=43 wide step=500/500 87 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d256-s43.json
+dim=256 seed=44 wide step=200/500 66 ms/step
+dim=768 seed=42 wide step=50/500 52 ms/step
+dim=256 seed=44 wide step=250/500 71 ms/step
+dim=768 seed=42 wide step=100/500 68 ms/step
+dim=256 seed=44 wide step=300/500 75 ms/step
+dim=768 seed=42 wide step=150/500 72 ms/step
+dim=256 seed=44 wide step=350/500 76 ms/step
+dim=768 seed=42 wide step=200/500 76 ms/step
+dim=256 seed=44 wide step=400/500 79 ms/step
+dim=768 seed=42 wide step=250/500 81 ms/step
+dim=256 seed=44 wide step=450/500 82 ms/step
+dim=768 seed=42 wide step=300/500 94 ms/step
+dim=256 seed=44 wide step=500/500 86 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d256-s44.json
+dim=768 seed=43 wide step=50/500 64 ms/step
+dim=768 seed=42 wide step=350/500 104 ms/step
+dim=768 seed=43 wide step=100/500 76 ms/step
+dim=768 seed=43 wide step=150/500 80 ms/step
+dim=768 seed=42 wide step=400/500 109 ms/step
+dim=768 seed=43 wide step=200/500 82 ms/step
+dim=768 seed=43 wide step=250/500 85 ms/step
+dim=768 seed=42 wide step=450/500 116 ms/step
+dim=768 seed=43 wide step=300/500 97 ms/step
+dim=768 seed=42 wide step=500/500 121 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d768-s42.json
+dim=768 seed=44 wide step=50/500 53 ms/step
+dim=768 seed=43 wide step=350/500 107 ms/step
+dim=768 seed=44 wide step=100/500 69 ms/step
+dim=768 seed=44 wide step=150/500 75 ms/step
+dim=768 seed=43 wide step=400/500 113 ms/step
+dim=768 seed=44 wide step=200/500 79 ms/step
+dim=768 seed=44 wide step=250/500 84 ms/step
+dim=768 seed=43 wide step=450/500 117 ms/step
+dim=768 seed=44 wide step=300/500 100 ms/step
+dim=768 seed=43 wide step=500/500 123 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d768-s43.json
+dim=768 seed=44 wide step=350/500 108 ms/step
+dim=768 seed=44 wide step=400/500 118 ms/step
+dim=768 seed=44 wide step=450/500 124 ms/step
+dim=768 seed=44 wide step=500/500 129 ms/step
+WROTE docs\findings\data\2026-10-31-youth-split\wide-d768-s44.json
+batch-split done
+split arms 18  cut 260
+late read moves when abs(mean_W - mean_128) > span_128, 6 d.p.
+rates: late fraction. stocks: late increment. meta: end window.
+
+## canonical  widths [128, 256, 768]  seeds [42, 43, 44]  steps [500]
+  youth-only            256  pattern_identity         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  pattern_identity         [1.0, 1.0, 1.0] -> [0.979167, 1.0, 1.0]  mean 1.0 span 0.0 -> 0.993056 (d -0.006944)
+  moves-when-settled    256  witness_crystal          [1.0, 1.0, 1.0] -> [0.5625, 0.7125, 0.8]  mean 1.0 span 0.0 -> 0.691667 (d -0.308333)
+  moves-when-settled    768  witness_crystal          [1.0, 1.0, 1.0] -> [0.083333, 0.475, 0.216667]  mean 1.0 span 0.0 -> 0.258333 (d -0.741667)
+  youth-only            256  witness_snapshot         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  witness_snapshot         [1.0, 1.0, 1.0] -> [0.970833, 1.0, 1.0]  mean 1.0 span 0.0 -> 0.990278 (d -0.009722)
+  youth-only            256  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  youth-only            768  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  youth-only            256  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            768  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            256  binding_total            [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_total            [0.0, 0.0, 0.0] -> [1.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.333333 (d 0.333333)
+  youth-only            256  binding_established      [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_established      [0.0, 0.0, 0.0] -> [1.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.333333 (d 0.333333)
+  moves-when-settled    256  bonds                    [0.0, 0.0, 0.0] -> [1.0, 2.0, 1.0]  mean 0.0 span 0.0 -> 1.333333 (d 1.333333)
+  moves-when-settled    768  bonds                    [0.0, 0.0, 0.0] -> [1.0, 1.0, 1.0]  mean 0.0 span 0.0 -> 1.0 (d 1.0)
+  moves-when-settled    256  values_core              [2.0, 2.0, 2.0] -> [1.0, 2.0, 1.0]  mean 2.0 span 0.0 -> 1.333333 (d -0.666667)
+  moves-when-settled    768  values_core              [2.0, 2.0, 2.0] -> [0.0, 0.0, 0.0]  mean 2.0 span 0.0 -> 0.0 (d -2.0)
+  moves-when-settled    256  expr_regimes             [2.0, 1.0, 1.0] -> [15.0, 15.0, 15.0]  mean 1.333333 span 1.0 -> 15.0 (d 13.666667)
+  moves-when-settled    768  expr_regimes             [2.0, 1.0, 1.0] -> [16.0, 16.0, 16.0]  mean 1.333333 span 1.0 -> 16.0 (d 14.666667)
+  youth-window          128  expr_regimes             [2.0, 1.0, 1.0]  end-state ['cycling', 'locked', 'locked']
+  youth-window          256  expr_regimes             [16.0, 16.0, 16.0]  end-state ['structureless', 'metastable', 'structureless']
+  youth-window          768  expr_regimes             [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+  moves-when-settled    256  gen_regimes              [6.0, 3.0, 6.0] -> [16.0, 16.0, 16.0]  mean 5.0 span 3.0 -> 16.0 (d 11.0)
+  moves-when-settled    768  gen_regimes              [6.0, 3.0, 6.0] -> [16.0, 16.0, 16.0]  mean 5.0 span 3.0 -> 16.0 (d 11.0)
+  youth-window          128  gen_regimes              [5.0, 4.0, 6.0]  end-state ['metastable', 'metastable', 'metastable']
+  youth-window          256  gen_regimes              [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+  youth-window          768  gen_regimes              [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+
+## wide  widths [128, 256, 768]  seeds [42, 43, 44]  steps [500]
+  youth-only            256  pattern_identity         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  pattern_identity         [1.0, 1.0, 1.0] -> [0.966667, 0.9875, 1.0]  mean 1.0 span 0.0 -> 0.984722 (d -0.015278)
+  moves-when-settled    256  witness_crystal          [0.829167, 0.9625, 0.970833] -> [0.35, 0.454167, 0.65]  mean 0.920833 span 0.141666 -> 0.484722 (d -0.436111)
+  moves-when-settled    768  witness_crystal          [0.829167, 0.9625, 0.970833] -> [0.004167, 0.091667, 0.079167]  mean 0.920833 span 0.141666 -> 0.058334 (d -0.862499)
+  youth-only            256  witness_snapshot         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  witness_snapshot         [1.0, 1.0, 1.0] -> [0.966667, 0.975, 1.0]  mean 1.0 span 0.0 -> 0.980556 (d -0.019444)
+  youth-only            256  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  moves-when-settled    768  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2746.0, 2794.0, 2852.0]  mean 2880.0 span 0.0 -> 2797.333333 (d -82.666667)
+  youth-only            256  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            768  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            256  binding_total            [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_total            [0.0, 0.0, 0.0] -> [9.0, 5.0, 0.0]  mean 0.0 span 0.0 -> 4.666667 (d 4.666667)
+  youth-only            256  binding_established      [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_established      [0.0, 0.0, 0.0] -> [1.0, 1.0, 1.0]  mean 0.0 span 0.0 -> 1.0 (d 1.0)
+  youth-only            256  bonds                    [4.0, 2.0, 2.0] -> [1.0, 1.0, 1.0]  mean 2.666667 span 2.0 -> 1.0 (d -1.666667) UNRESOLVED
+  youth-only            768  bonds                    [4.0, 2.0, 2.0] -> [1.0, 1.0, 1.0]  mean 2.666667 span 2.0 -> 1.0 (d -1.666667) UNRESOLVED
+  youth-only            256  values_core              [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  youth-only            768  values_core              [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    256  expr_regimes             [6.0, 2.0, 3.0] -> [14.0, 13.0, 19.0]  mean 3.666667 span 4.0 -> 15.333333 (d 11.666666)
+  youth-only            768  expr_regimes             [6.0, 2.0, 3.0] -> [2.0, 2.0, 8.0]  mean 3.666667 span 4.0 -> 4.0 (d 0.333333)
+  youth-window          128  expr_regimes             [11.0, 2.0, 3.0]  end-state ['metastable', 'locked', 'metastable']
+  youth-window          256  expr_regimes             [5.0, 14.0, 19.0]  end-state ['structureless', 'structureless', 'dissolving']
+  youth-window          768  expr_regimes             [2.0, 9.0, 6.0]  end-state ['structureless', 'structureless', 'structureless']
+  youth-only            256  gen_regimes              [15.0, 10.0, 13.0] -> [2.0, 7.0, 14.0]  mean 12.666667 span 5.0 -> 7.666667 (d -5.0) UNRESOLVED
+  moves-when-settled    768  gen_regimes              [15.0, 10.0, 13.0] -> [2.0, 2.0, 8.0]  mean 12.666667 span 5.0 -> 4.0 (d -8.666667)
+  youth-window          128  gen_regimes              [17.0, 12.0, 12.0]  end-state ['structureless', 'metastable', 'metastable']
+  youth-window          256  gen_regimes              [3.0, 9.0, 12.0]  end-state ['structureless', 'structureless', 'structureless']
+  youth-window          768  gen_regimes              [2.0, 9.0, 6.0]  end-state ['structureless', 'structureless', 'structureless']
+
+WROTE docs\findings\data\2026-10-31-youth-split\split-classification.json
+10:45:19 END batch-split exit 0
+10:45:19 BEGIN batch-pin
+batch-pin 75 arms, 2 workers
+pin dim=64 seed=42 degraded step=100/400 E=61.9
+pin dim=64 seed=42 stabilize step=100/400 E=91.9
+pin dim=64 seed=42 degraded step=200/400 E=77.3
+pin dim=64 seed=42 stabilize step=200/400 E=111.9
+pin dim=64 seed=42 degraded step=300/400 E=81.7
+pin dim=64 seed=42 stabilize step=300/400 E=117.6
+pin dim=64 seed=42 degraded step=400/400 E=82.7
+WROTE pin-d64-s42-degraded.json eq=82.610954 drift=0.500554 not_basin=False
+pin dim=64 seed=42 stabilize step=400/400 E=113.4
+WROTE pin-d64-s42-stabilize.json eq=117.497152 drift=-2.486791 not_basin=True
+pin dim=64 seed=42 dream step=100/400 E=161.1
+pin dim=64 seed=42 reflect step=100/400 E=137.1
+pin dim=64 seed=42 dream step=200/400 E=248.9
+pin dim=64 seed=42 reflect step=200/400 E=202.7
+pin dim=64 seed=42 dream step=300/400 E=297.9
+pin dim=64 seed=42 reflect step=300/400 E=236.7
+pin dim=64 seed=42 dream step=400/400 E=323.9
+WROTE pin-d64-s42-dream.json eq=312.727652 drift=12.680459 not_basin=True
+pin dim=64 seed=42 explore step=100/400 E=154.8
+pin dim=64 seed=42 reflect step=400/400 E=254.7
+WROTE pin-d64-s42-reflect.json eq=246.811012 drift=8.788324 not_basin=True
+pin dim=64 seed=43 stabilize step=100/400 E=70.8
+pin dim=64 seed=42 explore step=200/400 E=230.8
+pin dim=64 seed=43 stabilize step=200/400 E=98.0
+pin dim=64 seed=42 explore step=300/400 E=270.4
+pin dim=64 seed=43 stabilize step=300/400 E=101.5
+pin dim=64 seed=42 explore step=400/400 E=291.5
+WROTE pin-d64-s42-explore.json eq=282.269494 drift=10.338618 not_basin=True
+pin dim=64 seed=43 stabilize step=400/400 E=116.9
+WROTE pin-d64-s43-stabilize.json eq=107.833803 drift=8.021713 not_basin=True
+pin dim=64 seed=43 degraded step=100/400 E=50.2
+pin dim=64 seed=43 dream step=100/400 E=157.4
+pin dim=64 seed=43 degraded step=200/400 E=76.5
+pin dim=64 seed=43 dream step=200/400 E=244.7
+pin dim=64 seed=43 dream step=300/400 E=294.5
+pin dim=64 seed=43 degraded step=300/400 E=85.7
+pin dim=64 seed=43 dream step=400/400 E=322.0
+WROTE pin-d64-s43-dream.json eq=309.902445 drift=13.483977 not_basin=True
+pin dim=64 seed=43 degraded step=400/400 E=89.9
+WROTE pin-d64-s43-degraded.json eq=88.279158 drift=2.119584 not_basin=True
+pin dim=64 seed=43 explore step=100/400 E=153.2
+pin dim=64 seed=43 reflect step=100/400 E=135.2
+pin dim=64 seed=43 explore step=200/400 E=229.2
+pin dim=64 seed=43 reflect step=200/400 E=200.7
+pin dim=64 seed=43 explore step=300/400 E=269.4
+pin dim=64 seed=43 reflect step=300/400 E=235.0
+pin dim=64 seed=43 explore step=400/400 E=290.7
+WROTE pin-d64-s43-explore.json eq=281.22695 drift=10.483086 not_basin=True
+pin dim=64 seed=44 degraded step=100/400 E=52.9
+pin dim=64 seed=43 reflect step=400/400 E=253.1
+WROTE pin-d64-s43-reflect.json eq=245.058454 drift=8.906881 not_basin=True
+pin dim=64 seed=44 stabilize step=100/400 E=56.9
+pin dim=64 seed=44 degraded step=200/400 E=62.9
+pin dim=64 seed=44 stabilize step=200/400 E=65.3
+pin dim=64 seed=44 degraded step=300/400 E=67.3
+pin dim=64 seed=44 stabilize step=300/400 E=68.4
+pin dim=64 seed=44 degraded step=400/400 E=70.0
+WROTE pin-d64-s44-degraded.json eq=69.009172 drift=1.266413 not_basin=False
+pin dim=64 seed=44 stabilize step=400/400 E=71.7
+WROTE pin-d64-s44-stabilize.json eq=70.790817 drift=2.076052 not_basin=True
+pin dim=64 seed=44 reflect step=100/400 E=135.7
+pin dim=64 seed=44 dream step=100/400 E=155.3
+pin dim=64 seed=44 reflect step=200/400 E=201.7
+pin dim=64 seed=44 dream step=200/400 E=243.9
+pin dim=64 seed=44 dream step=300/400 E=297.5
+pin dim=64 seed=44 reflect step=300/400 E=236.8
+pin dim=64 seed=44 dream step=400/400 E=329.3
+WROTE pin-d64-s44-dream.json eq=315.268704 drift=16.114476 not_basin=True
+pin dim=64 seed=44 reflect step=400/400 E=255.8
+WROTE pin-d64-s44-reflect.json eq=247.322158 drift=9.443415 not_basin=True
+pin dim=64 seed=44 explore step=100/400 E=154.4
+pin dim=128 seed=42 stabilize step=100/400 E=47.1
+pin dim=64 seed=44 explore step=200/400 E=231.3
+pin dim=128 seed=42 stabilize step=200/400 E=62.5
+pin dim=64 seed=44 explore step=300/400 E=272.4
+pin dim=128 seed=42 stabilize step=300/400 E=66.3
+pin dim=128 seed=42 stabilize step=400/400 E=67.6
+WROTE pin-d128-s42-stabilize.json eq=67.288875 drift=0.653457 not_basin=False
+pin dim=64 seed=44 explore step=400/400 E=294.7
+WROTE pin-d64-s44-explore.json eq=284.767318 drift=11.05289 not_basin=True
+pin dim=128 seed=42 degraded step=100/400 E=48.7
+pin dim=128 seed=42 dream step=100/400 E=105.4
+pin dim=128 seed=42 dream step=200/400 E=189.1
+pin dim=128 seed=42 degraded step=200/400 E=64.8
+pin dim=128 seed=42 dream step=300/400 E=223.1
+pin dim=128 seed=42 degraded step=300/400 E=70.5
+pin dim=128 seed=42 dream step=400/400 E=238.0
+WROTE pin-d128-s42-dream.json eq=232.115162 drift=9.221984 not_basin=True
+pin dim=128 seed=42 degraded step=400/400 E=72.3
+WROTE pin-d128-s42-degraded.json eq=71.605805 drift=0.820837 not_basin=False
+pin dim=128 seed=42 explore step=100/400 E=158.3
+pin dim=128 seed=42 reflect step=100/400 E=138.1
+pin dim=128 seed=42 explore step=200/400 E=236.2
+pin dim=128 seed=42 reflect step=200/400 E=204.3
+pin dim=128 seed=42 explore step=300/400 E=279.4
+pin dim=128 seed=42 reflect step=300/400 E=240.6
+pin dim=128 seed=42 explore step=400/400 E=302.8
+WROTE pin-d128-s42-explore.json eq=291.763427 drift=11.413441 not_basin=True
+pin dim=128 seed=43 degraded step=100/400 E=45.1
+pin dim=128 seed=42 reflect step=400/400 E=260.3
+WROTE pin-d128-s42-reflect.json eq=250.932777 drift=9.623273 not_basin=True
+pin dim=128 seed=43 stabilize step=100/400 E=44.1
+pin dim=128 seed=43 degraded step=200/400 E=63.6
+pin dim=128 seed=43 stabilize step=200/400 E=60.7
+pin dim=128 seed=43 degraded step=300/400 E=68.6
+pin dim=128 seed=43 stabilize step=300/400 E=64.5
+pin dim=128 seed=43 degraded step=400/400 E=71.6
+WROTE pin-d128-s43-degraded.json eq=70.181952 drift=1.664734 not_basin=True
+pin dim=128 seed=43 stabilize step=400/400 E=67.4
+WROTE pin-d128-s43-stabilize.json eq=65.426878 drift=1.47641 not_basin=True
+pin dim=128 seed=43 reflect step=100/400 E=135.6
+pin dim=128 seed=43 dream step=100/400 E=129.9
+pin dim=128 seed=43 reflect step=200/400 E=204.5
+pin dim=128 seed=43 dream step=200/400 E=212.5
+pin dim=128 seed=43 dream step=300/400 E=271.1
+pin dim=128 seed=43 reflect step=300/400 E=241.8
+pin dim=128 seed=43 dream step=400/400 E=281.5
+WROTE pin-d128-s43-dream.json eq=272.530685 drift=0.261736 not_basin=False
+pin dim=128 seed=43 reflect step=400/400 E=262.1
+WROTE pin-d128-s43-reflect.json eq=253.231838 drift=9.983184 not_basin=True
+pin dim=128 seed=43 explore step=100/400 E=155.3
+pin dim=128 seed=44 stabilize step=100/400 E=51.2
+pin dim=128 seed=43 explore step=200/400 E=235.9
+pin dim=128 seed=44 stabilize step=200/400 E=61.2
+pin dim=128 seed=43 explore step=300/400 E=279.4
+pin dim=128 seed=44 stabilize step=300/400 E=62.5
+pin dim=128 seed=44 stabilize step=400/400 E=63.2
+WROTE pin-d128-s44-stabilize.json eq=63.219238 drift=0.76126 not_basin=False
+pin dim=128 seed=43 explore step=400/400 E=303.5
+WROTE pin-d128-s43-explore.json eq=292.893009 drift=12.021652 not_basin=True
+pin dim=128 seed=44 dream step=100/400 E=150.6
+pin dim=128 seed=44 degraded step=100/400 E=50.6
+pin dim=128 seed=44 dream step=200/400 E=246.6
+pin dim=128 seed=44 degraded step=200/400 E=61.9
+pin dim=128 seed=44 dream step=300/400 E=295.5
+pin dim=128 seed=44 degraded step=300/400 E=64.8
+pin dim=128 seed=44 dream step=400/400 E=332.2
+WROTE pin-d128-s44-dream.json eq=315.593011 drift=17.882124 not_basin=True
+pin dim=128 seed=44 degraded step=400/400 E=65.7
+WROTE pin-d128-s44-degraded.json eq=65.623096 drift=0.398134 not_basin=False
+pin dim=128 seed=44 explore step=100/400 E=157.0
+pin dim=128 seed=44 reflect step=100/400 E=137.5
+pin dim=128 seed=44 explore step=200/400 E=235.8
+pin dim=128 seed=44 reflect step=200/400 E=204.7
+pin dim=128 seed=44 explore step=300/400 E=279.2
+pin dim=128 seed=44 reflect step=300/400 E=241.6
+pin dim=128 seed=44 explore step=400/400 E=301.9
+WROTE pin-d128-s44-explore.json eq=291.763059 drift=11.252584 not_basin=True
+pin dim=256 seed=42 degraded step=100/400 E=18.4
+pin dim=128 seed=44 reflect step=400/400 E=261.2
+WROTE pin-d128-s44-reflect.json eq=252.386679 drift=9.666762 not_basin=True
+pin dim=256 seed=42 stabilize step=100/400 E=16.2
+pin dim=256 seed=42 degraded step=200/400 E=23.1
+pin dim=256 seed=42 stabilize step=200/400 E=18.3
+pin dim=256 seed=42 degraded step=300/400 E=24.9
+pin dim=256 seed=42 stabilize step=300/400 E=19.2
+pin dim=256 seed=42 degraded step=400/400 E=26.0
+WROTE pin-d256-s42-degraded.json eq=25.602782 drift=0.501699 not_basin=False
+pin dim=256 seed=42 stabilize step=400/400 E=19.7
+WROTE pin-d256-s42-stabilize.json eq=19.548605 drift=0.270519 not_basin=False
+pin dim=256 seed=42 reflect step=100/400 E=139.1
+pin dim=256 seed=42 dream step=100/400 E=89.6
+pin dim=256 seed=42 dream step=200/400 E=138.2
+pin dim=256 seed=42 reflect step=200/400 E=210.9
+pin dim=256 seed=42 dream step=300/400 E=168.3
+pin dim=256 seed=42 reflect step=300/400 E=251.8
+pin dim=256 seed=42 dream step=400/400 E=186.7
+WROTE pin-d256-s42-dream.json eq=178.761573 drift=9.073255 not_basin=True
+pin dim=256 seed=42 reflect step=400/400 E=273.6
+WROTE pin-d256-s42-reflect.json eq=264.36301 drift=10.779586 not_basin=True
+pin dim=256 seed=42 explore step=100/400 E=160.5
+pin dim=256 seed=43 stabilize step=100/400 E=16.8
+pin dim=256 seed=42 explore step=200/400 E=245.8
+pin dim=256 seed=43 stabilize step=200/400 E=18.3
+pin dim=256 seed=43 stabilize step=300/400 E=19.4
+pin dim=256 seed=42 explore step=300/400 E=295.2
+pin dim=256 seed=43 stabilize step=400/400 E=24.3
+WROTE pin-d256-s43-stabilize.json eq=20.285406 drift=1.436783 not_basin=True
+pin dim=256 seed=42 explore step=400/400 E=321.2
+WROTE pin-d256-s42-explore.json eq=310.043015 drift=12.838264 not_basin=True
+pin dim=256 seed=43 dream step=100/400 E=91.6
+pin dim=256 seed=43 degraded step=100/400 E=18.6
+pin dim=256 seed=43 dream step=200/400 E=138.2
+pin dim=256 seed=43 degraded step=200/400 E=23.0
+pin dim=256 seed=43 dream step=300/400 E=168.8
+pin dim=256 seed=43 degraded step=300/400 E=25.2
+pin dim=256 seed=43 dream step=400/400 E=186.6
+WROTE pin-d256-s43-dream.json eq=178.048024 drift=8.930448 not_basin=True
+pin dim=256 seed=43 degraded step=400/400 E=30.6
+WROTE pin-d256-s43-degraded.json eq=26.343054 drift=1.701213 not_basin=True
+pin dim=256 seed=43 explore step=100/400 E=164.8
+pin dim=256 seed=43 reflect step=100/400 E=138.1
+pin dim=256 seed=43 explore step=200/400 E=246.7
+pin dim=256 seed=43 reflect step=200/400 E=209.1
+pin dim=256 seed=43 explore step=300/400 E=291.0
+pin dim=256 seed=43 explore step=400/400 E=313.0
+WROTE pin-d256-s43-explore.json eq=303.068116 drift=10.899452 not_basin=True
+pin dim=256 seed=43 reflect step=300/400 E=245.6
+pin dim=256 seed=44 degraded step=100/400 E=19.3
+pin dim=256 seed=44 degraded step=200/400 E=25.0
+pin dim=256 seed=43 reflect step=400/400 E=263.7
+WROTE pin-d256-s43-reflect.json eq=255.576663 drift=8.859777 not_basin=True
+pin dim=256 seed=44 stabilize step=100/400 E=17.6
+pin dim=256 seed=44 degraded step=300/400 E=32.7
+pin dim=256 seed=44 stabilize step=200/400 E=20.1
+pin dim=256 seed=44 degraded step=400/400 E=50.1
+WROTE pin-d256-s44-degraded.json eq=41.450766 drift=9.894335 not_basin=True
+pin dim=256 seed=44 stabilize step=300/400 E=26.6
+pin dim=256 seed=44 reflect step=100/400 E=135.2
+pin dim=256 seed=44 stabilize step=400/400 E=43.4
+WROTE pin-d256-s44-stabilize.json eq=35.033039 drift=9.653485 not_basin=True
+pin dim=256 seed=44 reflect step=200/400 E=205.1
+pin dim=256 seed=44 dream step=100/400 E=90.7
+pin dim=256 seed=44 dream step=200/400 E=139.4
+pin dim=256 seed=44 reflect step=300/400 E=241.2
+pin dim=256 seed=44 dream step=300/400 E=168.2
+pin dim=256 seed=44 reflect step=400/400 E=261.0
+WROTE pin-d256-s44-reflect.json eq=252.251783 drift=9.795137 not_basin=True
+pin dim=256 seed=44 dream step=400/400 E=186.6
+WROTE pin-d256-s44-dream.json eq=178.256056 drift=9.359417 not_basin=True
+pin dim=512 seed=42 stabilize step=100/400 E=16.7
+pin dim=256 seed=44 explore step=100/400 E=161.3
+pin dim=512 seed=42 stabilize step=200/400 E=18.9
+pin dim=256 seed=44 explore step=200/400 E=242.9
+pin dim=512 seed=42 stabilize step=300/400 E=19.7
+pin dim=256 seed=44 explore step=300/400 E=286.1
+pin dim=512 seed=42 stabilize step=400/400 E=20.3
+WROTE pin-d512-s42-stabilize.json eq=20.035815 drift=0.302213 not_basin=False
+pin dim=256 seed=44 explore step=400/400 E=310.0
+WROTE pin-d256-s44-explore.json eq=299.420465 drift=11.768627 not_basin=True
+pin dim=512 seed=42 dream step=100/400 E=86.3
+pin dim=512 seed=42 degraded step=100/400 E=18.7
+pin dim=512 seed=42 dream step=200/400 E=134.5
+pin dim=512 seed=42 degraded step=200/400 E=23.8
+pin dim=512 seed=42 dream step=300/400 E=163.7
+pin dim=512 seed=42 degraded step=300/400 E=25.7
+pin dim=512 seed=42 degraded step=400/400 E=26.8
+WROTE pin-d512-s42-degraded.json eq=26.293081 drift=0.5547 not_basin=True
+pin dim=512 seed=42 dream step=400/400 E=184.1
+WROTE pin-d512-s42-dream.json eq=174.678376 drift=10.112701 not_basin=True
+pin dim=512 seed=42 explore step=100/400 E=169.2
+pin dim=512 seed=42 reflect step=100/400 E=146.9
+pin dim=512 seed=42 explore step=200/400 E=253.9
+pin dim=512 seed=42 reflect step=200/400 E=218.0
+pin dim=512 seed=42 explore step=300/400 E=296.0
+pin dim=512 seed=42 reflect step=300/400 E=251.7
+pin dim=512 seed=42 explore step=400/400 E=319.5
+WROTE pin-d512-s42-explore.json eq=308.632568 drift=11.390378 not_basin=True
+pin dim=512 seed=43 degraded step=100/400 E=18.8
+pin dim=512 seed=42 reflect step=400/400 E=270.4
+WROTE pin-d512-s42-reflect.json eq=261.547101 drift=9.030544 not_basin=True
+pin dim=512 seed=43 degraded step=200/400 E=24.0
+pin dim=512 seed=43 stabilize step=100/400 E=17.0
+pin dim=512 seed=43 degraded step=300/400 E=26.3
+pin dim=512 seed=43 stabilize step=200/400 E=19.2
+pin dim=512 seed=43 degraded step=400/400 E=31.6
+WROTE pin-d512-s43-degraded.json eq=27.548358 drift=1.71958 not_basin=True
+pin dim=512 seed=43 stabilize step=300/400 E=20.3
+pin dim=512 seed=43 stabilize step=400/400 E=25.1
+WROTE pin-d512-s43-stabilize.json eq=21.258641 drift=1.425039 not_basin=True
+pin dim=512 seed=43 reflect step=100/400 E=140.0
+pin dim=512 seed=43 dream step=100/400 E=87.4
+pin dim=512 seed=43 dream step=200/400 E=134.8
+pin dim=512 seed=43 reflect step=200/400 E=210.5
+pin dim=512 seed=43 dream step=300/400 E=165.5
+pin dim=512 seed=43 dream step=400/400 E=184.5
+WROTE pin-d512-s43-dream.json eq=175.70905 drift=9.366739 not_basin=True
+pin dim=512 seed=43 reflect step=300/400 E=250.2
+pin dim=512 seed=43 explore step=100/400 E=162.6
+pin dim=512 seed=43 reflect step=400/400 E=271.2
+WROTE pin-d512-s43-reflect.json eq=261.906649 drift=10.284 not_basin=True
+pin dim=512 seed=43 explore step=200/400 E=247.0
+pin dim=512 seed=44 stabilize step=100/400 E=16.6
+pin dim=512 seed=44 stabilize step=200/400 E=19.0
+pin dim=512 seed=43 explore step=300/400 E=295.3
+pin dim=512 seed=44 stabilize step=300/400 E=20.3
+pin dim=512 seed=43 explore step=400/400 E=321.4
+WROTE pin-d512-s43-explore.json eq=309.851452 drift=12.953579 not_basin=True
+pin dim=512 seed=44 stabilize step=400/400 E=21.1
+WROTE pin-d512-s44-stabilize.json eq=20.703857 drift=0.316715 not_basin=False
+pin dim=512 seed=44 degraded step=100/400 E=18.5
+pin dim=512 seed=44 dream step=100/400 E=90.3
+pin dim=512 seed=44 degraded step=200/400 E=23.7
+pin dim=512 seed=44 dream step=200/400 E=137.0
+pin dim=512 seed=44 degraded step=300/400 E=26.3
+pin dim=512 seed=44 dream step=300/400 E=166.6
+pin dim=512 seed=44 degraded step=400/400 E=27.7
+WROTE pin-d512-s44-degraded.json eq=27.001187 drift=0.59681 not_basin=True
+pin dim=512 seed=44 dream step=400/400 E=185.0
+WROTE pin-d512-s44-dream.json eq=176.562209 drift=9.032599 not_basin=True
+pin dim=512 seed=44 reflect step=100/400 E=126.6
+pin dim=512 seed=44 explore step=100/400 E=165.0
+pin dim=512 seed=44 explore step=200/400 E=251.9
+pin dim=512 seed=44 reflect step=200/400 E=205.3
+pin dim=512 seed=44 explore step=300/400 E=298.1
+pin dim=512 seed=44 reflect step=300/400 E=246.8
+pin dim=512 seed=44 explore step=400/400 E=323.8
+WROTE pin-d512-s44-explore.json eq=312.611856 drift=12.520651 not_basin=True
+pin dim=768 seed=42 degraded step=100/400 E=18.3
+pin dim=512 seed=44 reflect step=400/400 E=269.6
+WROTE pin-d512-s44-reflect.json eq=259.525786 drift=11.119179 not_basin=True
+pin dim=768 seed=42 degraded step=200/400 E=24.1
+pin dim=768 seed=42 stabilize step=100/400 E=16.4
+pin dim=768 seed=42 degraded step=300/400 E=26.6
+pin dim=768 seed=42 stabilize step=200/400 E=19.2
+pin dim=768 seed=42 degraded step=400/400 E=28.3
+WROTE pin-d768-s42-degraded.json eq=27.558223 drift=0.850534 not_basin=True
+pin dim=768 seed=42 stabilize step=300/400 E=20.5
+10:58:46 REFUSING duplicate driver pids 9532
+10:59:54 RELAUNCH pid=12284 cuda_hidden=1 jobs=2
+10:59:54 BEGIN batch-split
+skip canonical-d128-s42.json
+skip canonical-d128-s43.json
+skip canonical-d128-s44.json
+skip canonical-d256-s42.json
+skip canonical-d256-s43.json
+skip canonical-d256-s44.json
+skip canonical-d768-s42.json
+skip canonical-d768-s43.json
+skip canonical-d768-s44.json
+skip wide-d128-s42.json
+skip wide-d128-s43.json
+skip wide-d128-s44.json
+skip wide-d256-s42.json
+skip wide-d256-s43.json
+skip wide-d256-s44.json
+skip wide-d768-s42.json
+skip wide-d768-s43.json
+skip wide-d768-s44.json
+batch-split 0 arms, 2 workers, steps 500
+split arms 18  cut 260
+late read moves when abs(mean_W - mean_128) > span_128, 6 d.p.
+rates: late fraction. stocks: late increment. meta: end window.
+
+## canonical  widths [128, 256, 768]  seeds [42, 43, 44]  steps [500]
+  youth-only            256  pattern_identity         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  pattern_identity         [1.0, 1.0, 1.0] -> [0.979167, 1.0, 1.0]  mean 1.0 span 0.0 -> 0.993056 (d -0.006944)
+  moves-when-settled    256  witness_crystal          [1.0, 1.0, 1.0] -> [0.5625, 0.7125, 0.8]  mean 1.0 span 0.0 -> 0.691667 (d -0.308333)
+  moves-when-settled    768  witness_crystal          [1.0, 1.0, 1.0] -> [0.083333, 0.475, 0.216667]  mean 1.0 span 0.0 -> 0.258333 (d -0.741667)
+  youth-only            256  witness_snapshot         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  witness_snapshot         [1.0, 1.0, 1.0] -> [0.970833, 1.0, 1.0]  mean 1.0 span 0.0 -> 0.990278 (d -0.009722)
+  youth-only            256  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  youth-only            768  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  youth-only            256  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            768  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            256  binding_total            [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_total            [0.0, 0.0, 0.0] -> [1.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.333333 (d 0.333333)
+  youth-only            256  binding_established      [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_established      [0.0, 0.0, 0.0] -> [1.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.333333 (d 0.333333)
+  moves-when-settled    256  bonds                    [0.0, 0.0, 0.0] -> [1.0, 2.0, 1.0]  mean 0.0 span 0.0 -> 1.333333 (d 1.333333)
+  moves-when-settled    768  bonds                    [0.0, 0.0, 0.0] -> [1.0, 1.0, 1.0]  mean 0.0 span 0.0 -> 1.0 (d 1.0)
+  moves-when-settled    256  values_core              [2.0, 2.0, 2.0] -> [1.0, 2.0, 1.0]  mean 2.0 span 0.0 -> 1.333333 (d -0.666667)
+  moves-when-settled    768  values_core              [2.0, 2.0, 2.0] -> [0.0, 0.0, 0.0]  mean 2.0 span 0.0 -> 0.0 (d -2.0)
+  moves-when-settled    256  expr_regimes             [2.0, 1.0, 1.0] -> [15.0, 15.0, 15.0]  mean 1.333333 span 1.0 -> 15.0 (d 13.666667)
+  moves-when-settled    768  expr_regimes             [2.0, 1.0, 1.0] -> [16.0, 16.0, 16.0]  mean 1.333333 span 1.0 -> 16.0 (d 14.666667)
+  youth-window          128  expr_regimes             [2.0, 1.0, 1.0]  end-state ['cycling', 'locked', 'locked']
+  youth-window          256  expr_regimes             [16.0, 16.0, 16.0]  end-state ['structureless', 'metastable', 'structureless']
+  youth-window          768  expr_regimes             [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+  moves-when-settled    256  gen_regimes              [6.0, 3.0, 6.0] -> [16.0, 16.0, 16.0]  mean 5.0 span 3.0 -> 16.0 (d 11.0)
+  moves-when-settled    768  gen_regimes              [6.0, 3.0, 6.0] -> [16.0, 16.0, 16.0]  mean 5.0 span 3.0 -> 16.0 (d 11.0)
+  youth-window          128  gen_regimes              [5.0, 4.0, 6.0]  end-state ['metastable', 'metastable', 'metastable']
+  youth-window          256  gen_regimes              [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+  youth-window          768  gen_regimes              [16.0, 16.0, 16.0]  end-state ['dissolving', 'metastable', 'structureless']
+
+## wide  widths [128, 256, 768]  seeds [42, 43, 44]  steps [500]
+  youth-only            256  pattern_identity         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  pattern_identity         [1.0, 1.0, 1.0] -> [0.966667, 0.9875, 1.0]  mean 1.0 span 0.0 -> 0.984722 (d -0.015278)
+  moves-when-settled    256  witness_crystal          [0.829167, 0.9625, 0.970833] -> [0.35, 0.454167, 0.65]  mean 0.920833 span 0.141666 -> 0.484722 (d -0.436111)
+  moves-when-settled    768  witness_crystal          [0.829167, 0.9625, 0.970833] -> [0.004167, 0.091667, 0.079167]  mean 0.920833 span 0.141666 -> 0.058334 (d -0.862499)
+  youth-only            256  witness_snapshot         [1.0, 1.0, 1.0] -> [1.0, 1.0, 1.0]  mean 1.0 span 0.0 -> 1.0 (d 0.0)
+  moves-when-settled    768  witness_snapshot         [1.0, 1.0, 1.0] -> [0.966667, 0.975, 1.0]  mean 1.0 span 0.0 -> 0.980556 (d -0.019444)
+  youth-only            256  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2880.0, 2880.0, 2880.0]  mean 2880.0 span 0.0 -> 2880.0 (d 0.0)
+  moves-when-settled    768  lattice_edges            [2880.0, 2880.0, 2880.0] -> [2746.0, 2794.0, 2852.0]  mean 2880.0 span 0.0 -> 2797.333333 (d -82.666667)
+  youth-only            256  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            768  lattice_nodes            [240.0, 240.0, 240.0] -> [240.0, 240.0, 240.0]  mean 240.0 span 0.0 -> 240.0 (d 0.0)
+  youth-only            256  binding_total            [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_total            [0.0, 0.0, 0.0] -> [9.0, 5.0, 0.0]  mean 0.0 span 0.0 -> 4.666667 (d 4.666667)
+  youth-only            256  binding_established      [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    768  binding_established      [0.0, 0.0, 0.0] -> [1.0, 1.0, 1.0]  mean 0.0 span 0.0 -> 1.0 (d 1.0)
+  youth-only            256  bonds                    [4.0, 2.0, 2.0] -> [1.0, 1.0, 1.0]  mean 2.666667 span 2.0 -> 1.0 (d -1.666667) UNRESOLVED
+  youth-only            768  bonds                    [4.0, 2.0, 2.0] -> [1.0, 1.0, 1.0]  mean 2.666667 span 2.0 -> 1.0 (d -1.666667) UNRESOLVED
+  youth-only            256  values_core              [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  youth-only            768  values_core              [0.0, 0.0, 0.0] -> [0.0, 0.0, 0.0]  mean 0.0 span 0.0 -> 0.0 (d 0.0)
+  moves-when-settled    256  expr_regimes             [6.0, 2.0, 3.0] -> [14.0, 13.0, 19.0]  mean 3.666667 span 4.0 -> 15.333333 (d 11.666666)
+  youth-only            768  expr_regimes             [6.0, 2.0, 3.0] -> [2.0, 2.0, 8.0]  mean 3.666667 span 4.0 -> 4.0 (d 0.333333)
+  youth-window          128  expr_regimes             [11.0, 2.0, 3.0]  end-state ['metastable', 'locked', 'metastable']
+  youth-window          256  expr_regimes             [5.0, 14.0, 19.0]  end-state ['structureless', 'structureless', 'dissolving']
+  youth-window          768  expr_regimes             [2.0, 9.0, 6.0]  end-state ['structureless', 'structureless', 'structureless']
+  youth-only            256  gen_regimes              [15.0, 10.0, 13.0] -> [2.0, 7.0, 14.0]  mean 12.666667 span 5.0 -> 7.666667 (d -5.0) UNRESOLVED
+  moves-when-settled    768  gen_regimes              [15.0, 10.0, 13.0] -> [2.0, 2.0, 8.0]  mean 12.666667 span 5.0 -> 4.0 (d -8.666667)
+  youth-window          128  gen_regimes              [17.0, 12.0, 12.0]  end-state ['structureless', 'metastable', 'metastable']
+  youth-window          256  gen_regimes              [3.0, 9.0, 12.0]  end-state ['structureless', 'structureless', 'structureless']
+  youth-window          768  gen_regimes              [2.0, 9.0, 6.0]  end-state ['structureless', 'structureless', 'structureless']
+
+WROTE docs\findings\data\2026-10-31-youth-split\split-classification.json
+10:59:56 END batch-split exit 0
+10:59:56 BEGIN batch-pin
+skip pin-d64-s42-stabilize.json
+skip pin-d64-s42-degraded.json
+skip pin-d64-s42-dream.json
+skip pin-d64-s42-reflect.json
+skip pin-d64-s42-explore.json
+skip pin-d64-s43-stabilize.json
+skip pin-d64-s43-degraded.json
+skip pin-d64-s43-dream.json
+skip pin-d64-s43-reflect.json
+skip pin-d64-s43-explore.json
+skip pin-d64-s44-stabilize.json
+skip pin-d64-s44-degraded.json
+skip pin-d64-s44-dream.json
+skip pin-d64-s44-reflect.json
+skip pin-d64-s44-explore.json
+skip pin-d128-s42-stabilize.json
+skip pin-d128-s42-degraded.json
+skip pin-d128-s42-dream.json
+skip pin-d128-s42-reflect.json
+skip pin-d128-s42-explore.json
+skip pin-d128-s43-stabilize.json
+skip pin-d128-s43-degraded.json
+skip pin-d128-s43-dream.json
+skip pin-d128-s43-reflect.json
+skip pin-d128-s43-explore.json
+skip pin-d128-s44-stabilize.json
+skip pin-d128-s44-degraded.json
+skip pin-d128-s44-dream.json
+skip pin-d128-s44-reflect.json
+skip pin-d128-s44-explore.json
+skip pin-d256-s42-stabilize.json
+skip pin-d256-s42-degraded.json
+skip pin-d256-s42-dream.json
+skip pin-d256-s42-reflect.json
+skip pin-d256-s42-explore.json
+skip pin-d256-s43-stabilize.json
+skip pin-d256-s43-degraded.json
+skip pin-d256-s43-dream.json
+skip pin-d256-s43-reflect.json
+skip pin-d256-s43-explore.json
+skip pin-d256-s44-stabilize.json
+skip pin-d256-s44-degraded.json
+skip pin-d256-s44-dream.json
+skip pin-d256-s44-reflect.json
+skip pin-d256-s44-explore.json
+skip pin-d512-s42-stabilize.json
+skip pin-d512-s42-degraded.json
+skip pin-d512-s42-dream.json
+skip pin-d512-s42-reflect.json
+skip pin-d512-s42-explore.json
+skip pin-d512-s43-stabilize.json
+skip pin-d512-s43-degraded.json
+skip pin-d512-s43-dream.json
+skip pin-d512-s43-reflect.json
+skip pin-d512-s43-explore.json
+skip pin-d512-s44-stabilize.json
+skip pin-d512-s44-degraded.json
+skip pin-d512-s44-dream.json
+skip pin-d512-s44-reflect.json
+skip pin-d512-s44-explore.json
+skip pin-d768-s42-degraded.json
+batch-pin 14 arms, 2 workers
+pin dim=768 seed=42 stabilize step=100/400 E=16.4
+pin dim=768 seed=42 dream step=100/400 E=83.1
+pin dim=768 seed=42 stabilize step=200/400 E=19.2
+pin dim=768 seed=42 dream step=200/400 E=130.5
+pin dim=768 seed=42 stabilize step=300/400 E=20.5
+pin dim=768 seed=42 dream step=300/400 E=159.9
+pin dim=768 seed=42 stabilize step=400/400 E=21.5
+WROTE pin-d768-s42-stabilize.json eq=21.124299 drift=0.50777 not_basin=True
+pin dim=768 seed=42 dream step=400/400 E=180.8
+WROTE pin-d768-s42-dream.json eq=171.356967 drift=10.544294 not_basin=True
+pin dim=768 seed=42 explore step=100/400 E=167.4
+pin dim=768 seed=42 reflect step=100/400 E=141.2
+pin dim=768 seed=42 explore step=200/400 E=251.6
+pin dim=768 seed=42 reflect step=200/400 E=211.5
+pin dim=768 seed=42 explore step=300/400 E=294.9
+pin dim=768 seed=42 explore step=400/400 E=321.0
+WROTE pin-d768-s42-explore.json eq=309.286908 drift=13.216848 not_basin=True
+pin dim=768 seed=43 degraded step=100/400 E=19.9
+pin dim=768 seed=42 reflect step=300/400 E=246.4
+pin dim=768 seed=43 degraded step=200/400 E=25.9
+pin dim=768 seed=43 degraded step=300/400 E=29.0
+pin dim=768 seed=42 reflect step=400/400 E=267.8
+WROTE pin-d768-s42-reflect.json eq=258.340458 drift=10.832698 not_basin=True
+pin dim=768 seed=43 degraded step=400/400 E=30.7
+WROTE pin-d768-s43-degraded.json eq=29.971958 drift=0.860455 not_basin=True
+pin dim=768 seed=43 stabilize step=100/400 E=18.2
+pin dim=768 seed=43 stabilize step=200/400 E=20.9
+pin dim=768 seed=43 reflect step=100/400 E=143.7
+pin dim=768 seed=43 stabilize step=300/400 E=22.5
+pin dim=768 seed=43 stabilize step=400/400 E=23.5
+WROTE pin-d768-s43-stabilize.json eq=23.083866 drift=0.475473 not_basin=True
+pin dim=768 seed=43 dream step=100/400 E=91.0
+pin dim=768 seed=43 reflect step=200/400 E=215.5
+pin dim=768 seed=43 dream step=200/400 E=137.9
+pin dim=768 seed=43 dream step=300/400 E=168.2
+pin dim=768 seed=43 dream step=400/400 E=188.2
+WROTE pin-d768-s43-dream.json eq=178.995544 drift=9.984848 not_basin=True
+pin dim=768 seed=43 reflect step=300/400 E=254.1
+pin dim=768 seed=43 explore step=100/400 E=168.9
+pin dim=768 seed=43 reflect step=400/400 E=276.2
+WROTE pin-d768-s43-reflect.json eq=266.462796 drift=11.059927 not_basin=True
+pin dim=768 seed=43 explore step=200/400 E=254.7
+pin dim=768 seed=44 stabilize step=100/400 E=17.0
+pin dim=768 seed=44 stabilize step=200/400 E=19.6
+pin dim=768 seed=43 explore step=300/400 E=301.9
+pin dim=768 seed=44 stabilize step=300/400 E=20.9
+pin dim=768 seed=43 explore step=400/400 E=329.0
+WROTE pin-d768-s43-explore.json eq=316.966504 drift=13.672541 not_basin=True
+pin dim=768 seed=44 stabilize step=400/400 E=21.7
+WROTE pin-d768-s44-stabilize.json eq=21.325801 drift=0.388095 not_basin=False
+pin dim=768 seed=44 degraded step=100/400 E=18.8
+pin dim=768 seed=44 dream step=100/400 E=93.4
+pin dim=768 seed=44 degraded step=200/400 E=24.5
+pin dim=768 seed=44 dream step=200/400 E=138.8
+pin dim=768 seed=44 degraded step=300/400 E=27.0
+pin dim=768 seed=44 dream step=300/400 E=167.7
+pin dim=768 seed=44 degraded step=400/400 E=28.4
+WROTE pin-d768-s44-degraded.json eq=27.784288 drift=0.705828 not_basin=True
+pin dim=768 seed=44 dream step=400/400 E=185.9
+WROTE pin-d768-s44-dream.json eq=177.489853 drift=9.11747 not_basin=True
+pin dim=768 seed=44 explore step=100/400 E=166.9
+pin dim=768 seed=44 reflect step=100/400 E=129.0
+pin dim=768 seed=44 explore step=200/400 E=253.9
+pin dim=768 seed=44 reflect step=200/400 E=207.3
+pin dim=768 seed=44 explore step=300/400 E=299.0
+pin dim=768 seed=44 explore step=400/400 E=323.0
+WROTE pin-d768-s44-explore.json eq=312.419355 drift=11.76348 not_basin=True
+pin dim=768 seed=44 reflect step=300/400 E=247.1
+pin dim=768 seed=44 reflect step=400/400 E=268.0
+WROTE pin-d768-s44-reflect.json eq=258.767098 drift=10.124091 not_basin=True
+batch-pin done
+11:02:52 END batch-pin exit 0
+11:02:52 BEGIN decide
+{
+  "ship": false,
+  "reason": "dim 128 pinned equilibria are outside the F9 calibration gate",
+  "form": "none",
+  "calibration": {
+    "stabilize": {
+      "mean": 65.311664,
+      "bounds": [
+        30.0,
+        45.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        43
+      ],
+      "per_seed": {
+        "42": 67.288875,
+        "43": 65.426878,
+        "44": 63.219238
+      }
+    },
+    "degraded": {
+      "mean": 69.136951,
+      "bounds": [
+        8.0,
+        20.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        43
+      ],
+      "per_seed": {
+        "42": 71.605805,
+        "43": 70.181952,
+        "44": 65.623096
+      }
+    },
+    "dream": {
+      "mean": 273.412953,
+      "bounds": [
+        160.0,
+        240.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        42,
+        44
+      ],
+      "per_seed": {
+        "42": 232.115162,
+        "43": 272.530685,
+        "44": 315.593011
+      }
+    },
+    "reflect": {
+      "mean": 252.183765,
+      "bounds": [
+        270.0,
+        320.0
+      ],
+      "inside": false,
+      "drifted_seeds": [
+        42,
+        43,
+        44
+      ],
+      "per_seed": {
+        "42": 250.932777,
+        "43": 253.231838,
+        "44": 252.386679
+      }
+    },
+    "explore": {
+      "mean": 292.139832,
+      "bounds": [
+        280.0,
+        330.0
+      ],
+      "inside": true,
+      "drifted_seeds": [
+        42,
+        43,
+        44
+      ],
+      "per_seed": {
+        "42": 291.763427,
+        "43": 292.893009,
+        "44": 291.763059
+      }
+    }
+  }
+}
+WROTE docs\findings\data\2026-10-31-rhythm-bands\placement.json
+11:02:54 END decide exit 2

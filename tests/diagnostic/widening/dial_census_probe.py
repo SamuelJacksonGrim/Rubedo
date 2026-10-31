@@ -56,6 +56,38 @@ Pre-declared rule (written before any arm was run):
   in that window is reported as such. It does not reclassify the 500-step
   rule.
 
+  Step 4 split (written before those arms, same cut, same seeds). The
+  census left seven decision reads unsplit because the snapshot did not
+  hold them: lattice edges, binding counts, the 0.7 pattern fraction,
+  witness crystallization, bonds, sacred promotions, metastability
+  regime count. `split` in the JSON snapshots them at step 260 and at
+  the end. Classification, in `reduce_split`:
+
+    Same numeric rule. A late read moves at W when
+    abs(mean_W - mean_128) > span_128 after rounding to 6 d.p.
+
+    Rates (pattern identity, witness crystal-clear, witness snapshot-
+    clear): the late read is (count_end - count_at_cut) / late_steps.
+
+    Stocks (lattice edges and nodes, binding total and established,
+    bonds, values_core): the late read is the increment end - cut,
+    not the end stock. A gap that opens before the cut and then sits
+    still is the youth miss persisting (the attractor precedent in
+    the census finding). That is youth-only.
+
+    Metastability regime count: the monitor window is 128, so the
+    end snapshot is the trailing 128 steps. On a 500-step arm that
+    window sits entirely inside the settled half. The end snapshot
+    is the settled read. The cut snapshot is the trailing 128 of
+    the youth window, reported beside it.
+
+    Youth-only: the late read does not move.
+    Moves when settled: the late read moves.
+    Unresolved (run a longer arm, 1200 steps, same cut): the 128
+    late span swallows a gap that is still > 20% of the 128 late
+    level. A late increment near 0 at every width is resolved
+    (nothing is still happening), not unresolved.
+
   Not on this workload, so neither invariant nor a retune:
   Qwen/Nomic beat-lock floors, encoder training temperatures and cosine
   margins, rupture's gaussian scale (rupture is off), the dream-channel
@@ -462,7 +494,37 @@ def _reset_slot(slot):
     slot["signals"] = None
 
 
-def run_arm(dim, seed, workload, steps):
+def _split_stock(n, cycle, ve, gov, patterns, crystal_clear):
+    """End-of-step stocks the census youth snapshot did not hold.
+
+    Metastability is the monitor's trailing window (128), not the whole
+    run. Read-only. Does not touch the field.
+    """
+    lattice = cycle.lattice.stats()
+    binding = cycle.binding.summary()
+    expr = cycle.expression_metastability.compute_now()
+    genm = cycle.generator_metastability.compute_now()
+    return {
+        "steps": int(n),
+        "lattice_edges": int(lattice.get("edges", 0)),
+        "lattice_nodes": int(lattice.get("nodes", 0)),
+        "binding_total": int(binding.get("total", 0)),
+        "binding_established": int(binding.get("established", 0)),
+        "bonds": int(gov.bond_manager.summary().get("bonds", 0)),
+        "values_core": int(len(ve.core_values())),
+        "pattern_identity": int(patterns.get("identity_reinforcement", 0)),
+        "witness_crystal": int(crystal_clear["witness"]),
+        "witness_snapshot": int(crystal_clear["snap"]),
+        "expr_regimes": int(expr.n_regimes),
+        "expr_state": str(expr.regime_state),
+        "expr_samples": int(len(cycle.expression_metastability._vecs)),
+        "gen_regimes": int(genm.n_regimes),
+        "gen_state": str(genm.regime_state),
+        "gen_samples": int(len(cycle.generator_metastability._vecs)),
+    }
+
+
+def run_arm(dim, seed, workload, steps, thresholds=None):
     if dim % 4 != 0 or dim % 2 != 0:
         raise SystemExit(f"dim {dim} is not usable (heads=4, even PE)")
     cfg = dict(CONFIG)
@@ -499,6 +561,7 @@ def run_arm(dim, seed, workload, steps):
     gain_ceiling = 0
     n = 0
     youth_early = None
+    split_early = None
 
     with determinism.deterministic(seed):
         gen, cycle, gov, ve = build_engine(cfg)
@@ -512,6 +575,14 @@ def run_arm(dim, seed, workload, steps):
         if "cuda" in device.lower():
             raise SystemExit(f"refusing GPU device {device}")
         geometry = _embedding_geometry(gen)
+        if thresholds is not None:
+            # Explicit band set. None leaves the field's own thresholds,
+            # which at FIELD_DIM are the F9 defaults.
+            cycle.field.thresholds = {
+                "stabilize": float(thresholds["stabilize"]),
+                "dream": float(thresholds["dream"]),
+                "reflect": float(thresholds["reflect"]),
+            }
         thresholds = _live_thresholds(cycle)
         ff = None
         try:
@@ -654,6 +725,9 @@ def run_arm(dim, seed, workload, steps):
                     crystal_births, attractor_clear, pull_above, pull_n,
                     reflect_steps, cycle._boredom_overrides,
                 )
+                split_early = _split_stock(
+                    n, cycle, ve, gov, patterns, crystal_clear,
+                )
 
             if i % 50 == 0 or i == steps:
                 elapsed = time.perf_counter() - t0
@@ -679,6 +753,7 @@ def run_arm(dim, seed, workload, steps):
             crystal_births, attractor_clear, pull_above, pull_n,
             reflect_steps, cycle._boredom_overrides,
         )
+        split_full = _split_stock(n, cycle, ve, gov, patterns, crystal_clear)
 
     elapsed = time.perf_counter() - t0
     dec_total = sum(decisions.values()) or 1
@@ -815,6 +890,7 @@ def run_arm(dim, seed, workload, steps):
         "ms_per_step": round(elapsed / max(steps, 1) * 1000.0, 2),
         "thresholds": thresholds,
         "youth": {"cut": _YOUTH_CUT, "early": youth_early, "full": youth_full},
+        "split": {"cut": _YOUTH_CUT, "early": split_early, "full": split_full},
         "rhythms": dict(rhythms),
         "decisions": dict(decisions),
         "patterns": dict(patterns),
@@ -825,8 +901,11 @@ def run_arm(dim, seed, workload, steps):
     }
 
 
-def _arm_path(out_dir, workload, dim, seed):
-    return Path(out_dir) / f"{workload}-d{dim}-s{seed}.json"
+def _arm_path(out_dir, workload, dim, seed, steps=None):
+    name = f"{workload}-d{dim}-s{seed}"
+    if steps is not None and int(steps) != 500:
+        name += f"-n{int(steps)}"
+    return Path(out_dir) / f"{name}.json"
 
 
 def _load_arms(out_dir):
@@ -997,6 +1076,208 @@ def reduce_dir(out_dir):
     return 0
 
 
+# Late-window reads for the step-4 split. Rates are cumulative counts.
+# Stocks are levels; the settled read is the increment. Metastability's
+# settled read is the end snapshot (trailing window of 128).
+_SPLIT_RATES = ("pattern_identity", "witness_crystal", "witness_snapshot")
+_SPLIT_STOCKS = (
+    "lattice_edges", "lattice_nodes",
+    "binding_total", "binding_established",
+    "bonds", "values_core",
+)
+_SPLIT_META = ("expr_regimes", "gen_regimes")
+
+
+def _late_value(arm, key):
+    """One seed's settled read, or None if the arm has no cut snapshot."""
+    split = arm.get("split") or {}
+    early = split.get("early")
+    full = split.get("full")
+    if not early or not full:
+        return None
+    late_steps = int(full["steps"]) - int(early["steps"])
+    if late_steps <= 0:
+        return None
+    if key in _SPLIT_RATES:
+        return (int(full[key]) - int(early[key])) / late_steps
+    if key in _SPLIT_STOCKS:
+        return int(full[key]) - int(early[key])
+    if key in _SPLIT_META:
+        return int(full[key])
+    raise KeyError(key)
+
+
+def _unresolved(stat_w, stat_128):
+    """Span swallowed a gap that is still large relative to the 128 level.
+
+    A near-zero increment at both widths is resolved: the settled field
+    is not doing the thing. That is youth-only or invariant, not a cue
+    for a longer arm.
+    """
+    if stat_w is None or stat_128 is None:
+        return False
+    if stat_128["n"] < 2 or stat_w["n"] < 2:
+        return False
+    gap = abs(stat_w["mean"] - stat_128["mean"])
+    if gap <= stat_128["span"] and gap > 0.20 * max(abs(stat_128["mean"]), 1.0):
+        return True
+    return False
+
+
+def reduce_split(out_dir):
+    """Classify the seven previously unsplit dials. Prints and writes JSON."""
+    arms = _load_arms(out_dir)
+    if not arms:
+        print(f"no arms in {out_dir}")
+        return 1
+    if any(a.get("split", {}).get("early") is None for a in arms):
+        print("an arm is missing split.early (steps shorter than the cut, or an old file)")
+        return 1
+    grouped = _group(arms)
+    keys = _SPLIT_RATES + _SPLIT_STOCKS + _SPLIT_META
+    print(f"split arms {len(arms)}  cut {_YOUTH_CUT}")
+    print("late read moves when abs(mean_W - mean_128) > span_128, 6 d.p.")
+    print("rates: late fraction. stocks: late increment. meta: end window.")
+    print()
+    report = {"rule": "abs(mean_late_W - mean_late_128) > span_late_128", "workloads": {}}
+    for workload, by_dim in grouped.items():
+        if 128 not in by_dim:
+            print(f"{workload}: no 128 arm")
+            continue
+        widths = sorted(by_dim)
+        print(f"## {workload}  widths {widths}  seeds "
+              f"{sorted(a['seed'] for a in by_dim[128])}  "
+              f"steps {sorted({a['steps'] for a in by_dim[128]})}")
+        rows = []
+        for key in keys:
+            per_width = {}
+            for width in widths:
+                per_width[str(width)] = _seed_stats(
+                    [_late_value(a, key) for a in by_dim[width]]
+                )
+            flags = {}
+            base = per_width["128"]
+            for width in widths:
+                if width == 128:
+                    continue
+                moved = _moved(per_width[str(width)], base)
+                flags[str(width)] = {
+                    "class": (
+                        "insufficient" if moved is None
+                        else "moves-when-settled" if moved
+                        else "youth-only"
+                    ),
+                    "unresolved": _unresolved(per_width[str(width)], base),
+                }
+            kind = (
+                "rate" if key in _SPLIT_RATES
+                else "stock-increment" if key in _SPLIT_STOCKS
+                else "end-window"
+            )
+            rows.append({"id": key, "kind": kind, "reads": per_width, "flags": flags})
+            for width, flag in flags.items():
+                a = base or {}
+                b = per_width[width] or {}
+                if not a or not b:
+                    detail = "null"
+                else:
+                    delta = round(b["mean"] - a["mean"], 6)
+                    detail = (
+                        f"{a['values']} -> {b['values']}  "
+                        f"mean {a['mean']} span {a['span']} -> {b['mean']} (d {delta})"
+                    )
+                mark = " UNRESOLVED" if flag["unresolved"] else ""
+                print(f"  {flag['class']:20s} {width:>4}  {key:24s} {detail}{mark}")
+            # Youth window of the regime count, so a settled move can be
+            # compared with the window that still holds the opening.
+            if key in _SPLIT_META:
+                for width in widths:
+                    early_stats = _seed_stats([
+                        (a.get("split") or {}).get("early", {}).get(key)
+                        for a in by_dim[width]
+                    ])
+                    states = [
+                        (a.get("split") or {}).get("full", {}).get(
+                            "expr_state" if key == "expr_regimes" else "gen_state"
+                        )
+                        for a in by_dim[width]
+                    ]
+                    if early_stats:
+                        print(
+                            f"  {'youth-window':20s} {width:>4}  {key:24s} "
+                            f"{early_stats['values']}  end-state {states}"
+                        )
+        report["workloads"][workload] = rows
+        print()
+    out = Path(out_dir) / "split-classification.json"
+    out.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(f"WROTE {out}")
+    return 0
+
+
+def _run_listed(list_path):
+    """One process, many arms. The importer pays torch once per worker."""
+    jobs = json.loads(Path(list_path).read_text(encoding="utf-8"))
+    for job in jobs:
+        arm = run_arm(job["dim"], job["seed"], job["workload"], job["steps"])
+        path = _arm_path(job["out"], job["workload"], job["dim"], job["seed"], job["steps"])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(arm, indent=2, sort_keys=True), encoding="utf-8")
+        print(f"WROTE {path}", flush=True)
+    return 0
+
+
+def _batch_split(out_dir, steps, jobs):
+    """A few worker processes, each walking a slice of the 18 arms."""
+    import subprocess
+    dims = (128, 256, 768)
+    seeds = (42, 43, 44)
+    workloads = ("canonical", "wide")
+    jobs_list = [(w, d, s) for w in workloads for d in dims for s in seeds]
+    pending = []
+    out = Path(out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    for w, d, s in jobs_list:
+        path = _arm_path(out, w, d, s, steps)
+        if path.is_file():
+            try:
+                got = json.loads(path.read_text(encoding="utf-8"))
+                if got.get("split", {}).get("full") and got.get("steps") == int(steps):
+                    print(f"skip {path.name}", flush=True)
+                    continue
+            except json.JSONDecodeError:
+                pass
+        pending.append({
+            "workload": w, "dim": d, "seed": s,
+            "steps": int(steps), "out": str(out),
+        })
+    n = max(1, int(jobs))
+    print(f"batch-split {len(pending)} arms, {n} workers, steps {steps}", flush=True)
+    if not pending:
+        return reduce_split(out_dir)
+    lists = [pending[i::n] for i in range(n)]
+    procs = []
+    for i, chunk in enumerate(lists):
+        if not chunk:
+            continue
+        list_path = out / f"_worker-{i}.json"
+        list_path.write_text(json.dumps(chunk), encoding="utf-8")
+        procs.append(subprocess.Popen(
+            [sys.executable, "-m", "tests.diagnostic.widening.dial_census_probe",
+             "--run-list", str(list_path)],
+        ))
+    failed = []
+    for proc in procs:
+        code = proc.wait()
+        if code != 0:
+            failed.append(code)
+    if failed:
+        print(f"batch-split failed, worker exits {failed}", flush=True)
+        return 1
+    print("batch-split done", flush=True)
+    return reduce_split(out_dir)
+
+
 def _check():
     fails = []
     if FIELD_DIM != 128:
@@ -1048,6 +1329,12 @@ def main(argv=None):
     p.add_argument("--check", action="store_true")
     p.add_argument("--arm", action="store_true")
     p.add_argument("--reduce", metavar="DIR")
+    p.add_argument("--split-reduce", metavar="DIR")
+    p.add_argument("--batch-split", metavar="DIR",
+                   help="18 arms (canonical+wide, 128/256/768, seeds 42-44) with the split snapshot")
+    p.add_argument("--run-list", metavar="PATH",
+                   help="worker: run the arms listed in this JSON file")
+    p.add_argument("--jobs", type=int, default=2)
     p.add_argument("--dim", type=int, default=128)
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--workload", default="canonical", choices=("canonical", "wide"))
@@ -1056,6 +1343,12 @@ def main(argv=None):
     args = p.parse_args(argv)
     if args.check:
         return _check()
+    if args.split_reduce:
+        return reduce_split(args.split_reduce)
+    if args.run_list:
+        return _run_listed(args.run_list)
+    if args.batch_split:
+        return _batch_split(args.batch_split, args.steps, args.jobs)
     if args.reduce:
         return reduce_dir(args.reduce)
     if not args.arm:
@@ -1064,7 +1357,7 @@ def main(argv=None):
     arm = run_arm(args.dim, args.seed, args.workload, args.steps)
     text = json.dumps(arm, indent=2, sort_keys=True)
     if args.out:
-        path = _arm_path(args.out, args.workload, args.dim, args.seed)
+        path = _arm_path(args.out, args.workload, args.dim, args.seed, args.steps)
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
         print(f"WROTE {path}")

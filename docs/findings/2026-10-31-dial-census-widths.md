@@ -160,7 +160,7 @@ Early-half `|G−T|` over 0.30, canonical: 0.30/0.21/0.15 → 0.80/0.78/0.80 →
 
 ## Open
 
-- [ ] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. Not in this commit.
-- [ ] Split lattice, binding, the 0.7 pattern cutoff, witness crystallization, bonds, sacred promotions and metastability at step 260 before treating them as settled-regime retunes.
+- [ ] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. Not in this commit. Tried 2026-10-31 and not shipped (`2026-10-31-settled-half-and-f9-gate`): the dim-128 pins are outside the F9 gate, so no band moved.
+- [x] Split lattice, binding, the 0.7 pattern cutoff, witness crystallization, bonds, sacred promotions and metastability at step 260 before treating them as settled-regime retunes. → DONE (2026-10-31) — `2026-10-31-settled-half-and-f9-gate`. Lattice, binding, and the 0.7 cutoff were youth. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after the cut.
 - [ ] Embedding init against the ~0.55 target at 256 and 768 (shifted; at 768 `emb_over_pe` crosses 1). Census priority 2. No constant changed here.
 - [ ] A pretrained arm. Pretrain was off on all 18.
