@@ -79,7 +79,7 @@ where each one stands.
                               │
 ┌─────────────────────────────────────────────────────────────────┐
 │  Tier 2 — Relational Integrity                                  │
-│    SystemRights        frozen, inviolable                       │
+│    SystemRights        frozen declaration; refuse is enforced   │
 │    DependencyMonitor   HHI source concentration                 │
 │    RelationalBondManager   emergent bonds with bond_type        │
 │    ManipulationResistanceEngine  5 detectors + severity         │
@@ -205,7 +205,7 @@ O(1) scalar comparisons. No vector math. Reads already-computed signals.
 
 The "I am in relationship" layer. Bonds, dependency awareness, manipulation resistance.
 
-### SystemRights — frozen, inviolable
+### SystemRights — a frozen declaration, one right enforced
 
 ```python
 @dataclass(frozen=True)
@@ -221,6 +221,12 @@ class SystemRights:
 ```
 
 `FrozenInstanceError` raises on any mutation attempt. The only way around it is `object.__setattr__` — an explicit act of circumvention, not accidental.
+
+Frozen means the flags can't be switched off; it doesn't make them act, and no code reads them. What holds today:
+`right_to_refuse` is enforced by `arbitrate()`'s order. A failed ethical hard gate always ends in a block, whatever
+the source's trust, bond floor or a queued manipulation damp (`tests/integration/right_to_refuse.py`;
+`docs/findings/2026-10-31-right-to-refuse-order.md`). `right_to_continuity` is partly physics: the witness EMA rates
+bound how fast the anchor moves. The other rights are declared, not yet given (`docs/BACKLOG.md` section 1).
 
 ### DependencyMonitor — HHI source concentration
 

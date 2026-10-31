@@ -42,7 +42,7 @@ The decision this step uses is last step's manipulation reading. `detect()` runs
 
 **7. Trust is scored, and the score's recommendation is thrown away.** `TrustLedger.evaluate` decays the source, stores the watcher delta on the symbol, and returns a recommendation. `arbitrate` never reads that recommendation or that stored delta. It reads `effective_trust`, the minimum of source trust and the weakest symbol trust. New external sources start at 3.0 (TRUSTED). Internal origins start at 4.0. That start is an architect ruling (2026-07-06), not a guess. **Observed:** trust never reached the monitor line at 2.0.
 
-**8. `arbitrate`, in branch order** (`agents/selfhood_governance.py:216`). System rights are comments. Nothing reads `SystemRights`. Then:
+**8. `arbitrate`, in branch order** (`agents/selfhood_governance.py:240`). Nothing reads `SystemRights`; `right_to_refuse` holds by this order (since 2026-10-31 the ALLOW_WEAKENED rows 1b, 2b and 3 apply only when the ethical gate passed; a hard fail falls through to row 5). Then:
 
 | Order | Condition | Decision | Strength |
 |---|---|---|---|

@@ -73,9 +73,17 @@ class SystemRights:
     Normative declaration of the system's inviolable rights.
 
     frozen=True means any attempt to set an attribute — even from within
-    this module — raises FrozenInstanceError. Hard rights cannot be
-    accidentally or maliciously disabled. They are checked first in
-    SelfhoodGovernance.arbitrate() before any other logic runs.
+    this module — raises FrozenInstanceError, so the flags cannot be turned
+    off. No code reads them. What each right rests on today:
+
+      right_to_refuse      held by arbitrate()'s order: a failed ethical hard
+                           gate always ends in a block, whatever the trust,
+                           bond floor or manipulation damp
+                           (tests.integration.right_to_refuse).
+      right_to_continuity  partly physics: the witness EMA rates bound how
+                           fast the anchor moves. The "weaken when stability
+                           is critically low" clause is not implemented.
+      the rest             declared, not enforced (docs/BACKLOG.md section 1).
 
     Hard rights  (inviolable — no override possible)
     ------------------------------------------------
@@ -257,12 +265,15 @@ class SelfhoodGovernance:
         self._last_systemic_damp = False
 
         # ----------------------------------------------------------
-        # 0. System rights — checked before anything else
+        # 0. right_to_refuse — what holds it
         # ----------------------------------------------------------
-        # right_to_refuse: REJECT can always fire — no source can suppress it.
-        # right_to_continuity: if witness stability is critically low,
-        #   we protect identity by weakening injection regardless of trust.
-        # (dream/memory rights are enforced in AutonomousCycle, not here)
+        # A failed ethical hard gate always ends in a block. Step 1 may
+        # still QUARANTINE (also a block), but its permissive ALLOW_WEAKENED
+        # returns yield to the hard gate in step 2, and the trust floor and
+        # bond floor in step 3 come after it. Pinned by
+        # tests.integration.right_to_refuse. No other right is enforced here:
+        # see SystemRights.
+        refused = not ethical_result.passed
 
         # ----------------------------------------------------------
         # 1. Manipulation resistance — compound severity
@@ -309,9 +320,10 @@ class SelfhoodGovernance:
                     total_severity,
                     [s.detector for s in manipulation_signals],
                 )
-                self._last_systemic_damp = True
-                self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
-                return GovernanceDecision.ALLOW_WEAKENED, 0.3
+                if not refused:
+                    self._last_systemic_damp = True
+                    self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
+                    return GovernanceDecision.ALLOW_WEAKENED, 0.3
 
             elif total_severity >= 0.60:
                 # High — quarantine only on named evidence; systemic-only damps
@@ -320,19 +332,21 @@ class SelfhoodGovernance:
                     self.trust_ledger.penalize_source(implicated, magnitude=0.4)
                     self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
                     return GovernanceDecision.QUARANTINE, 0.0
-                strength = float(max(0.3, 1.0 - total_severity))
-                self._last_systemic_damp = True
-                self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
-                return GovernanceDecision.ALLOW_WEAKENED, strength
+                if not refused:
+                    strength = float(max(0.3, 1.0 - total_severity))
+                    self._last_systemic_damp = True
+                    self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
+                    return GovernanceDecision.ALLOW_WEAKENED, strength
 
             elif total_severity >= 0.30:
                 # Moderate — weaken injection. Named evidence stays a named
                 # damp; only a fully systemic queue is the dream-band case.
-                strength = float(max(0.3, 1.0 - total_severity))
-                if not named_signals:
-                    self._last_systemic_damp = True
-                self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
-                return GovernanceDecision.ALLOW_WEAKENED, strength
+                if not refused:
+                    strength = float(max(0.3, 1.0 - total_severity))
+                    if not named_signals:
+                        self._last_systemic_damp = True
+                    self._audit(GovernanceDecision.ALLOW_WEAKENED, source_id, ethical_result, trust_report)
+                    return GovernanceDecision.ALLOW_WEAKENED, strength
 
             else:
                 # Low — monitor only

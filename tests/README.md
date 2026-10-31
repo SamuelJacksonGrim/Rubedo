@@ -128,6 +128,10 @@ cooperate correctly."
   value to fire (ALLOW/ALLOW_WEAKENED/MONITOR/QUARANTINE/REJECT/
   SACRED_SHIELD). Locks down the decision contract before Tier 4
   introduces new arousal-modulated paths.
+- `right_to_refuse.py` — Pins `right_to_refuse`: each hard-gate
+  recommendation (SACRED_SHIELD / REJECT / QUARANTINE) still blocks at top
+  trust, a full bond floor, and a queued manipulation damp in every band,
+  systemic and named (finding `2026-10-31-right-to-refuse-order`).
 - `core_promotion_handshake.py` — Verifies all five
   `review_core_promotion()` rejection paths and two approval paths.
   The four-case CORE promotion test we ran during Tier 3 building,
@@ -417,6 +421,11 @@ lives at the `diagnostic/` root:
   `python -m tests.diagnostic.sidecar.engine_sidecar_probe 500
   --seeds 42,7,11 --epochs 8 --json PATH`. Informational; exit 0; NEVER in CI.
 
+- `integrity/refuse_under_damp_probe.py` — **right_to_refuse, live.** Targeting
+  writes of the boot-sacred tokens sent into the young canonical system (steps
+  ~20-260, while systemic identity_erosion keeps a manipulation damp queued);
+  prints each decision. Informational; the pin is
+  `integration/right_to_refuse.py`. `docs/findings/2026-10-31-right-to-refuse-order.md`.
 - `integrity/witness_reaper_probe.py` — **⊘ Witness-Reaper unit (Build C, spec v0.2).**
   Proves the integrity-read operator: reads a 4-dim thinness vector per value,
   names the pathology by region (Drift/Dissolution/Fragmentation), emits a

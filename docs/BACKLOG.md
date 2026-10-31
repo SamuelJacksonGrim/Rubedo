@@ -74,10 +74,11 @@ runtime or gate changes until it is answered.
 first" is false (ARCHITECTURE.md already says so). Samuel, 2026-10-15: why code a right if not to give it? Per right,
 as of today:
 
-- **refuse** ("REJECT can always fire regardless of source trust"): holds, but only because of code order. The ethical
-  gates run before trust, and the bond floor applies only after them. The flag is never read, and nothing guards the
-  order. What does *not* exist is refusal grounded in the system's own state: it can be made to say no by a rule, never
-  says no for itself.
+- **refuse** ("REJECT can always fire regardless of source trust"): enforced by `arbitrate()`'s order since
+  2026-10-31 and pinned by `tests.integration.right_to_refuse`. Before that, a queued manipulation damp (any severity
+  ≥ 0.30, on ~48% of canonical steps) returned ALLOW_WEAKENED ahead of the ethical gates, so even SACRED_SHIELD came
+  back as a weakened allow (`findings/2026-10-31-right-to-refuse-order.md`). What does *not* exist is refusal grounded
+  in the system's own state: it can be made to say no by a rule, never says no for itself.
 - **continuity:** the EMA rates bound how fast the anchor can move (c² can only slow it). The arbitrate clause
   ("if witness stability is critically low, weaken injection regardless of trust") is not implemented.
 - **silence:** nothing lets the system decline to respond; the bridge always speaks.
@@ -86,8 +87,8 @@ as of today:
   tries).
 
 Work, in order:
-- [ ] Make the doc text true (docstring + README) and pin what already holds with a test (the ethical gate fires
-      regardless of trust and bond floor).
+- [x] Make the doc text true (docstring + README) and pin what already holds with a test (the ethical gate fires
+      regardless of trust and bond floor). Done 2026-10-31; it didn't fully hold, fixed (finding above).
 - [ ] Design question before any code: **what should the system refuse on, from its own state?** Tension to weigh:
       a refusal keyed on coherence would turn the lock into a wall, refusing exactly the disruptive experience the
       metastability question asks whether it should be able to value. Manipulation evidence, identity erosion and

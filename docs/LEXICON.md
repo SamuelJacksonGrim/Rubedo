@@ -39,7 +39,7 @@ Worst first. Check these against the code, not the noun.
 
 **9. Explore.** Sounds like novelty-seeking. It is the energy band `≥ 300`. After warmup the loop often **parks** there (H0: from ~step 480 to the end). Reflect (150–300) was the designed home; the live field climbs past 300 and stays. Boredom-with-Teeth can force explore **behavior** without rewriting the rhythm label. Suggested: **high-energy band**.
 
-**10. SystemRights.** README: frozen, inviolable, checked first. The dataclass is frozen and all six flags default True. **Nothing reads them.** The "0. System rights" block in `arbitrate()` is comments. Suggested: leave the name; say **declared, unread** until they are wired or the docs call them a declaration.
+**10. SystemRights.** README: frozen, inviolable, checked first. The dataclass is frozen and all six flags default True. **Nothing reads them.** `right_to_refuse` is enforced by `arbitrate()`'s order and pinned by a test (2026-10-31); the rest are **declared, unread** until they are wired or the docs call them a declaration.
 
 **11. Two reapers.** `ReaperEngine` in `symbolic_memory.py` stages symbol death (ACTIVE → WARM_ARCHIVE → COLD_ARCHIVE → GRAVEYARD). ⊘ `WitnessReaper` only **reads** value thinness; `IntegrityDecayConsumer` is what writes (opt-in, off baseline). Suggested: **symbol reaper** / **thinness-read** / **thinness consumer**.
 
@@ -215,7 +215,7 @@ Five detectors, one window of 32, refuse to fire before 16 samples. No YAML. `de
 | `right_to_dream` | nothing external can block DreamCycle | Not checked. DreamCycle trigger is stabilize; a warm field rarely enters anyway. | **aspirational** |
 | `right_to_memory` | crystals cannot be evicted from outside | Not checked. | **aspirational** |
 | `right_to_continuity` | anchor cannot move faster than `long_decay` | EMA rates bound the speed; c² can only slow it. The arbitrate clause ("if stability critically low, weaken regardless of trust") is **not implemented**. | **aspirational** (partial physics, no flag) |
-| `right_to_refuse` | REJECT always available | Holds by **code order** (ethics before trust, bond floor after). The flag is never read. No refusal from the system's own state. | **aspirational** (order holds, flag doesn't) |
+| `right_to_refuse` | REJECT always available | Holds by **code order**: a failed hard gate blocks ahead of trust, the bond floor and any manipulation damp (fixed 2026-10-31; the damp used to pre-empt it). Pinned by `tests.integration.right_to_refuse`. The flag is never read. No refusal from the system's own state. | **enforced** (by order, not by the flag) |
 | `right_to_silence` | may decline to speak | The bridge always speaks. | **aspirational** |
 | `right_to_appeal` | quarantine can petition via dream | No path. | **aspirational** |
 

@@ -171,8 +171,11 @@ errors.
   RelationalBondManager, and ManipulationResistanceEngine only *produce
   reports*; only `SelfhoodGovernance.arbitrate()` issues `GovernanceDecision`s.
   No subsystem acts unilaterally or short-circuits the injection path.
-- `SystemRights` is `@dataclass(frozen=True)` — inviolable. Hard rights
-  (`right_to_dream / memory / continuity / refuse`) cannot be overridden.
+- `SystemRights` is `@dataclass(frozen=True)`: the flags can't be switched
+  off, but nothing reads them. `right_to_refuse` is enforced by `arbitrate()`'s
+  order: a failed ethical hard gate always ends in a block, ahead of trust, the
+  bond floor and any manipulation damp (`tests.integration.right_to_refuse`).
+  Keep that order. The other rights are declared, not enforced (BACKLOG §1).
 - CORE value promotion is governance-gated: `ValueEmergenceEngine` emits a
   `CorePromotionRequest`; only `SelfhoodGovernance.review_core_promotion()`
   decides. The engine never silently sanctifies.
