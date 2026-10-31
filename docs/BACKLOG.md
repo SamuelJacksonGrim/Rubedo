@@ -141,7 +141,13 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
       we're training it to use.") The wide-workload run says vocabulary wasn't the bottleneck for the rattle. Measure
       the dial census at 128 vs 768 before committing; a width arm can ride with Rubedo-A/B.
 - [ ] Step 3: measure the dials at 128 vs 768.
-- [ ] Run 2 at 768 with Matryoshka (corpus worklist).
+- [ ] Run 2 at 768 with Matryoshka (corpus worklist): position balance + the structural order head, launchers written
+      (`corpus\scripts\run2.ps1`, `run2_throughput.ps1`); starts when run 1c (run 1b + the head, full corpus) confirms
+      the head at scale. Run 1b is the current best encoder. `findings/2026-10-30-encoder-word-order.md`.
+- [ ] **Plug-in shape for the encoder** (2026-10-31): the semantic vector is Matryoshka-nested; word order rides in a
+      separate structural head. A consumer at width W reads the semantic prefix it fits plus, optionally, the head
+      (128 + 128 at 256; 640 + 128 or 768 + 128 at 768). Adopting the head means a second projection in `Generator`
+      (it lives in the corpus driver today, `corpus\scripts\struct_head.py`). Keep the two parts separately addressable.
 
 ## 4 · Smaller things, noticed
 
