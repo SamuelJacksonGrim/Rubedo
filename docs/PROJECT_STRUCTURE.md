@@ -54,6 +54,7 @@ Rubedo/
 │   ├── reflective_loop.py                 Multi-pass refine; the field lock when it runs
 │   ├── symbolic_binding.py                Recurring vectors become named concepts
 │   ├── stream_metastability.py           Online stethoscope (stage A generator, stage C expression)
+│   ├── stream_vibration.py                Observe-only vibration gauge on expression (spectrum, MSD, lock-in leftover)
 │   ├── stream_recorder.py                 Observe-only token/source/rhythm/decision ring (opt-in)
 │   ├── rhythm_reader.py                   Reads an input's rhythm (nearest of six centroids) for the selector lever
 │   ├── dream_channel.py                   Decode _last_expressed; the driver steps source_dream
@@ -241,6 +242,7 @@ Rubedo/
 │   │   ├── multi_source_500step.py        Resonance Family canonical workload
 │   │   ├── emotion_checkpoint_roundtrip.py  Bridge checkpoint restores the six emotion scalars (arousal/valence recompute)
 │   │   ├── stream_recorder_smoke.py       Observe-only stream census: bounded ring, status, dump
+│   │   ├── stream_vibration_smoke.py      Observe-only vibration gauge: white/vibration/lock-in controls, byte-identical loop
 │   │   └── test_attention_weight.py       Speech-bridge attention: regimes, per-embedder floors
 │   │
 │   ├── integration/
@@ -295,7 +297,8 @@ Rubedo/
 │   │   │   └── fragmentation_axes_probe.py  Source, binding and thinness over time, consumer off; what Fragmentation fires on
 │   │   ├── metastability/
 │   │   │   ├── __init__.py                Package marker
-│   │   │   └── h0_probe.py                H0 long run: field shape, timescale ratio, who leads, recovery vs age
+│   │   │   ├── h0_probe.py                H0 long run: field shape, timescale ratio, who leads, recovery vs age
+│   │   │   └── vibration_probe.py         Vibration gauge: synthetic controls + canonical S3/S4 baseline
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria

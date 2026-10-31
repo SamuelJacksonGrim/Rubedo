@@ -148,6 +148,7 @@ Six EMA scalars (α 0.15) from three inputs: prediction error, watcher composite
 | `TemporalStream` | `substrate/temporal_stream.py` | time as a stream | Episodic ring + `tick` / `dilation_factor`. | accurate | |
 | `StreamRecorder` | `cognition/stream_recorder.py` | records the stream | Observe-only ring of (tokens, source, rhythm, decision). Opt-in. | accurate | |
 | `StreamMetastabilityMonitor` | `cognition/stream_metastability.py` | live metastability | Window metric over generator (stage A) or expression (stage C) vectors. Observe-only. | accurate | |
+| `StreamVibrationGauge` | `cognition/stream_vibration.py` | a pulse / a vibration | Spectral flatness, dominant period, MSD vs lag, leftover after subtracting the mean cycle, on `_last_expressed`. Observe-only. White / vibration / lock-in is a label over those reads, not a claim about experience. | accurate as the instrument | |
 | `compute_metastability` | `substrate/metastability.py` | formed-enough, light-enough | Multiplicity × dwell-variance × transitions × entropy. Labels: locked / cycling / dissolving / structureless / metastable. | accurate as the metric; `"locked"` ≠ field pin | |
 | `AutonomousCycle` | `loop/autonomous_cycle.py` | a free-running mind | The step. ~22 phases. Everything is called by it, feeds it, or is fed by it. | accurate | |
 | `build_engine` | `loop/recursion1188.py` | builds the engine | Composition point: YAML, graduated levers, tiers 0–3. Loop / REST / WebSocket go through it. Speech REPLs do not. | accurate | |

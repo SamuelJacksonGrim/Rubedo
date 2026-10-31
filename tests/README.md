@@ -47,6 +47,7 @@ python -m tests.smoke.full_stack_minimal
 python -m tests.smoke.single_source_100step
 python -m tests.smoke.multi_source_500step
 python -m tests.smoke.stream_recorder_smoke
+python -m tests.smoke.stream_vibration_smoke
 ```
 
 Integration tests:
@@ -108,6 +109,12 @@ a minute and produce visibly healthy state.
   census, `cognition/stream_recorder.py`): opt-in attach, bounded ring at
   the window, census/uncovered views, `status()` surfacing, JSONL dump
   round-trip, and no status key / identical stepping when absent.
+- `stream_vibration_smoke.py` — The observe-only vibration gauge
+  (`cognition/stream_vibration.py`): synthetic white / vibration / lock-in
+  controls separate, bounded ring, `status()` surfacing, opt-out drops the
+  key, and an 80-step Resonance Family run with vs without the gauge is
+  byte-identical on the loop (long enough for the lazy SVD to fire). The
+  live S3/S4 baseline is the diagnostic probe, not this smoke.
 
 ### `integration/`
 Cross-tier behavior. Verifies the architectural contracts hold under
@@ -194,6 +201,7 @@ The probes are grouped into subfolders by investigation (run as
 |---|---|
 | `tier4/`    | Tier 4.2/4.3 physics validators + affective-state probe |
 | `lockin/`   | The coherence lock-in research arc (migration, ablation, gate decomposition, metastability, gain-sign) — plus the Fix 0-B pair: the currency census (survival-currency decomposition, diversity-signal room, ratchet evidence — the measure-first ruler) and the paired OFF/ON effect probe (counterweight band, governance health, leaky-ratchet mass; pre-declared, incl. the recorded E3 metric correction) |
+| `metastability/` | H0 long-run shape (`h0_probe.py`) and the vibration gauge (`vibration_probe.py`): synthetic white/vibration/lock-in controls, then the canonical workload at S3/S4 |
 | `fix2/`     | Fix-2 reflective-loop governor investigation (trigger calibration, governor validation, live/common-mode/dim sweeps) |
 | `training/` | Generator training path (gradient-path check, corpus integrity + G1/G2 gates, diversity audit, trained-generator sim) |
 | `audit/`    | Runtime behavior audits (decision histogram, gate firing, trust, value polarity, identity-stability baseline, return canary) |

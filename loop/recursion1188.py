@@ -110,6 +110,10 @@ CONFIG = {
     # cycle.stream_recorder.dump_jsonl(path). Terminal sink — never fed back.
     "stream_recorder":              False,
     "stream_recorder_window":       4096,
+    # Vibration gauge: observe-only pulse/white/lock-in read on the expression
+    # stream (cognition/stream_vibration.py). Default-on as a pure observer —
+    # a bounded ring + lazy SVD/rFFT, never read by the loop. Opt out False.
+    "expression_vibration":         True,
     # Session persistence: save (weights + symbol ecology + emergent values) at
     # end of run, resume them at next boot — the system survives dormancy
     # instead of rebooting as a newborn. Resume skips boot pretraining (the
@@ -372,6 +376,7 @@ def build_engine(config: dict = None):
         six_rhythm_selector           = config.get("six_rhythm_selector", False),
         rhythm_read_margin            = config.get("rhythm_read_margin", 0.10),
         rupture_upstream              = config.get("rupture_upstream", False),
+        track_vibration               = config.get("expression_vibration", True),
         attractor_formation_threshold = cyc.get("attractor_formation_threshold", 0.88),
         merge_interval                = cyc.get("merge_interval", 50),
         lattice_emit_interval         = cyc.get("lattice_emit_interval", 100),
