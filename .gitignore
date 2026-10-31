@@ -25,3 +25,6 @@ docs/findings/logs/bonded_adversarial/run-*.json
 # Raw per-step probe traces (regenerable). Summaries live in docs/findings/data/.
 scratch/
 .venv-gpu/
+
+# WMI-detached long jobs (run-detached.ps1). status.txt / out.log / job.ps1.
+.detached/

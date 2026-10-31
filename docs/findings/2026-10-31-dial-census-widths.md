@@ -74,7 +74,7 @@ Value counts do not move. Canonical active values are 46 on every seed at every 
 
 Order a later change should follow. The 500-step class is the rule. The rank uses the step-260 cut where the cut exists, so a constant the settled field still clears does not get rewritten off a youth average.
 
-**1. Rhythm bands, as a group. This is the settled-regime retune.**
+**1. Rhythm bands, as a group. This is the settled-regime retune on these pretrain-off arms.** Pending the pretrained occupancy check (`2026-10-31-settled-half-and-f9-gate`). July's own probe reprints; the pin harness was the different instrument.
 
 Canonical field energy in steps 261–500: seeds 282 / 287 / 290 at 128, 247 / 253 / 246 at 256, 231 / 251 / 236 at 768. The reflect/explore edge is 300. The settled 128 field sits on it (explore in that half 0.21 / 0.26 / 0.34). The settled 256 and 768 fields sit under it (explore 0 / 0.01 / 0 and 0 / 0.08 / 0). Reflect in that half goes from about 0.7 to about 1.0 because explore is gone, not because dream took it: dream in the late half is 0 at every width.
 
@@ -160,7 +160,7 @@ Early-half `|G−T|` over 0.30, canonical: 0.30/0.21/0.15 → 0.80/0.78/0.80 →
 
 ## Open
 
-- [ ] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. Not in this commit. Tried 2026-10-31 and not shipped (`2026-10-31-settled-half-and-f9-gate`): the dim-128 pins are outside the F9 gate, so no band moved.
+- [ ] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. Not in this commit. Tried 2026-10-31 and not shipped (`2026-10-31-settled-half-and-f9-gate`): the pin harness differed from F9's (cold boot, production build, workload); July's table is not stale. Occupancy under 8-epoch pretrain is in flight. No band moved.
 - [x] Split lattice, binding, the 0.7 pattern cutoff, witness crystallization, bonds, sacred promotions and metastability at step 260 before treating them as settled-regime retunes. → DONE (2026-10-31) — `2026-10-31-settled-half-and-f9-gate`. Lattice, binding, and the 0.7 cutoff were youth. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after the cut.
 - [ ] Embedding init against the ~0.55 target at 256 and 768 (shifted; at 768 `emb_over_pe` crosses 1). Census priority 2. No constant changed here.
-- [ ] A pretrained arm. Pretrain was off on all 18.
+- [ ] A pretrained arm. Pretrain was off on all 18. Occupancy under 8-epoch pretrain, eval, 128 / 256 / 768 is in flight (`2026-10-31-settled-half-and-f9-gate`).

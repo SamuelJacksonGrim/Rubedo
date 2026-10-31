@@ -1,0 +1,8 @@
+===== dim 768 =====
+band        eq_mean   eq_min   eq_max  traj_max    E@50   E@100   E@200  allow
+stabilize      78.2     76.1     79.3      79.3    26.5    48.3    67.6   1.00
+dream         187.1    176.3    195.9     195.9    57.0    94.7   145.9   1.00
+reflect       298.6    283.8    310.3     310.3    82.6   149.9   228.3   1.00
+explore       309.5    298.4    318.6     318.6    97.1   171.0   256.9   1.00
+
+(Informational. Compare against the table in docs/findings/2026-07-06-f9-rhythm-band-rescale.md before retuning bands.)

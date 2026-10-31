@@ -302,9 +302,13 @@ no kwarg/YAML yet.
 
 Do these first. Everything else can wait on a measurement. The measurement
 landed 2026-10-31 ([dial census](findings/2026-10-31-dial-census-widths.md)):
-the settled retune is the rhythm bands on canonical, not the cosine cutoffs
-(those still clear after step 260). Embedding init did miss ~0.55 at 256
-and 768. No constant was changed.
+on pretrain-off arms the settled retune is the rhythm bands on canonical,
+not the cosine cutoffs (those still clear after step 260). That band
+verdict is pending a pretrained occupancy check
+([settled-half / F9](findings/2026-10-31-settled-half-and-f9-gate.md)):
+July's own probe reprints, the pin harness was the different instrument,
+and 5 / 150 / 300 still satisfies F9 at 256 and 768 under that instrument.
+Embedding init did miss ~0.55 at 256 and 768. No constant was changed.
 
 1. **Shape.** One edit since 2026-10-14: `FIELD_DIM` in `substrate/dims.py`
    ([field-dim sites](#canonical-field-dim-sites)). Then regenerate
@@ -404,7 +408,7 @@ At 768, `heads=4` still divides. `ff_mult=4` scales the FFN as `dim * 4`.
 | `phase_history_len` | `resonance_field.py:141` | 16 | Phase-coherence window | no | YAML |
 | `diffuse_alpha` | `resonance_field.py:142` | 0.05 | Stabilize-path spectral low-pass | **yes** (FFT) | YAML |
 | `diffuse_on_stabilize` | `resonance_field.py:143` | True | Whether stabilize diffuses | no | YAML |
-| `DEFAULT_THRESHOLDS.stabilize` | `resonance_field.py:128`, YAML, `rhythm_config.json` | 5.0 | Energy < this → stabilize | unsure — F9: 64 and 128 agree; re-run `tests.diagnostic.calibration.rhythm_band_equilibria_probe` before retuning any band | YAML `field.rhythm_thresholds` (do not retune one band alone) |
+| `DEFAULT_THRESHOLDS.stabilize` | `resonance_field.py:128`, YAML, `rhythm_config.json` | 5.0 | Energy < this → stabilize | unsure — F9: 64 and 128 agree; July's probe reprinted 2026-10-31 (dream/reflect/explore within ~3%); the census retune is pretrain-off, pending pretrained occupancy | YAML `field.rhythm_thresholds` (do not retune one band alone) |
 | `.dream` | same | 150.0 | Passage band | unsure | same |
 | `.reflect` | same | 300.0 | Home band; explore is everything above | unsure | same |
 | history mean window | `resonance_field.py:375,405` | last 32 | `internal_coherence` / `coherence_impact` | no | hardcoded |

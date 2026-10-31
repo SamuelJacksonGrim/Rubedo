@@ -4,7 +4,7 @@
 - **Substrate:** `build_engine(CONFIG)` with `dim` overridden per arm. `FIELD_DIM` stays 128. Pretrain off, dream channel not built. D and F on. Bond DDM on. Witness selector on and inert (no rhythm reader). Fragmentation grace's flag is on; `build_engine` does not attach the consumer that reads it, so grace did not act. Rupture off. CPU.
 - **Probe:** `tests/diagnostic/widening/dial_census_probe.py` (the step-260 split) and `tests/diagnostic/widening/rhythm_band_probe.py` (the pins). Neither file edits a constant.
 - **Status:** standing
-- **Depends on:** `2026-10-31-dial-census-widths` (the seven unsplit reads, and the canonical settled energy), `2026-10-31-right-to-refuse-order` (the step-260 cut), `substrate/resonance_field.py` `DEFAULT_THRESHOLDS` (the July F9 constraint set). The July probe this gate is checked against is RFE-Core2 `tests/diagnostic/calibration/rhythm_band_equilibria_probe.py`, finding `2026-07-06-f9-rhythm-band-rescale`. That file is not in this repo.
+- **Depends on:** `2026-10-31-dial-census-widths` (the seven unsplit reads, and the canonical settled energy), `2026-10-31-right-to-refuse-order` (the step-260 cut), `substrate/resonance_field.py` `DEFAULT_THRESHOLDS` (the July F9 constraint set). The July probe this gate is checked against is RFE-Core2 `tests/diagnostic/calibration/rhythm_band_equilibria_probe.py`, finding `2026-07-06-f9-rhythm-band-rescale`. The file as run is in this repo at `docs/findings/data/2026-10-31-f9-probe-rerun/probe-as-run.py`.
 
 ## Question
 
@@ -34,15 +34,34 @@ Dim 64 is reported. It is not a fit point and it does not retune the defaults. I
 - FAILURE looks like: the dim-128 means outside that gate, or a drifted window, or a placement that cannot satisfy the F9 constraints together. Nothing ships.
 - The rule does not say which failure it is when the means fall outside. "Wrong instrument" is the stop. It is not a verdict on why.
 
+**Pretrained occupancy** (written in `rhythm_band_probe.py` before any pretrained free-run arm, and before any 256/768 occupancy is read). Canonical only. Production `build_engine`, 8-epoch corpus pretrain, `generator.eval()`, thresholds left at 5 / 150 / 300, settled half steps 261–500, energy-classified rhythm. Seeds 42–44 fit; 45 and 46 held out. Widths 128 / 256 / 768.
+
+The 128 target is the pretrained 128 fit arms, not the census youth replay. After those three arms finish, `declaration.json` records per-band mean and span of the late fractions (6 d.p.), plus:
+
+- `explore_positive`: every fit seed's late explore count is > 0
+- `dream_max_allowed = max(2, max late dream)`
+- `stabilize_max_allowed = max late stabilize`
+- `reflect_gt_explore`: every fit seed's late reflect > late explore
+
+SUCCESS at width W, on the fitting seeds and again on the held-out seeds:
+
+- for every band, `abs(mean_W − mean_128) <= span_128` (span 0 means any remaining difference fails)
+- if `explore_positive`: every seed's late explore > 0; else every seed's late explore is 0
+- every seed's late dream <= `dream_max_allowed`
+- every seed's late stabilize <= `stabilize_max_allowed`
+- if `reflect_gt_explore`: every seed's late reflect > late explore
+
+The 128 held-out seeds must pass the same bars. If they miss, the 128 target is not stable and 256 / 768 are not judged as a retune. If occupancy holds at 256 and at 768 on both seed sets, the answer to step 4 is no band retune. If it does not, say which band and which width. There is no second placement.
+
 ## Result
 
-No constant changed. `DEFAULT_THRESHOLDS` is still 5 / 150 / 300. `decide()` wrote `placement.json` with `ship: false` and returned exit 2 at 11:02. Reason recorded there: dim-128 pinned equilibria are outside the F9 calibration gate. No free-run arm was started.
+No constant changed. `DEFAULT_THRESHOLDS` is still 5 / 150 / 300. `decide()` wrote `placement.json` with `ship: false` and returned exit 2 at 11:02. Reason recorded there: dim-128 pinned equilibria are outside the F9 calibration gate. No free-run arm was started from that pin. The not-ship stands as a record of that pin. Its reason is now: the pin harness differed from F9's (cold boot, production `build_engine`, canonical workload). July's table is not stale. See the rerun below.
 
 Data: `docs/findings/data/2026-10-31-youth-split/` (18 arms, `split-classification.json`) and `docs/findings/data/2026-10-31-rhythm-bands/` (75 pins, `placement.json`). A duplicate driver was refused at 10:58; the relaunch skipped every finished file and ran the 14 pins that were not yet complete. Both batches exited 0.
 
 ### Youth split
 
-18 arms. Canonical and wide, widths 128 / 256 / 768, seeds 42 / 43 / 44, 500 steps, counters at step 260. Class is the late read.
+18 arms. Canonical and wide, widths 128 / 256 / 768, seeds 42 / 43 / 44, 500 steps, counters at step 260. Class is the late read. Pretrain off, same as the census. These numbers stand; they are not the pretrained occupancy.
 
 | Late read | Canonical 256 | Canonical 768 | Wide 256 | Wide 768 |
 |---|---|---|---|---|
@@ -104,6 +123,30 @@ The census free-run settled energy at canonical 128 was 282 / 287 / 290. Those l
 
 Widths above 128 were not judged. The table is what the pins did. Placement did not run.
 
+### July's probe, unchanged
+
+The open item was to run July's file, unchanged except the dim loop, on both trees. File as run: `docs/findings/data/2026-10-31-f9-probe-rerun/probe-as-run.py`. Outputs: `f9-rfe-core2.txt`, `f9-rubedo.txt`, `f9-rubedo-256.txt`, `f9-rubedo-768.txt`. Seed 42, 8-epoch pretrain, `gen.eval()`, threshold pin, July's four sources, RNG 1188. Not `build_engine`. Not the canonical workload.
+
+Pinned eq_mean (last 100 of 400). July's published dim-128 row is 37.3 / 197.7 / 294.5 / 301.1.
+
+| Tree | Dim | Stabilize | Dream | Reflect | Explore |
+|---|---|---|---|---|---|
+| July 2026-07-06 | 128 | 37.3 | 197.7 | 294.5 | 301.1 |
+| RFE-Core2 today | 128 | 55.1 | 192.4 | 303.0 | 308.1 |
+| Rubedo | 128 | 51.3 | 204.5 | 301.1 | 305.3 |
+| Rubedo | 256 | 66.4 | 189.3 | 293.1 | 298.1 |
+| Rubedo | 768 | 78.2 | 187.1 | 298.6 | 309.5 |
+
+Dream / reflect / explore reproduce within ~3% of July on both trees at dim 128. Stabilize rose (37.3 → 51.3 / 55.1). Allow rate is 1.00 on every band of the rerun; July's stabilize pin allowed 0.39. That is governance since July, and it only raises the stabilize equilibrium, which only strengthens "threshold below equilibrium" (5 still sits well below 51).
+
+Under this instrument the band equilibria barely move with width. Dream stays ~187–205, reflect ~293–303, explore ~298–309. 5 / 150 / 300 still satisfies the F9 constraint set at 256 and at 768 as is: stabilize 5 is below every stabilize pin; dream 150 is below every dream pin; reflect's basin sits against 300; explore sits at or just around 300.
+
+This pin (`rhythm_band_probe.py`) is the different instrument. Differences from July, the ones you would guess: no pretrain (July: 8 epochs, eval), production `build_engine` instead of the bare cycle, the canonical workload instead of July's four sources, and on a cold boot the identity-erosion youth damp stays up, which is where the 384/400 already-weakened came from. F9 was validated several ways before it was saved. The census's "rhythm bands are the retune that survives" came from pretrain-off arms, same as these pins.
+
+### Pretrained occupancy (in flight)
+
+15 canonical arms, 8-epoch pretrain, eval, seeds 42–44 plus held-out 45/46, widths 128 / 256 / 768, thresholds 5 / 150 / 300. Driver: `rhythm_band_probe --batch-pretrained-free`. It runs 128 fit seeds, writes `declaration.json` from those three, then 128 held-out, then 256 and 768. Wide is not in this batch (the census band retune was canonical). Production `six_rhythm_selector` stays on; with pretrain the rhythm reader attaches, unlike the census where it was inert. Occupancy is still energy-classified (`state.rhythm`). Data: `docs/findings/data/2026-10-31-pretrained-occupancy/`. Occupancy numbers are not in this commit. The 128 target does not exist until those three arms finish. 256/768 occupancy is not read before that file exists.
+
 ## Interpretation
 
 Two results, kept apart.
@@ -117,16 +160,22 @@ What still moves on a settled field:
 3. Metastability regime count on canonical, expression and generator, both widths. The settled window leaves locked/cycling. Wide does not tell the same story at 768.
 4. Bond timing on canonical. Not a settled refusal. 128 forms its bonds before the cut; width forms one after it.
 
-The bands did not ship. The dim-128 pin is outside the gate on four of five bands, and the miss is not a scale factor. July had degraded far below full-strength stabilize, then dream, then reflect and explore a few points apart. This pin has degraded beside stabilize, dream's three seeds scattered from 232 to 316, and reflect about 40 below explore.
+The bands did not ship. That record stands. The dim-128 pin is outside the F9 calibration gate on four of five bands, and the miss is not a scale factor. July had degraded far below full-strength stabilize, then dream, then reflect and explore a few points apart. This pin has degraded beside stabilize, dream's three seeds scattered from 232 to 316, and reflect about 40 below explore.
 
-The data cannot say whether July's table is stale on today's stack or this pin is a different instrument. Both would put these means outside that gate. What the data does decide:
+July's own probe, run unchanged on this tree, reprints dream / reflect / explore within ~3% of the 2026-07-06 table. The pin is the different instrument. July's table is not stale. What that decides:
 
-- It is not a width quirk inside this harness. Dim 64 is not near July's 35 either, and it does not agree with dim 128. July reported the two dims agreeing. This run does not reproduce that agreement. It also does not show what July's probe would print on this tree.
-- It is not "the field is still climbing into the old stabilize band." Stabilize and degraded at dim 128 are plateaus, 20 and 50 points above the top of their gates.
-- It is not "reflect would have entered 270–320 if the window were a little longer" as a fact. The second 50 steps sit about 10 above the first 50, and p90 is still under 261. The probe's own rule says this is not an equilibrium. A longer pin might keep climbing. This file does not show that.
-- Witness-as-stance and fragmentation grace cannot be the cause of these pins. They did not run. D and F did run. So did bond DDM, the canonical workload, and a generator with pretrain off. None of those was toggled. The data does not attribute the miss to any one of them.
+- It is not a width quirk inside this harness, and it is not a stale F9 table. Dim 64 on this pin is not near July's 35, and it does not agree with dim 128. July's instrument at 256 and 768 barely moves dream / reflect / explore. The disagreement is the harness.
+- It is not "the field is still climbing into the old stabilize band" on this pin. Stabilize and degraded at dim 128 are plateaus, 20 and 50 points above the top of their gates. On July's instrument stabilize is also a plateau, just a lower one (51–55, allow 1.00). The 384/400 already-weakened on this pin is the cold-boot identity-erosion youth damp, not a basin July's pretrained generator sits in.
+- It is not "reflect would have entered 270–320 if the window were a little longer" as a fact on this pin. The second 50 steps sit about 10 above the first 50, and p90 is still under 261. July's reflect pin is already ~301.
+- Witness-as-stance and fragmentation grace cannot be the cause of these pins. They did not run. D and F did run. So did bond DDM, the canonical workload, and a generator with pretrain off.
 
-The harness difference is real, and it is code, not a number from these files. July's probe builds a generator, pretrains it for 8 epochs, and pins by rewriting the thresholds to 0 or 1e9. Boredom stays at 0.50, so a bored step can still run explore's behavior. Its workload is four 3-token sources, RNG 1188, seed 42. It has no degraded pin. The ~13 in the constraint set is the free-run stall under a candidate threshold of 15, described as the weakened-injection equilibrium. This probe uses `build_engine` with pretrain off, pins by replacing `current_rhythm`, forces boredom off, runs the canonical workload on three seeds, and adds an `arbitrate` wrapper for the degraded band. The energy is the same quantity (field L2 norm) and the window is the same (last 100 of 400). The stack around it is not.
+The harness difference is now measured, not guessed. July's probe builds a generator, pretrains it for 8 epochs, sets eval, and pins by rewriting the thresholds to 0 or 1e9. Boredom stays at 0.50, so a bored step can still run explore's behavior. Its workload is four 3-token sources, RNG 1188, seed 42. It has no degraded pin. The ~13 in the constraint set is the free-run stall under a candidate threshold of 15, described as the weakened-injection equilibrium. This probe uses `build_engine` with pretrain off, pins by replacing `current_rhythm`, forces boredom off, runs the canonical workload on three seeds, and adds an `arbitrate` wrapper for the degraded band. The energy is the same quantity (field L2 norm) and the window is the same (last 100 of 400). The stack around it is not.
+
+The census's "rhythm bands are the retune that survives" is a pretrain-off verdict, same condition as these pins. It is pending the pretrained free-run occupancy check. If that occupancy holds at 256 and 768 against the adapted 128 target, step 4 is no band retune. If it does not, the miss is where a retune would still have to be argued.
+
+The youth-split results stand. They were pretrain-off too. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after step 260 on a cold-boot generator. That is not a license to retune those constants off this condition either; a pretrained generator can shorten the youth window. They wait behind the occupancy check the same way the bands do.
+
+**When pretrain-off is the right condition.** The plug-in body (EmbeddingGemma-2, or RFE's own encoder) is not this Generator after 8 epochs of rhythm contrastive pretrain. Production `pretrain_on_corpus` trains *this* generator on the corpus seeds. A plugged-in encoder is already trained, on a different objective, and 128 checkpoints do not load into a wider field: the first wide boot is a new body. Pretrain-off is the honest first-boot of that body, and it is the condition under which the census and the youth split were taken. Pretrain-on is F9's condition and the production 128-style boot. Both reads are valid for different questions. The occupancy arms are the production/F9 question. The youth-split cosine-gate misses should not be retuned off pretrain-off alone.
 
 ## Threats
 
@@ -134,13 +183,15 @@ The harness difference is real, and it is code, not a number from these files. J
 - The 2% drift cut fails on most bands. Treating 252 or 273 as a basin would violate the probe's own rule. The gate refusal does not need them to be basins. The levels are elsewhere.
 - 384/400 already weakened, identical across seeds and across every dim from 128 up, is too exact to be three fields happening to match. These files do not record which steps. Do not invent a warmup length from the count.
 - The relaunch did not rewrite a finished pin. A pin file counts as finished only when it parses and says `steps == 400`.
-- Pretrain off is the census condition and July's opposite. The census finding already says a pretrained generator can move settled energy. That is one of the harness differences, not a third result.
+- Pretrain off is the census condition and July's opposite. That difference is now the one that reprints July's table when restored. The occupancy arms are that condition, in flight.
+- July's probe is one seed. The occupancy arms use three plus held-out, which is the bar that can refuse a retune. The rerun table is not an occupancy result.
 - Span 0 still promotes a few missed steps to "moves." Named above. Not retunes.
 - Wide bonds, and wide generator regimes at 256, are unresolved on purpose. A 1200-step arm is the rule's next measurement. It is not required to refuse the band ship. The bands never reached occupancy.
 
 ## Open
 
-- [ ] Separate the two explanations before any band moves. Run July's probe file, unchanged, on this tree (it lives in RFE-Core2, not here): 8-epoch pretrain, threshold pin, its four sources, seed 42, dims 64 and 128. If it reprints ~37 / ~198 / ~294 / ~301, this pin is the different instrument and these files do not place bands. If it reprints this pin's dim-128 levels, July's table is stale on this stack. If only some bands match, say which. Either way the drift cut still applies: reflect, dream, and explore were not basins in 400 steps on this pin.
+- [x] Separate the two explanations before any band moves. Run July's probe file, unchanged, on this tree (it lives in RFE-Core2, not here): 8-epoch pretrain, threshold pin, its four sources, seed 42, dims 64 and 128. If it reprints ~37 / ~198 / ~294 / ~301, this pin is the different instrument and these files do not place bands. If it reprints this pin's dim-128 levels, July's table is stale on this stack. If only some bands match, say which. Either way the drift cut still applies: reflect, dream, and explore were not basins in 400 steps on this pin. → DONE (2026-10-31) — `docs/findings/data/2026-10-31-f9-probe-rerun/`. Dream / reflect / explore reprint within ~3%. Stabilize rose (allow 1.00 vs July 0.39). The pin is the different instrument. July's table is not stale. Also run at 256 and 768 on Rubedo: equilibria barely move with width.
+- [ ] Pretrained free-run occupancy at 128 / 256 / 768, seeds 42–44 plus held-out 45/46, against the adapted 128 target declared from the 128 fit arms before 256/768 occupancy is read. In flight (`--batch-pretrained-free`, `docs/findings/data/2026-10-31-pretrained-occupancy/`). If it holds, step 4 is no band retune. If it does not, say where. No constant in this commit.
 - [ ] The degraded gate is a further question even after that. July's probe never pinned `ALLOW_WEAKENED`. The ~13 is the 15-trap stall. A 0.4× stabilize pin inside that same July harness is what would show whether weakened injection still sinks the field, or whether [8, 20] is guarding a different quantity. This wrapper already shows that forcing 0.4× on this harness does not.
 - [ ] Witness crystallization, canonical sacred promotions, and the canonical regime count are settled moves. They wait behind the band question. No constant in this commit.
 - [ ] Wide bonds, and wide generator regimes at 256: longer arm, same cut, if those two are going to be classified. Not this commit.

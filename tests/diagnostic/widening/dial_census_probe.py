@@ -524,12 +524,12 @@ def _split_stock(n, cycle, ve, gov, patterns, crystal_clear):
     }
 
 
-def run_arm(dim, seed, workload, steps, thresholds=None):
+def run_arm(dim, seed, workload, steps, thresholds=None, pretrain=False):
     if dim % 4 != 0 or dim % 2 != 0:
         raise SystemExit(f"dim {dim} is not usable (heads=4, even PE)")
     cfg = dict(CONFIG)
     cfg["dim"] = int(dim)
-    cfg["pretrain_on_corpus"] = False
+    cfg["pretrain_on_corpus"] = bool(pretrain)
     cfg["session_persistence"] = False
     cfg["log_interval"] = 10 ** 9
     sources, weights = load_named(workload)
@@ -564,7 +564,16 @@ def run_arm(dim, seed, workload, steps, thresholds=None):
     split_early = None
 
     with determinism.deterministic(seed):
+        print(
+            f"boot dim={dim} seed={seed} {workload} pretrain={bool(pretrain)}",
+            flush=True,
+        )
         gen, cycle, gov, ve = build_engine(cfg)
+        print(
+            f"booted dim={dim} seed={seed} device={gen.device} "
+            f"elapsed={time.perf_counter() - t0:.1f}s",
+            flush=True,
+        )
         if gen.dim != dim or cycle.dim != dim or cycle.field.dim != dim:
             raise SystemExit(
                 f"dim did not follow: gen={gen.dim} cycle={cycle.dim} field={cycle.field.dim}"
@@ -882,7 +891,7 @@ def run_arm(dim, seed, workload, steps, thresholds=None):
         "field_dim": int(cycle.field.dim),
         "device": device,
         "ff_inner": ff,
-        "pretrain": False,
+        "pretrain": bool(pretrain),
         "dream_channel": False,
         "witness_reader": bool(reader_on),
         "room": room,
@@ -1340,6 +1349,10 @@ def main(argv=None):
     p.add_argument("--workload", default="canonical", choices=("canonical", "wide"))
     p.add_argument("--steps", type=int, default=500)
     p.add_argument("--out", default="")
+    p.add_argument(
+        "--pretrain", action="store_true",
+        help="8-epoch corpus pretrain then eval (production boot; default off)",
+    )
     args = p.parse_args(argv)
     if args.check:
         return _check()
@@ -1354,7 +1367,10 @@ def main(argv=None):
     if not args.arm:
         p.print_help()
         return 2
-    arm = run_arm(args.dim, args.seed, args.workload, args.steps)
+    arm = run_arm(
+        args.dim, args.seed, args.workload, args.steps,
+        pretrain=args.pretrain,
+    )
     text = json.dumps(arm, indent=2, sort_keys=True)
     if args.out:
         path = _arm_path(args.out, args.workload, args.dim, args.seed, args.steps)
