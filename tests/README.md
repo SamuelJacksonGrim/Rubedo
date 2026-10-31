@@ -132,6 +132,13 @@ cooperate correctly."
   recommendation (SACRED_SHIELD / REJECT / QUARANTINE) still blocks at top
   trust, a full bond floor, and a queued manipulation damp in every band,
   systemic and named (finding `2026-10-31-right-to-refuse-order`).
+- `held_contracts.py` — Pins the contracts that hold and had no test:
+  the reaper's decision leaves a sacred symbol active, a reclaimed address
+  does not reuse `stable_id`, the ⊘ consumer does not pull a sacred value,
+  `RelationalBond` is constructed in one place, `source_dream` and
+  `DreamSession` do not inject, and the step does not read `dilation_factor`
+  or `subjective_time` (finding `2026-10-31-contract-audit`). The broken
+  contracts are in that finding. They are not asserted here.
 - `core_promotion_handshake.py` — Verifies all five
   `review_core_promotion()` rejection paths and two approval paths.
   The four-case CORE promotion test we ran during Tier 3 building,
