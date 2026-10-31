@@ -85,6 +85,7 @@ def build_full_stack(
     bond_config: Optional[dict] = None,
     diversity_fitness: bool = False,
     binding_leak: float = 0.0,
+    track_vibration: bool = True,
 ) -> Tuple[Generator, AutonomousCycle, SelfhoodGovernance, ValueEmergenceEngine]:
     """
     Build the full Tier 0 + Tier 1 + Tier 2 + Tier 3 stack with sensible defaults.
@@ -125,6 +126,7 @@ def build_full_stack(
         log_interval      = 99999,    # suppress per-step logging
         diversity_fitness = diversity_fitness,   # Fix 0-B lever (default OFF)
         binding_leak      = binding_leak,        # Fix 0-C mechanism (default 0.0)
+        track_vibration   = track_vibration,     # observe-only; default ON
     )
     governance = SelfhoodGovernance(registry=generator.registry,
                                     bond_config=bond_config)

@@ -63,6 +63,7 @@ def _check_config_defaults(results):
         ("pretrain_on_corpus", "corpus pretrain"),
         ("dream_channel_enabled", "dream channel"),
         ("use_chorus", "chorus"),
+        ("expression_vibration", "expression vibration gauge (observe-only)"),
     )
     off = (
         ("dream_consolidation", "C"),
@@ -191,6 +192,8 @@ def _check_composition(gen, cycle, gov, ve, results):
                           f"got {gen.registry.binding_leak}"))
     results.append(expect("stream recorder not attached",
                           cycle.stream_recorder is None))
+    results.append(expect("expression vibration gauge attached (observe-only, default on)",
+                          cycle.expression_vibration is not None))
     results.append(expect("Two-Operator overlay not attached (λ / ⊘ / consumer)",
                           cycle.lambda_ledger is None
                           and cycle.integrity_read is None

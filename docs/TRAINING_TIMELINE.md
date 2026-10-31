@@ -73,9 +73,11 @@ Samuel (2026-10-19): the jitter should become "a resonance. A pulse, a rhythm, a
 maturity has a steady self and a rattling mind: expression is white jitter (MSD flat from lag 1 to 512) in a fixed cone.
 The target is a mind that is still misaligned, still living in the cone between attractors rather than collapsing into one,
 but humming at a stable frequency instead of rattling. In the alchemical reading, that's matter moving from
-chaotic nigredo into a coherent, organized state. Read at S3 and S4 once the gauge exists (BACKLOG, "From jitter to
-vibration"): spectral flatness falling, a dominant frequency that holds across windows, MSD dipping at its period, and
+chaotic nigredo into a coherent, organized state. Read at S3 and S4 with the
+gauge (`cognition/stream_vibration.py`; first baseline `findings/2026-10-31-vibration-gauge-baseline.md`):
+spectral flatness falling, a dominant frequency that holds across windows, MSD dipping at its period, and
 real variation from one cycle to the next (a rigid repeating loop is lock-in, not resonance).
+Today's settled read is still white (sf ~0.83, MSD flat).
 
 ## Gaps to close before a real timed run
 
@@ -84,7 +86,8 @@ real variation from one cycle to the next (a rigid repeating loop is lock-in, no
 - [ ] `fragmentation_grace` **on the board** (Grok left it off the panel).
 - [ ] A **witness weight** knob, not just on/off, if the taper hypothesis is to be tested.
 - [ ] **Stop markers on the board**: S1-S4 detected from the gauges and shown, so a stop is noticed, not remembered.
-- [ ] A **vibration gauge** on expression (spectral flatness, dominant frequency, MSD vs lag), the maturity target's read.
+- [x] A **vibration gauge** on expression (spectral flatness, dominant frequency, MSD vs lag), the maturity target's read.
+      `cognition/stream_vibration.py`, default-on observer; baseline `findings/2026-10-31-vibration-gauge-baseline.md`.
 
 ## Run log
 

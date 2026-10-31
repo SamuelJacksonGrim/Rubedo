@@ -452,7 +452,7 @@ The tiers above describe the *parts*. This section traces how they *move togethe
 | 3 | **Attractor pull** | `Attractor.pull()` blends `vec` toward its nearest basin; pull strength scaled by `emotion.attractor_pull()` |
 | 4 | **Recursive attention** | `RecursiveAttention.refine()` attends `vec` over a rolling window of prior latent states; `diversity_blend` weights the raw vector back in so the untrained attention can't collapse the expression to its context centroid. The generator output (stage A, step 2) and this refined expression (stage C) feed the observe-only `StreamMetastabilityMonitor`s exposed in `status()`. |
 | 5 | **Watcher evaluation** | `Watcher.evaluate(vec, anchor, field_state)` → `CoherenceReport` — geometric × temporal × resonance, plus `coherence_delta` and `crystallization_pressure` |
-| 6 | **Reflective loop** | reflect / explore only, if `report.stable`: `ReflectiveLoop.reflect()` iterates attractor-pull + field-blend + coherence-check until convergence. Opt-in `rupture_on_lock` (default off) can force this branch when the stethoscope reads `locked`, and holds one novel target for the pulse. `_last_expressed` is stored after this, for the decoder; the step does not read it |
+| 6 | **Reflective loop** | reflect / explore only, if `report.stable`: `ReflectiveLoop.reflect()` iterates attractor-pull + field-blend + coherence-check until convergence. Opt-in `rupture_on_lock` (default off) can force this branch when the stethoscope reads `locked`, and holds one novel target for the pulse. `_last_expressed` is stored after this, for the decoder; the vibration gauge observes it; the step does not read either |
 | 7 | **Witness update** | `Witness.update(vec, coherence)` updates the short / mid / long EMA anchors (coherence-weighted) → `RelationalProfile` |
 | 8 | **Predictive echo** | `PredictiveEcho.update(vec)` → prediction error → `curiosity / surprise / tension / boredom` |
 | 9 | **Emotional gradient** | `EmotionalGradient.update()` folds echo + coherence + field energy into six EMA-smoothed scalars |
@@ -670,7 +670,9 @@ The speech bridge does not apply this list (see the command-line note above).
 Two opt-in instruments (OFF by default, same `CONFIG`): `stream_recorder`
 (observe-only census of the lived token stream — future corpus input) and
 `session_persistence` (save weights + ecology + values at run end, resume at
-next boot). Details in `docs/EXPERIMENTAL_LEVERS.md`.
+next boot). The expression vibration gauge is default-on as a pure observer
+(`CONFIG["expression_vibration"]`; opt out False) — it does not change a loop
+number. Details in `docs/EXPERIMENTAL_LEVERS.md`.
 
 Configuration layers with precedence **component default < `configs/*.yaml` <
 `CONFIG`** — the YAML files are the live edit surface for component parameters;

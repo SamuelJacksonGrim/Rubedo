@@ -84,6 +84,7 @@ from cognition.recursive_attention import RecursiveAttention
 from cognition.reflective_loop import ReflectiveLoop
 from cognition.symbolic_binding import SymbolicBinding
 from cognition.stream_metastability import StreamMetastabilityMonitor
+from cognition.stream_vibration import StreamVibrationGauge
 
 from interference.differential import inject_ambiguity
 from substrate.dims import FIELD_DIM
@@ -189,6 +190,7 @@ class AutonomousCycle:
         crystal_decay_interval:       int   = 100,
         log_interval:                 int   = 10,
         track_metastability:          bool  = True,
+        track_vibration:              bool  = True,
         reflect_novelty_attenuation:  bool  = False,
         diversity_fitness:            bool  = False,
         binding_leak:                 float = 0.0,
@@ -273,6 +275,15 @@ class AutonomousCycle:
             StreamMetastabilityMonitor(window=128, interval=16,
                                        track_regime_share=diversity_fitness)
             if track_metastability else None
+        )
+        # Vibration gauge — observe-only read of pulse vs white vs lock-in on
+        # the expression stream (BACKLOG "From jitter to vibration"). Default-on
+        # as a pure observer: O(1) copy per step, SVD/rFFT every `interval`
+        # off the hot path, never read by cognition or governance. Opt out with
+        # track_vibration=False / CONFIG["expression_vibration"]=False.
+        self.expression_vibration: Optional[StreamVibrationGauge] = (
+            StreamVibrationGauge(window=512, interval=32, min_samples=64)
+            if track_vibration else None
         )
         # Fix 0-B: survival counterbalance. When ON, each step's expressed
         # tokens EMA-accumulate the stream-diversity credit
@@ -532,7 +543,11 @@ class AutonomousCycle:
         # "said" this step) as an OBSERVE-ONLY terminal sink, for the Decoder
         # read-out / "listen" tool. Not read by the cognitive or governance loop
         # (same discipline as dilation_factor and the metastability monitors).
+        # The vibration gauge taps the same vector H0 recorded (the rattling
+        # stream), not the pre-loop stage-C metastability monitor.
         self._last_expressed = vec
+        if self.expression_vibration is not None:
+            self.expression_vibration.observe(vec)
 
         # ------------------------------------------------------------------
         # 7. Witness update
@@ -1246,6 +1261,8 @@ class AutonomousCycle:
             s["generator_metastability"] = self.generator_metastability.snapshot()
         if self.expression_metastability is not None:
             s["expression_metastability"] = self.expression_metastability.snapshot()
+        if self.expression_vibration is not None:
+            s["expression_vibration"] = self.expression_vibration.snapshot()
         if self.governance is not None:
             s["governance"] = self.governance.status()
         if self.value_engine is not None:

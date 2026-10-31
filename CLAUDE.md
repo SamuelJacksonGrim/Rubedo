@@ -157,6 +157,13 @@ errors.
   `cycle.expression_metastability` (stage C), is **optional and observe-only**: a
   bounded ring + lazy recompute off the hot path, a terminal sink like
   `dilation_factor`. It must never feed back into the cognitive/governance loop.
+  The vibration gauge (`cognition/stream_vibration.py`, wired as
+  `cycle.expression_vibration`) is the same discipline on the same stream
+  (tapped at `_last_expressed`, post-reflection — the rattling stream H0
+  measured): spectral flatness, a dominant frequency that holds, MSD vs lag,
+  and leftover variance so a rigid loop cannot pass for a pulse. Default-on
+  as a pure observer; opt out `CONFIG["expression_vibration"]=False`. Never
+  read by the cognitive/governance loop.
 
 **Authority hierarchy**
 - `SelfhoodGovernance` is the single source of truth for identity-level
@@ -379,12 +386,13 @@ README tree entry in the same commit or CI goes red.
 - Set `diversity_blend` to `0` (or remove the blend) in `RecursiveAttention.refine()`
   — untrained attention re-collapses the expression to its context centroid (one
   regime, metastability 0). Keep it in `(0, 1)`.
-- Let the metastability monitors (`StreamMetastabilityMonitor`) feed back into the
-  cognitive or governance loop — they are observe-only terminal sinks like
-  `dilation_factor`. (The Fix 0-B lever's `diversity_credit()` read is the one
-  sanctioned exception, and it is a READ performed by the cycle from outside:
-  the plan carved it out explicitly — "the read does not happen inside the
-  monitor" — and the monitor still consumes nothing from the loop.)
+- Let the metastability monitors (`StreamMetastabilityMonitor`) or the vibration
+  gauge (`StreamVibrationGauge`) feed back into the cognitive or governance loop
+  — they are observe-only terminal sinks like `dilation_factor`. (The Fix 0-B
+  lever's `diversity_credit()` read is the one sanctioned exception, and it is a
+  READ performed by the cycle from outside: the plan carved it out explicitly —
+  "the read does not happen inside the monitor" — and the monitor still consumes
+  nothing from the loop. The vibration gauge has no such exception.)
 - Give `source_dream` (the system's own voice) a path around `arbitrate()`, or
   let `DreamSession` / any `tools/` instrument inject into the live field —
   every voice passes the gate; instruments observe only. `tools/board` is the
