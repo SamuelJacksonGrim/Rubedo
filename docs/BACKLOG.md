@@ -52,7 +52,7 @@ runtime or gate changes until it is answered.
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new
       crystals pay) but floods: many new dream crystals × several symbols × 0.30 → strength cap → mass CORE promotion
       breaks trust and bonds. Needs a per-dream / per-symbol budget or diminishing credit.
-- [ ] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512).
+- [x] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512). → DONE (2026-10-31) — `findings/2026-10-31-why-allow-rate-and-crystal-count.md`: passers merge (cosine ≥ 0.92); decay removes none; the count is flat by step 250.
 - [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
       feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
 - [ ] **50,000-step plain run** (~80 min/seed): does the raw direction's slow wobble ceiling or drift?
@@ -157,7 +157,7 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
       waits on those decisions, not on effort.
 
 - [ ] Emotion calibration audit (`EMOTION_CALIBRATION.md`): six scalars from three inputs; joy ≈ coherence.
-- [ ] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why.
+- [x] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why. → DONE (2026-10-31) — `findings/2026-10-31-why-allow-rate-and-crystal-count.md`: same measurement puts the pretrained main in the live band. The high band is a cold eval boot. No post-fork flag moves it.
 - [ ] The `active_values ≥ 30` composition bar sits at the edge of seed variance.
 - [ ] Bridge checkpoint still omits bonds, trust, crystals, attractors and the stream.
 - [ ] Remaining nondeterminism: GPU kernels; the bridge's Qwen calls.

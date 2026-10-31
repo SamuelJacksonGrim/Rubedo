@@ -42,4 +42,4 @@ with question 4 (what values should read), and nothing changes until that is ans
 
 ## Open
 - [ ] Design what a dream credits and how (with question 4).
-- [ ] Why the crystal store holds only 1–4 crystals over 500 steps.
+- [x] Why the crystal store holds only 1–4 crystals over 500 steps. → DONE (2026-10-31) — `2026-10-31-why-allow-rate-and-crystal-count.md`

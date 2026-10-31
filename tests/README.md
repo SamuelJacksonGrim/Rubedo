@@ -209,8 +209,13 @@ The probes are grouped into subfolders by investigation (run as
 | `integrity/`| The ⊘ Witness-Reaper integrity-read (Build C, spec v0.2) — observe-only thinness read + non-binding demotion advisory |
 | `calibration/` | Measure-before-change rulers: floor calibration (energy/rhythm + CORE signal), the pinned-band equilibria probe (re-run before any rhythm-band retune — F9), the bond-signal probe (marginal vs absolute growth currency — the 2026-07-09 establishment fix), and the bond-DDM pair — the synthetic acceptance battery (RT/asymmetry/varCE/corCE + the four adversarial patterns, pre-declared with built-in falsifier controls) and the live OFF-vs-ON arm (reachable-coherence §6.3 tripwire, commitment-only check; run at dim 128 before trusting the lever ON) |
 
-The per-probe descriptions below are grouped to match. One cross-layer probe
-lives at the `diagnostic/` root:
+The per-probe descriptions below are grouped to match. Cross-layer probes
+at the `diagnostic/` root:
+
+- `why_allow_crystals_probe.py` — strict `allow_rate` on the Resonance Family
+  workload under the smoke harness, the live speech-bridge boot, and
+  `build_engine` with the post-fork flags on and off; the same runs count
+  crystals formed, merged and decayed. Informational (`2026-10-31-why-allow-rate-and-crystal-count`).
 
 - `core_arc_no_cascade_probe.py` — **F8 half (b) standing verification**
   (exit-coded 0/1, minutes). Drives the CORE arc to completion live
