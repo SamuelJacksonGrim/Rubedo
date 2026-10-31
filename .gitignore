@@ -24,3 +24,4 @@ docs/findings/logs/bonded_adversarial/run-*.json
 
 # Raw per-step probe traces (regenerable). Summaries live in docs/findings/data/.
 scratch/
+.venv-gpu/
