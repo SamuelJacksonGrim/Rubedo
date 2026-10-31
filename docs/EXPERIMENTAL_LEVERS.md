@@ -300,7 +300,11 @@ no kwarg/YAML yet.
 
 ### Priority for 128 → 768
 
-Do these first. Everything else can wait on a measurement.
+Do these first. Everything else can wait on a measurement. The measurement
+landed 2026-10-31 ([dial census](findings/2026-10-31-dial-census-widths.md)):
+the settled retune is the rhythm bands on canonical, not the cosine cutoffs
+(those still clear after step 260). Embedding init did miss ~0.55 at 256
+and 768. No constant was changed.
 
 1. **Shape.** One edit since 2026-10-14: `FIELD_DIM` in `substrate/dims.py`
    ([field-dim sites](#canonical-field-dim-sites)). Then regenerate

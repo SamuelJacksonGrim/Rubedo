@@ -206,6 +206,7 @@ The probes are grouped into subfolders by investigation (run as
 | `tier4/`    | Tier 4.2/4.3 physics validators + affective-state probe |
 | `lockin/`   | The coherence lock-in research arc (migration, ablation, gate decomposition, metastability, gain-sign) — plus the Fix 0-B pair: the currency census (survival-currency decomposition, diversity-signal room, ratchet evidence — the measure-first ruler) and the paired OFF/ON effect probe (counterweight band, governance health, leaky-ratchet mass; pre-declared, incl. the recorded E3 metric correction) |
 | `metastability/` | H0 long-run shape (`h0_probe.py`) and the vibration gauge (`vibration_probe.py`): synthetic white/vibration/lock-in controls, then the canonical workload at S3/S4 |
+| `widening/` | Dial census at 128 vs 256 vs 768 before any retune (`dial_census_probe.py`). Pre-declared move rule. Changes no constants |
 | `fix2/`     | Fix-2 reflective-loop governor investigation (trigger calibration, governor validation, live/common-mode/dim sweeps) |
 | `training/` | Generator training path (gradient-path check, corpus integrity + G1/G2 gates, diversity audit, trained-generator sim) |
 | `audit/`    | Runtime behavior audits (decision histogram, gate firing, trust, value polarity, identity-stability baseline, return canary) |

@@ -40,10 +40,12 @@ field the first time took weeks because things kept being missed. The census exi
    every constructor default, `PROJ_DIM` and both voice REPLs read it; the inert YAML `dim:` keys are gone. Guard:
    `tests.doc_accuracy.hardcoded_dim` fails on any field-dim literal elsewhere (verified by reintroducing one).
    Full gate green at 128, so behavior is unchanged. Side fix: `tools/voice/repl.py` used to boot at 64.
-3. **Measure before changing.** For each width-sensitive dial: run the same seeded workload at 128 and at the new width,
-   record the dial's operating values (how often a detector fires, where cosines sit, field coherence, rhythm band
-   occupancy). Pre-declare what "unchanged" and "moved" look like before running (discipline: a clean confirming
-   result is the alarm, not the trophy).
+3. **Measure before changing. DONE 2026-10-31.** Same seeded workloads at 128, 256 and 768, rule pre-declared,
+   no constant changed. Record: [`findings/2026-10-31-dial-census-widths.md`](findings/2026-10-31-dial-census-widths.md).
+   The 500-step rule flags many cosine gates. A step-260 cut (the identity-erosion youth window) puts those misses
+   in the first half; the settled half still clears them. The retune that survives the cut is the rhythm bands on
+   canonical, where settled energy falls off the 300 explore edge. Embedding init missed its ~0.55 target (shifted,
+   not a decision read). Step 4 is that list, not a blanket retune.
 4. **Re-tune only what moved,** with the reason and the measurement recorded as a finding in `docs/findings/`.
    Co-tuned groups move together (the rhythm thresholds are never retuned one at a time).
 5. **The coupling test.** Does the wide field still respond to content the way the 128 field did (correlation of value

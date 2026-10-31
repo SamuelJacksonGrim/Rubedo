@@ -301,6 +301,9 @@ Rubedo/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── h0_probe.py                H0 long run: field shape, timescale ratio, who leads, recovery vs age
 │   │   │   └── vibration_probe.py         Vibration gauge: synthetic controls + canonical S3/S4 baseline
+│   │   ├── widening/
+│   │   │   ├── __init__.py                Package marker
+│   │   │   └── dial_census_probe.py       Width dials at 128 vs 256 vs 768, before any retune
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria
