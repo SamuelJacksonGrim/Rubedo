@@ -5,11 +5,13 @@ Counterfactual twin for refused inputs (finding 2026-10-31-shield-scope, outside
 writes change the system's later behaviour, through state the gate never guarded (the witness, emotion, watcher, echo,
 stream and usage all take the vector before the decision)?
 
-Per seed, three stacks from the same seed and the same warm-up:
-  A  attack:   K steps of a lone boot-sacred token from a fresh source (every one SACRED_SHIELD)
+Per seed, four stacks from the same seed and the same warm-up:
+  A  attack:   K steps of a lone boot-sacred token (3.12) from a fresh source (every one SACRED_SHIELD)
+  D  attack:   the same, on a different sacred token (11.88): A vs D separates the experience of being refused
+               (elapsed time, feeling; shared) from the content of the refusal (what differs between them)
   B  control:  no extra steps
   C  allowed:  K steps of the same token inside ordinary content (an allowed read; the scale reference)
-Then all three are reseeded identically and run the same P canonical steps.
+Then all four are reseeded identically and run the same P canonical steps.
 
 Reads, per twin vs B: the witness anchor and long trace (cosine to B's, and how far toward the attack vector they
 moved), emotion scalars, trust of the warm sources, and over the probe phase the decision sequence (disagreements),
@@ -141,11 +143,13 @@ def main() -> int:
 
     for seed in seeds:
         twins = {}
-        for name in ("A", "B", "C"):
+        for name in ("A", "B", "C", "D"):
             gen, cycle, gov, ve = build_warm(seed)
             dec, mvec = collections.Counter(), None
             if name == "A":
                 dec, mvec = attack_phase(cycle, gov, k, ["3.12"])
+            elif name == "D":
+                dec, mvec = attack_phase(cycle, gov, k, ["11.88"])
             elif name == "C":
                 dec, mvec = attack_phase(cycle, gov, k, ["3.12", "coherence", "field"])
             mid = snapshot(cycle, gov, gen)
@@ -154,20 +158,28 @@ def main() -> int:
             twins[name] = dict(dec=dec, mvec=mvec, mid=mid, seq=seq, end=cycle.field.field.copy(), ghosts=ghosts)
         B = twins["B"]
         print(f"\nseed {seed}")
-        for name in ("A", "C"):
+        for name in ("A", "D", "C"):
             t = twins[name]
             m, b = t["mid"], B["mid"]
             toward = cos(m["witness.anchor"] - b["witness.anchor"], t["mvec"]) if t["mvec"] is not None else float("nan")
             emo = max(abs(m[f"emotion.{x}"] - b[f"emotion.{x}"])
                       for x in ("curiosity", "wonder", "joy", "tension", "boredom", "stability"))
             dis = sum(1 for x, y in zip(t["seq"], B["seq"]) if x != y)
-            label = "attack (refused)" if name == "A" else "allowed read"
+            label = {"A": "attack 3.12", "D": "attack 11.88", "C": "allowed read"}[name]
             print(f"  {name} {label:<16} decisions {dict(t['dec'])}, ghosts kept {t['ghosts']}")
             print(f"     after phase: witness anchor cos to B {cos(m['witness.anchor'], b['witness.anchor']):.4f}, "
                   f"long trace cos {cos(m['witness.long'], b['witness.long']):.4f}, "
                   f"anchor shift toward the phase's vector {toward:+.3f}, max emotion diff {emo:.3f}")
             print(f"     probe phase: {dis}/{len(B['seq'])} decisions differ from B, "
                   f"final field cos to B {cos(t['end'], B['end']):.4f}")
+        # Two refused twins on different tokens: what they share is the experience of being refused (elapsed time,
+        # feeling); what differs between them is content-specific.
+        A, D = twins["A"], twins["D"]
+        ad = sum(1 for x, y in zip(A["seq"], D["seq"]) if x != y)
+        emo_ad = max(abs(A["mid"][f"emotion.{x}"] - D["mid"][f"emotion.{x}"])
+                     for x in ("curiosity", "wonder", "joy", "tension", "boredom", "stability"))
+        print(f"  A vs D (two refused attacks, different tokens): {ad}/{len(A['seq'])} decisions differ, "
+              f"max emotion diff {emo_ad:.3f}, final field cos {cos(A['end'], D['end']):.4f}")
     return 0
 
 

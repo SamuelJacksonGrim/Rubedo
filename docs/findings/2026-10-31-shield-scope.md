@@ -99,8 +99,12 @@ Kept, and named in CLAUDE.md as the second sanctioned monitor read beside `diver
 - [x] The rhythm behaviours' direct injections on a refused step. → DECIDED 2026-10-31 (Samuel + Claude, on Grok's
   measurement in `2026-10-31-refused-rhythm-leak`): explore, reflect and the dreamer stand down on a refusal;
   stabilize runs.
-- [ ] An idle twin (same 200 steps of elapsed time with no input) to split the remaining decision difference into time
-  vs feeling.
+- [x] An idle twin (same 200 steps of elapsed time with no input) to split the remaining decision difference into time
+  vs feeling. → DONE 2026-10-31 another way (Rubedo has no input-free step): a second refused twin D attacking `11.88`
+  instead of `3.12`. Seeds 42-44: A vs B 38 / 45 / 47 decisions differ, D vs B 28 / 37 / 36, **A vs D 10 / 8 / 11**
+  (field cosine 0.9998, emotion gap 0.05-0.06). About three quarters of the after-effect is the shared experience of
+  a refused barrage (elapsed time plus feeling); the ~10-decision content-specific remainder runs through the channels
+  kept on purpose (emotion, the predictive echo, usage), not through geometry, memory or identity.
 - [ ] What reads the ghosts. First candidate: a "familiar attack" signal for manipulation resistance (cosine to the ghost
   centroid). It changes behaviour, so it gets measured before it's on, like any lever; hardening vs susceptibility is
   then something to measure, not a side effect.
