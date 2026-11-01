@@ -15,6 +15,10 @@ here.
      source_dream through cycle.step.
   6. dilation_factor and subjective_time are not read by the step except
      tick() and update_dilation().
+  7. quarantine_symbol does not archive a sacred symbol, and decay_step does not
+     rewrite its usage (both broke until 2026-10-31).
+  8. The per-step stores are bounded: TopologicalLog, the witness snapshot and
+     candidate lists, the cycle's VectorSpace (grew without a cap until 2026-10-31).
 
 Run:
     python -m tests.integration.held_contracts
@@ -75,6 +79,9 @@ def test_reaper_leaves_sacred():
     check("decay_step keeps the sacred symbol in the active set",
           kept is not None and kept.sacred and kept.reaper_stage == ReaperDecision.ACTIVE,
           "missing" if kept is None else f"stage={kept.reaper_stage} usage={kept.usage:.4f}")
+    check("decay_step leaves the sacred symbol's usage alone (fixed 2026-10-31)",
+          kept is not None and kept.usage == 5.0,
+          "missing" if kept is None else f"usage={kept.usage:.4f}")
     check("the matched non-sacred symbol is archived",
           "mortal" not in reg.symbols)
 
@@ -192,6 +199,42 @@ def test_dilation_is_a_sink():
           not bad, "\n".join(bad))
 
 
+def test_quarantine_spares_sacred():
+    print("\n[7] quarantine_symbol does not archive a sacred symbol (fixed 2026-10-31)")
+    reg = fresh_registry()
+    reg.register("holy")
+    reg.register("plain")
+    holy = reg.symbols["holy"]
+    holy.sacred = True
+    reg.quarantine_symbol(holy.stable_id)
+    reg.quarantine_symbol(reg.symbols["plain"].stable_id)
+    check("a sacred symbol stays in the registry, not cold-archived",
+          "holy" in reg.symbols and reg.symbols["holy"].reaper_stage != ReaperDecision.COLD_ARCHIVE)
+    check("an ordinary symbol is still quarantined", "plain" not in reg.symbols)
+
+
+def test_rolling_stores_are_bounded():
+    print("\n[8] Per-step stores are bounded (fixed 2026-10-31)")
+    from substrate.topological_log import TopologicalLog
+    from agents.witness import Witness
+    log = TopologicalLog(max_nodes=50)
+    prev = None
+    for i in range(80):
+        log.add(f"n{i}", parent=prev)
+        prev = f"n{i}"
+    check("TopologicalLog keeps at most max_nodes, dropping the oldest",
+          log.graph.number_of_nodes() == 50 and log.graph.has_node("n79") and not log.graph.has_node("n0"),
+          f"nodes={log.graph.number_of_nodes()}")
+    check("TopologicalLog is bounded by default", TopologicalLog().max_nodes is not None)
+    w = Witness(dim=8)
+    check("Witness snapshots and crystallization candidates have a maxlen",
+          getattr(w.snapshots, "maxlen", None) is not None
+          and getattr(w.crystallization_candidates, "maxlen", None) is not None)
+    hits = [ln for _, ln in code_lines(REPO / "loop" / "autonomous_cycle.py")
+            if "VectorSpace(" in ln and "max_size=" in ln]
+    check("the cycle builds its VectorSpace with a max_size", bool(hits))
+
+
 def main() -> int:
     print("=" * 70)
     print("  HELD CONTRACTS")
@@ -202,6 +245,8 @@ def main() -> int:
     test_one_bond_constructor()
     test_voices_go_through_the_step()
     test_dilation_is_a_sink()
+    test_quarantine_spares_sacred()
+    test_rolling_stores_are_bounded()
     print()
     print(f"  {len(PASS)} passed, {len(FAIL)} failed")
     if FAIL:

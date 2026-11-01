@@ -18,6 +18,7 @@ Capabilities
   - Subgraph extraction around a focal node
 """
 
+from collections import deque
 from typing import Any, Dict, List, Optional, Tuple
 
 import networkx as nx
@@ -43,8 +44,12 @@ class TopologicalLog:
     parent → child : directed, represents temporal/causal succession.
     """
 
-    def __init__(self):
+    def __init__(self, max_nodes: Optional[int] = 4096):
+        # Bounded like every rolling history here: past max_nodes the oldest node (and its edges) is dropped, so
+        # ancestry reaches back at most max_nodes events. None = unbounded (findings/2026-10-31-contract-audit.md).
         self.graph: nx.DiGraph = nx.DiGraph()
+        self.max_nodes = max_nodes
+        self._order: deque = deque()
 
     # ------------------------------------------------------------------
     # Write
@@ -68,6 +73,8 @@ class TopologicalLog:
         metadata : dict or None
             Contextual data stored on the node.
         """
+        if not self.graph.has_node(key):
+            self._order.append(key)
         self.graph.add_node(
             key,
             timestamp=determinism.now(),
@@ -76,6 +83,12 @@ class TopologicalLog:
 
         if parent is not None and self.graph.has_node(parent):
             self.graph.add_edge(parent, key)
+
+        if self.max_nodes is not None:
+            while len(self._order) > self.max_nodes:
+                oldest = self._order.popleft()
+                if self.graph.has_node(oldest):
+                    self.graph.remove_node(oldest)
 
     def annotate(self, key: str, updates: Dict[str, Any]):
         """

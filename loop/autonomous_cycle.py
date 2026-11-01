@@ -227,7 +227,8 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
 
         self.field          = ResonanceField(dim=dim, **_sect("field", drop=("dim",)))
-        self.vector_space   = VectorSpace(dim=dim)
+        # One put per step; without a cap it grew for the life of the run (findings/2026-10-31-contract-audit.md).
+        self.vector_space   = VectorSpace(dim=dim, max_size=16384)
         self.crystal_store  = CrystalStore(**_sect("crystal_store"))
         self.topology       = TopologicalLog()
         self.stream         = TemporalStream(dim=dim)

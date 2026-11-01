@@ -212,11 +212,11 @@ class Witness:
         # Autobiographical trace
         self.identity_trace: collections.deque = collections.deque(maxlen=trace_len)
 
-        # Episodic snapshots
-        self.snapshots: List[EpisodicSnapshot] = []
+        # Episodic snapshots (bounded like identity_trace; only the most recent are read)
+        self.snapshots: collections.deque = collections.deque(maxlen=1024)
 
-        # Crystallization candidates emitted this session
-        self.crystallization_candidates: List[CrystallizationCandidate] = []
+        # Crystallization candidates emitted this session (bounded; nothing reads past the newest)
+        self.crystallization_candidates: collections.deque = collections.deque(maxlen=1024)
 
         # Identity stability tracking
         self._prev_anchor   = np.zeros(dim)
@@ -379,7 +379,7 @@ class Witness:
         return [e.as_dict() for e in entries]
 
     def recent_snapshots(self, n: int = 5) -> List[EpisodicSnapshot]:
-        return self.snapshots[-n:]
+        return list(self.snapshots)[-n:]
 
     # ------------------------------------------------------------------
     # Internal

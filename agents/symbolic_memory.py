@@ -1352,8 +1352,11 @@ class SymbolRegistry:
                 state.attractor_strength *= keep
                 state.crystal_binding    *= keep
 
-            profile    = profiles.get(state.token_class, _DEFAULT_PROFILE)
-            state.usage = profile.compute(state, self.step_counter)
+            # Sacred symbols are exempt from decay: the reaper always keeps them ACTIVE, and their usage isn't
+            # rewritten either (findings/2026-10-31-contract-audit.md).
+            if not state.sacred:
+                profile    = profiles.get(state.token_class, _DEFAULT_PROFILE)
+                state.usage = profile.compute(state, self.step_counter)
             decision   = self.reaper.evaluate(state, self.step_counter)
             state.reaper_stage = decision
 
@@ -1524,6 +1527,11 @@ class SymbolRegistry:
         """
         state = self.get_by_stable_id(stable_id)
         if state is None:
+            return
+        # Sacred symbols are inviolable: a quarantine that names one (a flooded write that also referenced a sacred
+        # token) must not archive it out of the registry (findings/2026-10-31-contract-audit.md).
+        if state.sacred:
+            logger.warning("quarantine refused for sacred symbol '%s' (sid=%d)", state.symbol, stable_id)
             return
         state.protected    = True
         state.reaper_stage = ReaperDecision.COLD_ARCHIVE

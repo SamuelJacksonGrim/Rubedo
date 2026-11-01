@@ -181,7 +181,9 @@ errors.
   decides. The engine never silently sanctifies.
 - Bonds *emerge* — there is no public API to create or pin a `RelationalBond`.
   Formation thresholds are the only entry point: `interaction_count ≥ 20` AND
-  `coherence_mean ≥ 0.10` AND `crystal_count ≥ 1`.
+  `crystal_count ≥ 1` AND a quality signal, either `coherence_mean ≥ 0.10` (adaptive)
+  OR an allow rate ≥ 0.80 (the classic path, since the Tier 1 revision: in a
+  saturated field coherence can't accumulate, so clean participation counts).
 - The **bond-formation accumulator** (`agents/bond_accumulator.py`,
   `bond_ddm_formation`, graduated default-ON 2026-07-17) swaps only the
   *quality* read for a leaky asymmetric drift-diffusion crossing; the
