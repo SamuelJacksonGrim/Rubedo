@@ -65,8 +65,17 @@ field the first time took weeks because things kept being missed. The census exi
    the opposite of the census. 5 / 150 / 300 stays. Co-tuned groups still move together.
    Nothing in this step edits a constant.
 5. **The coupling test.** Does the wide field still respond to content the way the 128 field did (correlation of value
-   change with content change, directional robustness over seeds)? Run with EmbeddingGemma-2 perception first (it
-   exists today), then with RFE's own encoder when its runs land.
+   change with content change, directional robustness over seeds)? EmbeddingGemma-300M first, native 768, on July's
+   stack whose generator was pretrained 8 epochs at that width (`2026-11-01-embeddinggemma-coupling`). Seeds 42–44.
+   Constraints FAIL. Pinned explore, full strength (ALLOW 397/400, boredom 0), settles at 307 / 307 / 311, above the
+   pre-declared 303. Dream (~184) stays above 150 and the reflect numbers (~296) stay inside [150, 300), on a pin
+   boredom mostly rewrote into explore (235–284 overrides) and on tails that are still climbing. The 0.4× stabilize
+   pin is not a degraded measurement: unforced ALLOW was 13/400, the same mix as the unwrapped stabilize pin.
+   Coupling FAIL at both widths (r ≈ −0.018). Content switches are real; value strength barely moves, and it moves
+   less at a switch than inside a block. The two widths match each other, so this is not a width collapse. The free
+   run's last 100 is reflect on every seed; boredom is what runs explore. The formula's proposal, not applied, is
+   5 / 138 / 309. 5 / 150 / 300 stays. This does not retract the generator-perception rerun in step 4. RFE's own
+   encoder is still its own pass. Nothing in this step edits a constant.
 6. **Decode test.** Retrain the small read-out decoder on the new perception and check the read-back carries content,
    not one collapsed word cluster.
 

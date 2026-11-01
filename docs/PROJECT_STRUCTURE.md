@@ -310,7 +310,8 @@ Rubedo/
 │   │   ├── widening/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── dial_census_probe.py       Width dials at 128 vs 256 vs 768; step-260 split of the reads the census left unsplit
-│   │   │   └── rhythm_band_probe.py       Pinned-run rhythm equilibria and the width placement rule
+│   │   │   ├── rhythm_band_probe.py       Pinned-run rhythm equilibria and the width placement rule
+│   │   │   └── embeddinggemma_probe.py    Step 5: EmbeddingGemma on a pretrained 768 body; F9 pin, free run, content coupling
 │   │   └── selector/
 │   │       ├── __init__.py                Package marker
 │   │       ├── six_rhythm_selector_probe.py  Live OFF vs ON, pinned seeds, pre-declared criteria

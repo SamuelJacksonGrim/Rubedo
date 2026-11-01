@@ -107,7 +107,7 @@ These 15 arms never fail a hard gate. The shield-scope change on `origin/main` (
 
 ## Open / next
 
-- [ ] The degraded gate is still the further question the F9 finding named. July's probe never pinned `ALLOW_WEAKENED`. Occupancy does not answer it.
+- [ ] The degraded gate is still the further question the F9 finding named. July's probe never pinned `ALLOW_WEAKENED`. Occupancy does not answer it. The EmbeddingGemma 0.4× pin did not either (`2026-11-01-embeddinggemma-coupling`): unforced ALLOW on that stabilize pin was 13/400.
 - [ ] Witness crystallization, canonical sacred promotions, and the canonical regime count still move after step 260 on a *cold* generator. These 15 pretrained arms do not reproduce that locked/cycling 128 or the 768 sacred-zero. They are not a retune of those constants. A pretrained youth split would be, if those dials are going to be classified under production boot.
 - [ ] Wide occupancy, same rule, if a wide band claim is going to be made. Not this commit.
 - [ ] Embedding init against ~0.55 at 256 and 768 (shifted; census priority 2). Still open. 768 `emb_over_pe` still crosses 1 on these arms.

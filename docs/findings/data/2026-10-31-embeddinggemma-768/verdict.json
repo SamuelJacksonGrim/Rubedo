@@ -1,0 +1,350 @@
+{
+  "schema": 1,
+  "rules_hash": "c5c4383e9eee9dc7d16c10585826b754df07a58b12c8c57865da8c021a4936a2",
+  "constraints_hold": false,
+  "hold_reasons": [
+    "seed 42 degraded pin unforced ALLOW 0.0325 < 0.8 (not a full-strength body)",
+    "seed 42: explore equilibrium 307.24838 is above 303.0 (300 sits below it; explore would be a basin)",
+    "seed 43 degraded pin unforced ALLOW 0.0325 < 0.8 (not a full-strength body)",
+    "seed 43: explore equilibrium 307.075082 is above 303.0 (300 sits below it; explore would be a basin)",
+    "seed 44 degraded pin unforced ALLOW 0.0325 < 0.8 (not a full-strength body)",
+    "seed 44: explore equilibrium 311.191885 is above 303.0 (300 sits below it; explore would be a basin)"
+  ],
+  "per_seed": {
+    "42": {
+      "eq": {
+        "stabilize": 25.424158,
+        "degraded": 31.889345,
+        "dream": 184.744549,
+        "reflect": 295.892332,
+        "explore": 307.24838
+      },
+      "drift": {
+        "stabilize": {
+          "eq_mean": 25.424158,
+          "eq_drift": 5.883305,
+          "drift_over_2pct": true
+        },
+        "degraded": {
+          "eq_mean": 31.889345,
+          "eq_drift": 6.258587,
+          "drift_over_2pct": true
+        },
+        "dream": {
+          "eq_mean": 184.744549,
+          "eq_drift": 9.06894,
+          "drift_over_2pct": true
+        },
+        "reflect": {
+          "eq_mean": 295.892332,
+          "eq_drift": 15.230538,
+          "drift_over_2pct": true
+        },
+        "explore": {
+          "eq_mean": 307.24838,
+          "eq_drift": 12.08381,
+          "drift_over_2pct": true
+        }
+      },
+      "hold_reasons": [
+        "explore equilibrium 307.24838 is above 303.0 (300 sits below it; explore would be a basin)"
+      ],
+      "allow_full": 0.0325
+    },
+    "43": {
+      "eq": {
+        "stabilize": 35.553819,
+        "degraded": 41.979295,
+        "dream": 183.318974,
+        "reflect": 296.296905,
+        "explore": 307.075082
+      },
+      "drift": {
+        "stabilize": {
+          "eq_mean": 35.553819,
+          "eq_drift": 8.194812,
+          "drift_over_2pct": true
+        },
+        "degraded": {
+          "eq_mean": 41.979295,
+          "eq_drift": 8.51524,
+          "drift_over_2pct": true
+        },
+        "dream": {
+          "eq_mean": 183.318974,
+          "eq_drift": 9.186101,
+          "drift_over_2pct": true
+        },
+        "reflect": {
+          "eq_mean": 296.296905,
+          "eq_drift": 14.900723,
+          "drift_over_2pct": true
+        },
+        "explore": {
+          "eq_mean": 307.075082,
+          "eq_drift": 11.521919,
+          "drift_over_2pct": true
+        }
+      },
+      "hold_reasons": [
+        "explore equilibrium 307.075082 is above 303.0 (300 sits below it; explore would be a basin)"
+      ],
+      "allow_full": 0.0325
+    },
+    "44": {
+      "eq": {
+        "stabilize": 24.942977,
+        "degraded": 31.378016,
+        "dream": 182.517101,
+        "reflect": 294.446117,
+        "explore": 311.191885
+      },
+      "drift": {
+        "stabilize": {
+          "eq_mean": 24.942977,
+          "eq_drift": 5.866088,
+          "drift_over_2pct": true
+        },
+        "degraded": {
+          "eq_mean": 31.378016,
+          "eq_drift": 6.199138,
+          "drift_over_2pct": true
+        },
+        "dream": {
+          "eq_mean": 182.517101,
+          "eq_drift": 9.449583,
+          "drift_over_2pct": true
+        },
+        "reflect": {
+          "eq_mean": 294.446117,
+          "eq_drift": 14.897223,
+          "drift_over_2pct": true
+        },
+        "explore": {
+          "eq_mean": 311.191885,
+          "eq_drift": 10.173473,
+          "drift_over_2pct": true
+        }
+      },
+      "hold_reasons": [
+        "explore equilibrium 311.191885 is above 303.0 (300 sits below it; explore would be a basin)"
+      ],
+      "allow_full": 0.0325
+    }
+  },
+  "means": {
+    "stabilize": 28.640318,
+    "degraded": 35.082219,
+    "dream": 183.526875,
+    "reflect": 295.545118,
+    "explore": 308.505116
+  },
+  "proposal": {
+    "apply": false,
+    "needed": true,
+    "thresholds": {
+      "stabilize": 5.0,
+      "dream": 138.0,
+      "reflect": 309.0
+    },
+    "error": null,
+    "formula": "F9 integer placement on the seed-mean equilibria"
+  },
+  "coupling": {
+    "pass": false,
+    "reasons": [
+      "128 baseline does not couple: seed 42 r -0.01706 < 0.2; seed 43 r -0.022068 < 0.2; seed 44 r -0.016477 < 0.2; mean r -0.018535 < 0.3",
+      "768 does not couple: seed 42 r -0.016599 < 0.2; seed 43 r -0.016623 < 0.2; seed 44 r -0.018977 < 0.2; mean r -0.0174 < 0.3"
+    ],
+    "baseline_couples": false,
+    "wide_couples": false,
+    "matches_128": true,
+    "by_dim": {
+      "128": {
+        "couples": false,
+        "reasons": [
+          "seed 42 r -0.01706 < 0.2",
+          "seed 43 r -0.022068 < 0.2",
+          "seed 44 r -0.016477 < 0.2",
+          "mean r -0.018535 < 0.3"
+        ],
+        "mean": -0.018535,
+        "span": 0.005591
+      },
+      "768": {
+        "couples": false,
+        "reasons": [
+          "seed 42 r -0.016599 < 0.2",
+          "seed 43 r -0.016623 < 0.2",
+          "seed 44 r -0.018977 < 0.2",
+          "mean r -0.0174 < 0.3"
+        ],
+        "mean": -0.0174,
+        "span": 0.002378
+      }
+    },
+    "seeds": {
+      "128": {
+        "42": {
+          "r": -0.01706,
+          "contrast": 0.366799,
+          "contrast_ok": true,
+          "dC_std": 0.095909,
+          "dV_std": 0.004682,
+          "perception": "generator"
+        },
+        "43": {
+          "r": -0.022068,
+          "contrast": 0.465545,
+          "contrast_ok": true,
+          "dC_std": 0.102641,
+          "dV_std": 0.00531,
+          "perception": "generator"
+        },
+        "44": {
+          "r": -0.016477,
+          "contrast": 0.359381,
+          "contrast_ok": true,
+          "dC_std": 0.090215,
+          "dV_std": 0.004484,
+          "perception": "generator"
+        }
+      },
+      "768": {
+        "42": {
+          "r": -0.016599,
+          "contrast": 0.396572,
+          "contrast_ok": true,
+          "dC_std": 0.075902,
+          "dV_std": 0.003269,
+          "perception": "embeddinggemma"
+        },
+        "43": {
+          "r": -0.016623,
+          "contrast": 0.396572,
+          "contrast_ok": true,
+          "dC_std": 0.075902,
+          "dV_std": 0.003277,
+          "perception": "embeddinggemma"
+        },
+        "44": {
+          "r": -0.018977,
+          "contrast": 0.396572,
+          "contrast_ok": true,
+          "dC_std": 0.075902,
+          "dV_std": 0.003723,
+          "perception": "embeddinggemma"
+        }
+      }
+    }
+  },
+  "free": {
+    "42": {
+      "full": {
+        "n": 400,
+        "energy_mean": 142.688229,
+        "energy_class": {
+          "stabilize": 5,
+          "dream": 217,
+          "reflect": 178
+        },
+        "behavior": {
+          "stabilize": 6,
+          "dream": 217,
+          "reflect": 29,
+          "explore": 148
+        },
+        "behavior_ne_start": 148
+      },
+      "last_100": {
+        "n": 100,
+        "energy_mean": 235.222359,
+        "energy_class": {
+          "reflect": 100
+        },
+        "behavior": {
+          "explore": 100
+        },
+        "behavior_ne_start": 100
+      },
+      "boredom_overrides": 148,
+      "thresholds": {
+        "stabilize": 5.0,
+        "dream": 150.0,
+        "reflect": 300.0
+      }
+    },
+    "43": {
+      "full": {
+        "n": 400,
+        "energy_mean": 142.473418,
+        "energy_class": {
+          "stabilize": 5,
+          "dream": 217,
+          "reflect": 178
+        },
+        "behavior": {
+          "stabilize": 6,
+          "dream": 217,
+          "reflect": 39,
+          "explore": 138
+        },
+        "behavior_ne_start": 138
+      },
+      "last_100": {
+        "n": 100,
+        "energy_mean": 234.612963,
+        "energy_class": {
+          "reflect": 100
+        },
+        "behavior": {
+          "explore": 100
+        },
+        "behavior_ne_start": 100
+      },
+      "boredom_overrides": 138,
+      "thresholds": {
+        "stabilize": 5.0,
+        "dream": 150.0,
+        "reflect": 300.0
+      }
+    },
+    "44": {
+      "full": {
+        "n": 400,
+        "energy_mean": 140.763596,
+        "energy_class": {
+          "stabilize": 5,
+          "dream": 221,
+          "reflect": 174
+        },
+        "behavior": {
+          "stabilize": 6,
+          "dream": 221,
+          "reflect": 114,
+          "explore": 59
+        },
+        "behavior_ne_start": 59
+      },
+      "last_100": {
+        "n": 100,
+        "energy_mean": 230.404241,
+        "energy_class": {
+          "reflect": 100
+        },
+        "behavior": {
+          "reflect": 41,
+          "explore": 59
+        },
+        "behavior_ne_start": 59
+      },
+      "boredom_overrides": 59,
+      "thresholds": {
+        "stabilize": 5.0,
+        "dream": 150.0,
+        "reflect": 300.0
+      }
+    }
+  },
+  "field_dim_constant": 128
+}
