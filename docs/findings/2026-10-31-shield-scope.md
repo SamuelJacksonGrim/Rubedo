@@ -62,3 +62,4 @@ still goes through `arbitrate()`. Off by default; no third read without naming i
 ## Open / next
 - [ ] The rhythm behaviours' direct injections on a refused step (explore's mutation is of the step's vector): still
   the architect question; this finding doesn't settle it.
+  → MEASURED (2026-10-31) — `2026-10-31-refused-rhythm-leak`. Not a ruling.

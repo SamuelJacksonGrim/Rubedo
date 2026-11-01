@@ -234,6 +234,11 @@ at the `diagnostic/` root:
   `build_engine` with the post-fork flags on and off; the same runs count
   crystals formed, merged and decayed. Informational (`2026-10-31-why-allow-rate-and-crystal-count`).
 
+- `refused_rhythm_leak_probe.py` — one refused step per rhythm band (the band
+  pinned, cold and after two allowed steps): cosine of each behaviour inject
+  to the gated vector, and whether the field moved toward the refusal or toward
+  structure that already existed. Informational (`2026-10-31-refused-rhythm-leak`).
+
 - `core_arc_no_cascade_probe.py` — **F8 half (b) standing verification**
   (exit-coded 0/1, minutes). Drives the CORE arc to completion live
   (3 seeds × 1500 steps, Resonance Family workload) and asserts the
