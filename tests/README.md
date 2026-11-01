@@ -139,6 +139,11 @@ cooperate correctly."
   `DreamSession` do not inject, and the step does not read `dilation_factor`
   or `subjective_time` (finding `2026-10-31-contract-audit`). The broken
   contracts are in that finding. They are not asserted here.
+- `shield_scope.py` — What a refused input may still touch: a lone sacred token
+  (SACRED_SHIELD) is experienced (stream, usage) but its vector is never injected and
+  plants no crystal, attractor center, vector-space or lattice entry, binding, or
+  coherence signal; an allowed sacred reference still reaches memory (F8). Finding
+  `2026-10-31-shield-scope`.
 - `core_promotion_handshake.py` — Verifies all five
   `review_core_promotion()` rejection paths and two approval paths.
   The four-case CORE promotion test we ran during Tier 3 building,

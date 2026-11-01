@@ -630,6 +630,16 @@ class AutonomousCycle:
                         GovernanceDecision.MONITOR):
             self.field.inject(vec, strength=gain * strength)
 
+        # A refused input (QUARANTINE / REJECT / SACRED_SHIELD) is experienced (perception above already ran; the
+        # stream and topology below still record it) but it plants nothing: no crystal, no attractor center, no
+        # vector-space / lattice entry a dream could recombine, no binding, no coherence signal onto the symbols it
+        # targeted. Keyed on the DECISION, not on "contains a sacred token", so a sacred word inside ordinary
+        # content that is allowed stays a read (F8). The usage bump in generate() stays: being named keeps a symbol
+        # resident, and it moves nothing. (findings/2026-10-31-shield-scope.md)
+        shielded = decision in (GovernanceDecision.QUARANTINE,
+                                GovernanceDecision.REJECT,
+                                GovernanceDecision.SACRED_SHIELD)
+
         # Emit feedback with pre-injection delta
         if self.governance is not None:
             stable_ids   = self.generator.registry.stable_ids_for_tokens(tokens)
@@ -645,7 +655,7 @@ class AutonomousCycle:
         # 11. Crystal evaluation
         # ------------------------------------------------------------------
         crystals_before = len(self.crystal_store.crystals)
-        crystal = self.crystal_store.maybe_crystallize(
+        crystal = None if shielded else self.crystal_store.maybe_crystallize(
             vec                      = vec,
             composite_coherence      = report.composite,
             crystallization_pressure = report.crystallization_pressure,
@@ -664,7 +674,7 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 12. Attractor formation
         # ------------------------------------------------------------------
-        if rel_profile.composite >= self.attractor_formation_threshold:
+        if not shielded and rel_profile.composite >= self.attractor_formation_threshold:
             attractor_before = len(self.attractor.centers)
             self.attractor.add(vec, tokens=tokens, generator=self.generator)
             # Notify Tier 2 subsystems on attractor seeding (new center only).
@@ -705,27 +715,28 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # Tokens ride with the entry so a later dream can name what it recombined.
         # Nothing reads them unless dream_consolidation is on.
-        self.vector_space.put(key, vec, tags=[rhythm], origin_tokens=list(tokens))
+        if not shielded:
+            self.vector_space.put(key, vec, tags=[rhythm], origin_tokens=list(tokens))
 
-        # ------------------------------------------------------------------
-        # 16. Semantic lattice
-        # ------------------------------------------------------------------
-        self.lattice.add_node(
-            key          = key,
-            vector       = vec,
-            vector_space = self.vector_space,
-            metadata     = {"tokens": tokens, "rhythm": rhythm},
-        )
+            # --------------------------------------------------------------
+            # 16. Semantic lattice
+            # --------------------------------------------------------------
+            self.lattice.add_node(
+                key          = key,
+                vector       = vec,
+                vector_space = self.vector_space,
+                metadata     = {"tokens": tokens, "rhythm": rhythm},
+            )
 
-        # ------------------------------------------------------------------
-        # 17. Symbolic binding
-        # ------------------------------------------------------------------
-        self.binding.bind(vec, tokens, generator=self.generator)
+            # --------------------------------------------------------------
+            # 17. Symbolic binding
+            # --------------------------------------------------------------
+            self.binding.bind(vec, tokens, generator=self.generator)
 
-        # ------------------------------------------------------------------
-        # 18. Ecology signal relay
-        # ------------------------------------------------------------------
-        self.generator.signal_coherence(tokens, coherence=report.composite)
+            # --------------------------------------------------------------
+            # 18. Ecology signal relay
+            # --------------------------------------------------------------
+            self.generator.signal_coherence(tokens, coherence=report.composite)
 
         # ------------------------------------------------------------------
         # 18b. Manipulation resistance metrics feed

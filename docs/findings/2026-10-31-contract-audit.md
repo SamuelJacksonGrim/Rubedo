@@ -143,9 +143,9 @@ No contract that failed was patched. `held_contracts.py` pins the ones that held
 
 ## Open / next
 
-- [ ] Whether a shielded write should be allowed to register, to become an attractor, to crystallize, or to be `signal_*`'d. The refuse fix was an ordering change. This one is which writers are inside the shield.
+- [x] Whether a shielded write should be allowed to register, to become an attractor, to crystallize, or to be `signal_*`'d. The refuse fix was an ordering change. This one is which writers are inside the shield. → DECIDED 2026-10-31 (`2026-10-31-shield-scope`): any refusal plants nothing (no crystal, center, vector-space/lattice entry, binding, coherence signal); the usage bump stays.
 - [x] `quarantine_symbol` on a sacred id. A flooded reference cold-archives `3.12`. → DONE 2026-10-31: refused for a sacred id (logged), pinned in `held_contracts` [7].
 - [x] CLAUDE.md's bond sentence still says AND coherence_mean ≥ 0.10. The classic path has said OR allow_rate since the Tier 1 revision. Decide which text is the contract. → DONE 2026-10-31: the code is the contract (README already said so); CLAUDE.md now states coherence OR allow rate.
-- [ ] `rupture_on_lock` reads the monitor and changes the vector. Off. CLAUDE.md allows one read (`diversity_credit`) and not this one.
+- [x] `rupture_on_lock` reads the monitor and changes the vector. Off. CLAUDE.md allows one read (`diversity_credit`) and not this one. → DECIDED 2026-10-31: kept as the second named exception in CLAUDE.md (it's the lock-in experiments' instrument).
 - [x] Vector space, topology, and the two witness lists grow without a cap. → DONE 2026-10-31: VectorSpace max_size 16384 (its existing eviction), TopologicalLog max_nodes 4096 (oldest dropped), witness lists deque(maxlen=1024); all above any run in the suite, so nothing changes until a run passes them. Pinned in `held_contracts` [8].
 - [x] `decay_step` rewrites sacred usage before the reaper returns ACTIVE. → DONE 2026-10-31: usage is not recomputed for a sacred symbol; pinned in `held_contracts` [1].

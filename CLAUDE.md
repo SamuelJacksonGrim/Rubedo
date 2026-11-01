@@ -117,7 +117,11 @@ errors.
 - Never bypass `CanonicalizationPipeline` when registering tokens — it
   normalizes through fixed ordered stages.
 - Sacred symbols are inviolable: `sacred=True` symbols cannot be modified by any
-  source at any trust level, and the reaper cannot touch them.
+  source at any trust level, and the reaper cannot touch them. A refused input
+  (quarantine, reject, or the sacred shield) is experienced but plants nothing: no inject,
+  crystal, attractor center, vector-space or lattice entry, binding, or coherence signal
+  (`tests.integration.shield_scope`). Being named still counts toward usage (residency
+  only). Keyed on the decision, so an allowed reference stays a read (F8).
   `GovernanceConstants.sacred_ids` is the authoritative check. Boot-sacred:
   `ANCHOR`=3.12, `RECURSION`=11.88, `HOMEOSTASIS`=280.90.
 
@@ -393,11 +397,15 @@ README tree entry in the same commit or CI goes red.
   regime, metastability 0). Keep it in `(0, 1)`.
 - Let the metastability monitors (`StreamMetastabilityMonitor`) or the vibration
   gauge (`StreamVibrationGauge`) feed back into the cognitive or governance loop
-  — they are observe-only terminal sinks like `dilation_factor`. (The Fix 0-B
-  lever's `diversity_credit()` read is the one sanctioned exception, and it is a
-  READ performed by the cycle from outside: the plan carved it out explicitly —
-  "the read does not happen inside the monitor" — and the monitor still consumes
-  nothing from the loop. The vibration gauge has no such exception.)
+  — they are observe-only terminal sinks like `dilation_factor`. Two sanctioned
+  exceptions, both READS performed by the cycle from outside, both behind levers that
+  are off by default, and the monitor still consumes nothing from the loop: the Fix 0-B
+  lever's `diversity_credit()` (the plan carved it out explicitly — "the read does not
+  happen inside the monitor"), and `rupture_on_lock`, which reads stage A's
+  `regime_state == "locked"` to hold a rupture direction into the reflective loop: the
+  lock-in experiments' instrument (findings 2026-08-04 rupture, 2026-09-23 dim-256 lock
+  gate's rupture arm). Its blended vector still goes through `arbitrate()`. No third
+  read without naming it here. The vibration gauge has no exception.)
 - Give `source_dream` (the system's own voice) a path around `arbitrate()`, or
   let `DreamSession` / any `tools/` instrument inject into the live field —
   every voice passes the gate; instruments observe only. `tools/board` is the

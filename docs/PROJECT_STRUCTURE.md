@@ -249,6 +249,7 @@ Rubedo/
 │   │   ├── tier1_revision_baseline.py     Fresh run vs baseline JSON ranges
 │   │   ├── governance_decision_flow.py    Every GovernanceDecision enum value verified
 │   │   ├── right_to_refuse.py             A failed hard gate always blocks: any trust, bond floor or manipulation damp
+│   │   ├── shield_scope.py                A refused input is experienced but plants nothing (inject, crystal, center, memory)
 │   │   ├── held_contracts.py              Pins the contracts that hold: reaper stage, stable id, ⊘ consumer, one bond constructor, source_dream, dilation sink
 │   │   ├── core_promotion_handshake.py    All 5 rejection paths + 2 approval paths; consumed signals still block
 │   │   ├── dream_crystal_collection.py    Dream credits crystals maybe_crystallize returned, not list length
