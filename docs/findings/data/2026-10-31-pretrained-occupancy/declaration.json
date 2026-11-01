@@ -1,0 +1,151 @@
+{
+  "bands": {
+    "dream": {
+      "max": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "n": 3,
+      "span": 0.0,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "explore": {
+      "max": 0.029167,
+      "mean": 0.009722,
+      "min": 0.0,
+      "n": 3,
+      "span": 0.029167,
+      "values": [
+        0.0,
+        0.029167,
+        0.0
+      ]
+    },
+    "reflect": {
+      "max": 1.0,
+      "mean": 0.990278,
+      "min": 0.970833,
+      "n": 3,
+      "span": 0.029167,
+      "values": [
+        1.0,
+        0.970833,
+        1.0
+      ]
+    },
+    "stabilize": {
+      "max": 0.0,
+      "mean": 0.0,
+      "min": 0.0,
+      "n": 3,
+      "span": 0.0,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "declared_before": "256/768 occupancy",
+  "dream_max_allowed": 2,
+  "eval": true,
+  "explore_hi": 0.038889,
+  "explore_lo": -0.019445,
+  "explore_positive": false,
+  "fit_seeds": [
+    42,
+    43,
+    44
+  ],
+  "held_seeds": [
+    45,
+    46
+  ],
+  "kind": "pretrained_occupancy_declaration",
+  "late_steps": 240,
+  "per_seed": {
+    "42": {
+      "counts": {
+        "dream": 0,
+        "explore": 0,
+        "reflect": 240,
+        "stabilize": 0
+      },
+      "fracs": {
+        "dream": 0.0,
+        "explore": 0.0,
+        "reflect": 1.0,
+        "stabilize": 0.0
+      }
+    },
+    "43": {
+      "counts": {
+        "dream": 0,
+        "explore": 7,
+        "reflect": 233,
+        "stabilize": 0
+      },
+      "fracs": {
+        "dream": 0.0,
+        "explore": 0.029167,
+        "reflect": 0.970833,
+        "stabilize": 0.0
+      }
+    },
+    "44": {
+      "counts": {
+        "dream": 0,
+        "explore": 0,
+        "reflect": 240,
+        "stabilize": 0
+      },
+      "fracs": {
+        "dream": 0.0,
+        "explore": 0.0,
+        "reflect": 1.0,
+        "stabilize": 0.0
+      }
+    }
+  },
+  "pretrain_epochs": 8,
+  "reflect_gt_explore": true,
+  "schema": 1,
+  "stabilize_max_allowed": 0,
+  "steps": 500,
+  "thresholds": {
+    "attenuation_max": 0.3,
+    "attractor_formation": 0.88,
+    "binding": 0.82,
+    "convergence": 0.995,
+    "crystal_coherence": 0.75,
+    "crystal_relation": 0.8,
+    "crystal_stability": 0.6,
+    "diversity_blend": 0.6,
+    "drift_gap": 0.3,
+    "drift_velocity": 0.15,
+    "erosion": 0.3,
+    "gaslighting": -0.2,
+    "lattice": 0.75,
+    "pull": 0.75,
+    "rhythm": {
+      "dream": 150.0,
+      "reflect": 300.0,
+      "stabilize": 5.0
+    },
+    "surprise": 2.5,
+    "watcher": 0.4,
+    "witness_coherence": 0.92,
+    "witness_long": 0.9,
+    "witness_snapshot": 0.8,
+    "witness_stability": 0.75
+  },
+  "witness_reader": [
+    true,
+    true,
+    true
+  ],
+  "workload": "canonical"
+}

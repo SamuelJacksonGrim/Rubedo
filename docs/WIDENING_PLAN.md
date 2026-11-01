@@ -44,11 +44,11 @@ field the first time took weeks because things kept being missed. The census exi
    no constant changed. Record: [`findings/2026-10-31-dial-census-widths.md`](findings/2026-10-31-dial-census-widths.md).
    The 500-step rule flags many cosine gates. A step-260 cut (the identity-erosion youth window) puts those misses
    in the first half; the settled half still clears them. On these pretrain-off arms the retune that survives the
-   cut is the rhythm bands on canonical, where settled energy falls off the 300 explore edge — pending the
-   pretrained occupancy check in step 4. Embedding init missed its ~0.55 target (shifted, not a decision read).
-   Step 4 is that list, not a blanket retune.
-4. **Re-tune only what moved. NOT SHIPPED 2026-10-31.** Record:
-   [`findings/2026-10-31-settled-half-and-f9-gate.md`](findings/2026-10-31-settled-half-and-f9-gate.md).
+   cut is the rhythm bands on canonical, where settled energy falls off the 300 explore edge. Embedding init
+   missed its ~0.55 target (shifted, not a decision read). Step 4 measured that list; it did not retune it.
+4. **Re-tune only what moved. DONE 2026-10-31: no band retune.** Records:
+   [`findings/2026-10-31-settled-half-and-f9-gate.md`](findings/2026-10-31-settled-half-and-f9-gate.md),
+   [`findings/2026-10-31-pretrained-occupancy.md`](findings/2026-10-31-pretrained-occupancy.md).
    The step-260 split of the seven reads the census left unsplit is done (pretrain-off). Witness
    crystallization still fails in the settled half, canonical sacred promotions thin out after
    step 260, and the canonical metastability count leaves locked/cycling on the settled window.
@@ -58,11 +58,12 @@ field the first time took weeks because things kept being missed. The census exi
    ~3% of the 2026-07-06 table; stabilize rose because today's pin allows 1.00 where July
    allowed 0.39. July's table is not stale, and under that instrument the equilibria barely
    move with width, so 5 / 150 / 300 still satisfies the F9 constraint set at 256 and 768.
-   The census's "rhythm bands are the retune that survives" is pretrain-off, pending a
-   pretrained free-run occupancy check (8 epochs, eval, 128 / 256 / 768, seeds 42–44 plus
-   held-out 45/46, 128 target declared from the 128 fit arms before 256/768 is read). If
-   occupancy holds, step 4 is no band retune. Co-tuned groups still move together. Nothing
-   in this step edits a constant.
+   Pretrained occupancy (8 epochs, eval, 128 / 256 / 768, seeds 42–44 plus held-out 45/46,
+   128 target declared from the 128 fit arms before 256/768 was read) is FAIL (16). The 128
+   held-out seeds miss (explore 0.048 vs 0.010, span 0.029), so 256 / 768 are not judged as a
+   retune. Independently, 768 explores *more* than 128 pretrained (fit 0.058, held-out 0.121),
+   the opposite of the census. 5 / 150 / 300 stays. Co-tuned groups still move together.
+   Nothing in this step edits a constant.
 5. **The coupling test.** Does the wide field still respond to content the way the 128 field did (correlation of value
    change with content change, directional robustness over seeds)? Run with EmbeddingGemma-2 perception first (it
    exists today), then with RFE's own encoder when its runs land.

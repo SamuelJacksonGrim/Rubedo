@@ -74,13 +74,13 @@ Value counts do not move. Canonical active values are 46 on every seed at every 
 
 Order a later change should follow. The 500-step class is the rule. The rank uses the step-260 cut where the cut exists, so a constant the settled field still clears does not get rewritten off a youth average.
 
-**1. Rhythm bands, as a group. This is the settled-regime retune on these pretrain-off arms.** Pending the pretrained occupancy check (`2026-10-31-settled-half-and-f9-gate`). July's own probe reprints; the pin harness was the different instrument.
+**1. Rhythm bands, as a group. This was the settled-regime retune on these pretrain-off arms.** Occupancy under 8-epoch pretrain inverted the direction and did not retune (`2026-10-31-pretrained-occupancy`). July's own probe reprints; the pin harness was the different instrument.
 
 Canonical field energy in steps 261–500: seeds 282 / 287 / 290 at 128, 247 / 253 / 246 at 256, 231 / 251 / 236 at 768. The reflect/explore edge is 300. The settled 128 field sits on it (explore in that half 0.21 / 0.26 / 0.34). The settled 256 and 768 fields sit under it (explore 0 / 0.01 / 0 and 0 / 0.08 / 0). Reflect in that half goes from about 0.7 to about 1.0 because explore is gone, not because dream took it: dream in the late half is 0 at every width.
 
 Wide does not ask for the same edit. Its settled half is already reflect at 128 (explore 0 / 0 / 0.04, energy 251 / 260 / 267) and stays reflect while energy falls further (about 241, then about 226). The full-run dream-up / reflect-down on both workloads is youth: early dream occupancy goes from ~0.4 to ~0.9, and the late half is dream 0 everywhere.
 
-Do not move one band. The census already says the three thresholds are one calibration. Re-measure after, including this cut.
+Do not move one band. The census already says the three thresholds are one calibration. Occupancy re-measured under 8-epoch pretrain and did not move them (`2026-10-31-pretrained-occupancy`).
 
 Reflective-loop `reflect_rate` is this same fact (canonical full-run 0.77 → 0.53 → 0.49). `reflect_converged_rate` stays 1.0 at every width. Convergence 0.995 and `attenuation_max` 0.30 are not what moved.
 
@@ -160,7 +160,7 @@ Early-half `|G−T|` over 0.30, canonical: 0.30/0.21/0.15 → 0.80/0.78/0.80 →
 
 ## Open
 
-- [ ] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. Not in this commit. Tried 2026-10-31 and not shipped (`2026-10-31-settled-half-and-f9-gate`): the pin harness differed from F9's (cold boot, production build, workload); July's table is not stale. Occupancy under 8-epoch pretrain is in flight. No band moved.
+- [x] Retune the rhythm thresholds as one group off the canonical settled energy, then re-measure with this cut. → DONE (2026-10-31) — not shipped. Pin harness differed from F9 (`2026-10-31-settled-half-and-f9-gate`); pretrained occupancy FAIL, 128 held-out unstable, 768 explores more not less (`2026-10-31-pretrained-occupancy`). No band moved.
 - [x] Split lattice, binding, the 0.7 pattern cutoff, witness crystallization, bonds, sacred promotions and metastability at step 260 before treating them as settled-regime retunes. → DONE (2026-10-31) — `2026-10-31-settled-half-and-f9-gate`. Lattice, binding, and the 0.7 cutoff were youth. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after the cut.
 - [ ] Embedding init against the ~0.55 target at 256 and 768 (shifted; at 768 `emb_over_pe` crosses 1). Census priority 2. No constant changed here.
-- [ ] A pretrained arm. Pretrain was off on all 18. Occupancy under 8-epoch pretrain, eval, 128 / 256 / 768 is in flight (`2026-10-31-settled-half-and-f9-gate`).
+- [x] A pretrained arm. Pretrain was off on all 18. → DONE (2026-10-31) — `2026-10-31-pretrained-occupancy`. FAIL (16). 128 held-out misses; 768 explores more. No band moved.

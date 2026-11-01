@@ -139,14 +139,14 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
       we're training it to use.") The wide-workload run says vocabulary wasn't the bottleneck for the rattle. Measure
       the dial census at 128 vs 768 before committing; a width arm can ride with Rubedo-A/B.
 - [x] Step 3: measure the dials at 128 vs 768. Done 2026-10-31 at 128/256/768 (`findings/2026-10-31-dial-census-widths.md`):
-      after the step-260 youth cut, the retune that survives is the rhythm bands on canonical (settled energy falls
-      off the 300 explore edge as width grows); the cosine gates move only in youth.
-- [ ] Step 4: retune only what that measurement showed, as one co-tuned set. The youth split landed and the bands
-      did not ship (`findings/2026-10-31-settled-half-and-f9-gate.md`). Lattice, binding, and the 0.7 cutoff were
-      youth. Witness crystallization, canonical sacred promotions, and the canonical regime count still move after
-      step 260. Dim-128 pinned equilibria are outside the F9 gate, so no band moved and 5 / 150 / 300 stays. Next
-      measurement is July's own equilibria probe, unchanged, on this tree — the pins cannot tell a stale gate from
-      a different harness.
+      after the step-260 youth cut, on pretrain-off arms the retune that survives is the rhythm bands on canonical
+      (settled energy falls off the 300 explore edge as width grows); the cosine gates move only in youth.
+      Occupancy under 8-epoch pretrain inverted that direction (`findings/2026-10-31-pretrained-occupancy.md`).
+- [x] Step 4: retune only what that measurement showed, as one co-tuned set. Done 2026-10-31: **no band retune**.
+      Youth split and F9 not-ship: `findings/2026-10-31-settled-half-and-f9-gate.md`. Pretrained occupancy FAIL (16):
+      128 held-out misses the declared target (explore 0.048 vs 0.010), so 256/768 are not a retune; 768 explores
+      MORE than 128 pretrained (fit 0.058, held-out 0.121). 5 / 150 / 300 stays.
+      `findings/2026-10-31-pretrained-occupancy.md`.
 - [ ] Run 2 at 768 with Matryoshka (corpus worklist): position balance + the structural order head, launchers written
       (`corpus\scripts\run2.ps1`, `run2_throughput.ps1`); starts when run 1c (run 1b + the head, full corpus) confirms
       the head at scale. Run 1b is the current best encoder. `findings/2026-10-30-encoder-word-order.md`.
