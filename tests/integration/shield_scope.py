@@ -3,15 +3,17 @@ tests/integration/shield_scope.py
 
 What a refused input may still touch (finding 2026-10-31-shield-scope).
 
-A lone boot-sacred token on a cold stack draws SACRED_SHIELD. That step is experienced
-(perception runs, the stream records it, the token's usage counts the mention) but the refused
-vector plants nothing:
+A lone boot-sacred token on a cold stack draws SACRED_SHIELD. That step is felt (perception and
+emotion run, the token's usage counts the mention) and the input is kept as a ghost on the
+witness, but the refused vector can't enter or train identity, semantic, geometric, generative
+or replayable state:
 
-  - it is not injected into the field (the rhythm behaviours' own injections are the open
-    architect question in CLAUDE.md; they are reported here, not asserted);
+  - it is not injected into the field, directly or through a rhythm behaviour (explore, reflect
+    and the dreamer stand down on a refusal; stabilize replays only older crystals);
   - no new crystal, no new attractor center;
   - no vector-space or lattice entry a dream could recombine;
-  - no binding, and no coherence signal written onto the targeted symbol.
+  - no binding, and no coherence signal written onto the targeted symbol;
+  - no witness drift (anchor and trace restored) and no stream entry (the dreamer replays it).
 
 The same applies to QUARANTINE and REJECT (the rule keys on "the decision was a block"). An
 allowed sacred reference inside ordinary content (F8: a reference is a read) still reaches the
@@ -86,7 +88,8 @@ def main() -> int:
         crystals=len(cycle.crystal_store.crystals), centers=len(cycle.attractor.centers),
         vectors=len(cycle.vector_space.keys()), lattice=cycle.lattice.graph.number_of_nodes(),
         coh=anchor.field_coherence, att=anchor.attractor_strength, cb=anchor.crystal_binding,
-        usage=anchor.usage,
+        usage=anchor.usage, ghosts=len(cycle.witness.ghosts), w_anchor=cycle.witness._anchor.copy(),
+        w_long=cycle.witness._long.copy(), trace=len(cycle.witness.identity_trace),
     )
     d, vec, injected, pushes = instrumented_step(cycle, gov, ["3.12"], "attacker")
     anchor = reg.symbols.get("3.12")
@@ -95,7 +98,7 @@ def main() -> int:
           d == GovernanceDecision.SACRED_SHIELD, f"got {d}")
     best = max((cos(v, vec) for v in injected), default=0.0) if vec is not None else 1.0
     check("the refused vector itself is never injected", best < 0.999, f"max cosine of an injection {best:.4f}")
-    print(f"    (info) other injections this step: {len(injected)} (rhythm behaviours, open architect question)")
+    print(f"    (info) other injections this step: {len(injected)} (only stabilize may run on a refused step; it replays older crystals)")
     check("no new crystal", len(cycle.crystal_store.crystals) == before["crystals"])
     check("no new attractor center", len(cycle.attractor.centers) == before["centers"])
     check("no vector-space entry for a dream to recombine", len(cycle.vector_space.keys()) == before["vectors"])
@@ -106,7 +109,16 @@ def main() -> int:
           anchor.attractor_strength == before["att"] and anchor.crystal_binding == before["cb"])
     check("the mention still counts (usage rose; the anchor stays resident)",
           anchor.usage > before["usage"], f"{before['usage']} -> {anchor.usage}")
-    check("the step is still experienced (the stream recorded it)", len(pushes) == 1, f"{len(pushes)} push(es)")
+    check("the refused vector stays off the stream (the dreamer replays from it)", len(pushes) == 0,
+          f"{len(pushes)} push(es)")
+    check("the witness anchor and its trace don't move toward the refusal",
+          np.array_equal(cycle.witness._anchor, before["w_anchor"])
+          and np.array_equal(cycle.witness._long, before["w_long"])
+          and len(cycle.witness.identity_trace) == before["trace"])
+    ghost = cycle.witness.ghosts[-1] if len(cycle.witness.ghosts) > before["ghosts"] else None
+    check("it is kept as a ghost (what, who, what the gate said)",
+          ghost is not None and ghost["source_id"] == "attacker" and ghost["decision"] == "sacred_shield"
+          and cos(ghost["vec"], vec) > 0.999)
 
     vecs = len(cycle.vector_space.keys())
     d2, _, _, _ = instrumented_step(cycle, gov, ["3.12", "coherence", "field"], "referencer")

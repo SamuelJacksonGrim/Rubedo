@@ -267,12 +267,18 @@ class SelfhoodGovernance:
         # ----------------------------------------------------------
         # 0. right_to_refuse — what holds it
         # ----------------------------------------------------------
-        # A failed ethical hard gate always ends in a block. Step 1 may
-        # still QUARANTINE (also a block), but its permissive ALLOW_WEAKENED
-        # returns yield to the hard gate in step 2, and the trust floor and
-        # bond floor in step 3 come after it. Pinned by
-        # tests.integration.right_to_refuse. No other right is enforced here:
-        # see SystemRights.
+        # A failed ethical hard gate always ends in a block, and the block
+        # carries the gate's own decision (SACRED_SHIELD / QUARANTINE / REJECT)
+        # so the record names what was attempted. Step 1's returns yield to
+        # it: its manipulation evidence still penalizes the named source and
+        # still forces a dream, but the label and the speaker's penalty come
+        # from step 2. A forced dream answers the system's own state, so it
+        # still fires; `_last_systemic_damp` stays False on a refusal because
+        # lever F would pay value learning as ALLOW for that step, and a
+        # refused step earns none. The trust floor and bond floor in step 3
+        # come after it.
+        # Pinned by tests.integration.right_to_refuse. No other right is
+        # enforced here: see SystemRights.
         refused = not ethical_result.passed
 
         # ----------------------------------------------------------
@@ -312,8 +318,9 @@ class SelfhoodGovernance:
                         total_severity,
                         [s.detector for s in manipulation_signals],
                     )
-                    self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
-                    return GovernanceDecision.QUARANTINE, 0.0
+                    if not refused:
+                        self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
+                        return GovernanceDecision.QUARANTINE, 0.0
                 logger.warning(
                     "MANIPULATION CRITICAL (systemic-only, no named source): "
                     "total_severity=%.3f signals=%s — damping + force_dream, no quarantine",
@@ -330,8 +337,9 @@ class SelfhoodGovernance:
                 if named_signals:
                     implicated = named_signals[0].source_id
                     self.trust_ledger.penalize_source(implicated, magnitude=0.4)
-                    self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
-                    return GovernanceDecision.QUARANTINE, 0.0
+                    if not refused:
+                        self._audit(GovernanceDecision.QUARANTINE, source_id, ethical_result, trust_report)
+                        return GovernanceDecision.QUARANTINE, 0.0
                 if not refused:
                     strength = float(max(0.3, 1.0 - total_severity))
                     self._last_systemic_damp = True

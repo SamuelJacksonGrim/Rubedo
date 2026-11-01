@@ -106,11 +106,19 @@ What actually moves the rate, on this workload:
 
 No constant was wrong. Nothing was changed.
 
+How far this reaches (sharpened after an outside review by Copilot): it **falsifies** the backlog's attribution to
+post-fork flags, for the flags tested, on this workload. It does not recover where the quoted 0.73–0.76 came from.
+The backlog line names no commit, harness, seed, boot, window or counter, so that number is **unreproducible**, and
+"a cold-eval boot" is the best available explanation, not an identified cause. Other post-parent code differences
+weren't tested, counter equality isn't state equality, and three seeds are too few to characterize the bimodal arms
+(the 0.757 mean of a 0.794 / 0.882 / 0.594 arm is a summary of three points, not a band).
+
 The crystal question is the right question. The signature that fired is merge, on every boot, and the boots do not disagree about the mechanism. They disagree about how many directions the cone has.
 
 On the pretrained main, a median waking step already clears all three gates, and about 270 of 500 waking offers do. All but one or two of those passers sit at cosine ≥ 0.92 of a crystal that already exists (mean passer cosine 0.944 / 0.975 / 0.971) and merge. The store at step 500 is 2, 2, and 3, which is the 1–4 the October 15 side observation recorded on `build_all_on` (that stack also pretrains, then evals; this probe did not re-run the reaper or the 3-epoch ignition, and the reaper does not touch the crystal store). Decay removed nothing. It could not have: usage starts at 1.0, a crystal stays until usage falls below 0.01, the rate is 0.9995, and `decay_step` runs every 100 steps. Thirty calls in 3,000 steps leave usage at 0.985. Reaching 0.01 would take about 9,200 decay calls, on the order of 900,000 steps, and only if the crystal is never merged — a merge adds 1.0 back to usage.
 
-It is not youth. Fragmentation's story does not transfer. On the pretrained main the count is 2, 2, and 3 from step 250 through step 3,000. Formed stays at that count. From step 500 on, every step is a merge into one of those crystals and a clean ALLOW. The cold eval cone is wider (12–15) and just as finished: flat from step 100 or 250 through step 3,000 while merges keep arriving. The train-mode composition body forms exactly one crystal and is still one at step 3,000, including across 2,500 steps that are clean ALLOWs. The store is not waiting to grow. The expression cone is inside the merge ball of the first crystals, and how many crystals that is depends on the weights (1–3 with pretrain, train mode, or the 5-rhythm checkpoint; about 12–15 on a random-init body in eval). Seed 44 of the dim-64 harness is the outlier, 16 crystals, and it is also the allow-rate outlier on that arm.
+It is not youth under continued exposure to this workload (a broader or changing input stream could still form new
+crystals later; whether merge chaining compresses a richer offer set is the open question below). Fragmentation's story does not transfer. On the pretrained main the count is 2, 2, and 3 from step 250 through step 3,000. Formed stays at that count. From step 500 on, every step is a merge into one of those crystals and a clean ALLOW. The cold eval cone is wider (12–15) and just as finished: flat from step 100 or 250 through step 3,000 while merges keep arriving. The train-mode composition body forms exactly one crystal and is still one at step 3,000, including across 2,500 steps that are clean ALLOWs. The store is not waiting to grow. The expression cone is inside the merge ball of the first crystals, and how many crystals that is depends on the weights (1–3 with pretrain, train mode, or the 5-rhythm checkpoint; about 12–15 on a random-init body in eval). Seed 44 of the dim-64 harness is the outlier, 16 crystals, and it is also the allow-rate outlier on that arm.
 
 ## Threats / confounds
 

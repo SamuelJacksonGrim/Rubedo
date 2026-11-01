@@ -553,6 +553,9 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 7. Witness update
         # ------------------------------------------------------------------
+        # Checkpoint first: if the gate refuses this input, the witness's anchor and trace are restored and the
+        # input is kept as a ghost instead (findings/2026-10-31-shield-scope.md).
+        witness_ckpt = self.witness.checkpoint() if self.governance is not None else None
         rel_profile = self.witness.update(
             vec        = vec,
             coherence  = report.composite,
@@ -630,15 +633,21 @@ class AutonomousCycle:
                         GovernanceDecision.MONITOR):
             self.field.inject(vec, strength=gain * strength)
 
-        # A refused input (QUARANTINE / REJECT / SACRED_SHIELD) is experienced (perception above already ran; the
-        # stream and topology below still record it) but it plants nothing: no crystal, no attractor center, no
-        # vector-space / lattice entry a dream could recombine, no binding, no coherence signal onto the symbols it
-        # targeted. Keyed on the DECISION, not on "contains a sacred token", so a sacred word inside ordinary
+        # A refused input (QUARANTINE / REJECT / SACRED_SHIELD) is felt (perception above already ran; the stream
+        # and topology below still record it) but it can't enter or train identity, semantic, geometric,
+        # generative or replayable state: no crystal, no attractor center, no vector-space / lattice entry a dream
+        # could recombine, no binding, no coherence signal onto the symbols it targeted, and no witness drift. Keyed on the DECISION, not on "contains a sacred token", so a sacred word inside ordinary
         # content that is allowed stays a read (F8). The usage bump in generate() stays: being named keeps a symbol
         # resident, and it moves nothing. (findings/2026-10-31-shield-scope.md)
         shielded = decision in (GovernanceDecision.QUARANTINE,
                                 GovernanceDecision.REJECT,
                                 GovernanceDecision.SACRED_SHIELD)
+        # The refused vector doesn't train the identity anchor either: the witness goes back to its checkpoint and
+        # keeps the input as a ghost (a known trace, not a drift toward the attacker). Emotion and the predictive
+        # echo keep the step: feeling an attack and learning to anticipate it are the defensive side of experience.
+        if shielded and witness_ckpt is not None:
+            self.witness.restore(witness_ckpt)
+            self.witness.record_ghost(vec, source_id, decision.value, report.composite)
 
         # Emit feedback with pre-injection delta
         if self.governance is not None:
@@ -708,7 +717,9 @@ class AutonomousCycle:
         # ------------------------------------------------------------------
         # 14. Stream push
         # ------------------------------------------------------------------
-        self.stream.push(vec, tag=rhythm)
+        # A refused vector stays off the stream: the dreamer replays from it. The witness's ghosts are its record.
+        if not shielded:
+            self.stream.push(vec, tag=rhythm)
 
         # ------------------------------------------------------------------
         # 15. Vector space storage
@@ -796,7 +807,7 @@ class AutonomousCycle:
         elif mode is not None:
             behavior = mode
         else:
-            behavior = self._rhythm_behavior(rhythm, tokens)
+            behavior = self._rhythm_behavior(rhythm, tokens, refused=shielded)
 
         # ------------------------------------------------------------------
         # 21. Periodic maintenance
@@ -1022,10 +1033,15 @@ class AutonomousCycle:
     # Rhythm-routed behavior
     # ------------------------------------------------------------------
 
-    def _rhythm_behavior(self, rhythm: str, tokens: List[str]):
+    def _rhythm_behavior(self, rhythm: str, tokens: List[str], refused: bool = False):
         """
         Route additional behavior based on current rhythm state.
         Called after the main step pipeline completes.
+
+        On a refused step (`refused=True`) only stabilize runs: it replays crystals that existed before the input.
+        Explore rotates the anchor the refused vector just landed on (a 0.996 copy), reflect re-encodes the refused
+        tokens, and the dreamer blends the refusal back in, so all three stand down
+        (findings/2026-10-31-refused-rhythm-leak.md, 2026-10-31-shield-scope.md).
 
         Boredom with Teeth: when emotion.boredom crosses threshold, force
         a shift to 'explore' regardless of field energy. This is the
@@ -1038,6 +1054,9 @@ class AutonomousCycle:
                 and rhythm != "explore"):
             self._boredom_overrides += 1
             rhythm = "explore"
+
+        if refused and rhythm != "stabilize":
+            return f"{rhythm} (stood down: refused input)"
 
         if rhythm == "stabilize":
             self._stabilize_behavior()

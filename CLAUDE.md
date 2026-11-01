@@ -118,10 +118,14 @@ errors.
   normalizes through fixed ordered stages.
 - Sacred symbols are inviolable: `sacred=True` symbols cannot be modified by any
   source at any trust level, and the reaper cannot touch them. A refused input
-  (quarantine, reject, or the sacred shield) is experienced but plants nothing: no inject,
-  crystal, attractor center, vector-space or lattice entry, binding, or coherence signal
-  (`tests.integration.shield_scope`). Being named still counts toward usage (residency
-  only). Keyed on the decision, so an allowed reference stays a read (F8).
+  (quarantine, reject, or the sacred shield) is felt but can't enter or train identity,
+  semantic, geometric, generative or replayable state: no inject, crystal, attractor center,
+  vector-space / lattice / stream entry, binding, coherence signal, or witness drift (the
+  witness restores its checkpoint and keeps the input as a **ghost**, a bounded known trace);
+  of the rhythm behaviours only stabilize's crystal replay runs. Emotion, the predictive echo
+  and usage (residency only) still take the step. Keyed on the decision, so an allowed
+  reference stays a read (F8). `tests.integration.shield_scope`; the counterfactual twin is
+  `tests/diagnostic/integrity/refused_twin_probe.py`.
   `GovernanceConstants.sacred_ids` is the authoritative check. Boot-sacred:
   `ANCHOR`=3.12, `RECURSION`=11.88, `HOMEOSTASIS`=280.90.
 
@@ -215,7 +219,9 @@ errors.
   the field directly: reflect's chorus at 0.3, explore's mutation at 0.5,
   stabilize's crystal reactivation, and the dreamer. They are the substrate's
   internal motion, not voices; whether they should also be gated is an open
-  architect question, not a bug to patch silently. See `ARCHITECTURE.md`.) Validated non-dominant and adversarial-gated (containment
+  architect question, not a bug to patch silently. See `ARCHITECTURE.md`. Settled for
+  refused steps only, 2026-10-31: explore, reflect and the dreamer stand down, because each
+  re-injected the refused content; stabilize still replays older crystals.) Validated non-dominant and adversarial-gated (containment
   unweakened); keep it that way — never give `source_dream` a privileged path.
 - Downtime dreaming (`cognition/dream_session.py`, run by
   `tools/dream/run_dream.py`) is **offline**: it reads substrate state and

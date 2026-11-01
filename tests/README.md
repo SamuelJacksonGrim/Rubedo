@@ -449,6 +449,11 @@ at the `diagnostic/` root:
   ~20-260, while systemic identity_erosion keeps a manipulation damp queued);
   prints each decision. Informational; the pin is
   `integration/right_to_refuse.py`. `docs/findings/2026-10-31-right-to-refuse-order.md`.
+- `integrity/refused_twin_probe.py` — **Counterfactual twin for refused inputs.** Three
+  stacks from one seed and warm-up: 200 refused sacred writes, none, or 200 allowed reads of
+  the same token; then the same canonical probe steps after an identical reseed. Reads the
+  witness anchor's drift toward the input, emotion, ghosts kept, and how many later decisions
+  differ. Informational. `docs/findings/2026-10-31-shield-scope.md`.
 - `integrity/witness_reaper_probe.py` — **⊘ Witness-Reaper unit (Build C, spec v0.2).**
   Proves the integrity-read operator: reads a 4-dim thinness vector per value,
   names the pathology by region (Drift/Dissolution/Fragmentation), emits a

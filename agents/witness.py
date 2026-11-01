@@ -226,6 +226,46 @@ class Witness:
         self._step = 0
         self._initialized = False
 
+        # Ghosts: refused inputs, kept as a known trace instead of folded into the anchor (Samuel, 2026-10-31: an
+        # attack the system never registers is one it can't recognize). Bounded; nothing reads them yet.
+        self.ghosts: collections.deque = collections.deque(maxlen=256)
+
+    # ------------------------------------------------------------------
+    # Refusals: keep the anchor, keep the ghost
+    # ------------------------------------------------------------------
+
+    def checkpoint(self) -> dict:
+        """Cheap copy of everything update() changes, so a refused step can be undone."""
+        return {
+            "short": self._short.copy(), "mid": self._mid.copy(), "long": self._long.copy(),
+            "anchor": self._anchor.copy(), "prev_anchor": self._prev_anchor.copy(),
+            "prev_velocity": self._prev_velocity.copy(),
+            "entropy": collections.deque(self._anchor_entropy_history, maxlen=self._anchor_entropy_history.maxlen),
+            "trace": collections.deque(self.identity_trace, maxlen=self.identity_trace.maxlen),
+            "snapshots": collections.deque(self.snapshots, maxlen=self.snapshots.maxlen),
+            "candidates": collections.deque(self.crystallization_candidates,
+                                            maxlen=self.crystallization_candidates.maxlen),
+            "step": self._step, "initialized": self._initialized,
+        }
+
+    def restore(self, state: dict) -> None:
+        """Undo update() back to a checkpoint (the refused vector leaves the anchor where it was)."""
+        self._short, self._mid, self._long = state["short"], state["mid"], state["long"]
+        self._anchor, self._prev_anchor = state["anchor"], state["prev_anchor"]
+        self._prev_velocity = state["prev_velocity"]
+        self._anchor_entropy_history = state["entropy"]
+        self.identity_trace = state["trace"]
+        self.snapshots = state["snapshots"]
+        self.crystallization_candidates = state["candidates"]
+        self._step, self._initialized = state["step"], state["initialized"]
+
+    def record_ghost(self, vec: np.ndarray, source_id: str, decision: str, coherence: float) -> None:
+        """Keep a refused input as a ghost: what it was, who sent it, what the gate said, and when."""
+        self.ghosts.append({
+            "vec": np.asarray(vec, dtype=float).copy(), "source_id": source_id, "decision": decision,
+            "coherence": float(coherence), "step": self._step, "timestamp": determinism.now(),
+        })
+
     # ------------------------------------------------------------------
     # Core update
     # ------------------------------------------------------------------

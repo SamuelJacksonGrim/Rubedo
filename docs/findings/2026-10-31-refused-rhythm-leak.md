@@ -57,4 +57,4 @@ Witness adds no phase-20 inject. `_rupture_behavior` is not in the dispatch. `ru
 - Stabilize's crystal gates were opened so the primer would leave a crystal. That crystal is the primer's vector, which is what "replay" needed to be visible. The attack added none.
 
 ## Open / next
-- [ ] Samuel's ruling on the three stand-downs above. This finding does not patch them.
+- [x] Samuel's ruling on the three stand-downs above. This finding does not patch them. → DECIDED 2026-10-31: explore, reflect and the dreamer stand down on a refused step, stabilize runs; refused vectors also stay off the stream (`2026-10-31-shield-scope`).

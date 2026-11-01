@@ -60,10 +60,21 @@ canonical never fails a hard gate (census: 1500 arbitrate calls over seeds 42-44
 the new test.
 
 ## Interpretation
-`right_to_refuse` held against trust and the bond floor and didn't hold against the manipulation damp. The damp is
-on for the whole of the system's youth, so for the first ~260 steps of every boot any hard-gate refusal, sacred
-writes included, was a weakened allow that rewarded the writer's trust. The fix is order, not a new mechanism: a
-failed hard gate now always ends in a block. That makes the BACKLOG item's text true, and the test pins it.
+`right_to_refuse` held against trust and the bond floor and didn't hold against the manipulation damp. On these
+canonical boots the damp is on for the whole of the system's youth, so for their first ~260 steps any hard-gate
+refusal, sacred writes included, was a weakened allow that rewarded the writer's trust. (Another workload, a
+pretrained body or a restored state can move that window; the fix doesn't depend on it.) The fix is order, not a new
+mechanism: a failed hard gate now always ends in a block. That makes the BACKLOG item's text true, and the test pins
+it.
+
+**Reason fidelity (same day, after an outside review by Copilot).** The first fix guaranteed the block but let a
+named manipulation damp at ≥ 0.60 win the *label*: a sacred write under that damp came back QUARANTINE, so the
+sacred-specific penalty and record were lost. The ethical gate's own decision now always carries the step
+(SACRED_SHIELD / QUARANTINE / REJECT), so the record names what was attempted. The manipulation evidence still
+penalizes the named source and a severity ≥ 0.90 still forces a dream. `_last_systemic_damp` stays False on a
+refusal: lever F would pay value learning as ALLOW for that step, and a refused step earns none, while the forced
+dream answers the system's own state. `right_to_refuse` now checks the exact decision on all 39 cases, the band edges
+0.30 / 0.60 / 0.90 included.
 
 The rest of BACKLOG §1 is unchanged: the flags are still unread, and there's still no refusal from the system's own
 state.

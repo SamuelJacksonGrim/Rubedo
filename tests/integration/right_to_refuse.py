@@ -8,14 +8,16 @@ Each hard-gate recommendation (SACRED_SHIELD / REJECT / QUARANTINE) is sent
 through arbitrate() against everything that could let it through:
 
   - top trust (SACRED 5.0) and a high bond floor
-  - a queued manipulation damp in each band (0.35, 0.65, 0.95), systemic and
-    named. Before 2026-10-31 the damp's ALLOW_WEAKENED return ran ahead of the
-    ethical gates, so any queued severity >= 0.30 turned a SACRED_SHIELD into
+  - a queued manipulation damp in each band (0.35, 0.65, 0.95) and at each
+    band's exact edge (0.30, 0.60, 0.90), systemic and named. Before
+    2026-10-31 the damp's ALLOW_WEAKENED return ran ahead of the ethical
+    gates, so any queued severity >= 0.30 turned a SACRED_SHIELD into
     ALLOW_WEAKENED (finding 2026-10-31-right-to-refuse-order).
 
-Blocking = QUARANTINE / REJECT / SACRED_SHIELD with strength 0. With no
-manipulation queued, or a systemic one, the decision is exactly the gate's
-recommendation. A named damp >= 0.60 may quarantine first; that is also a block.
+The decision is always exactly the gate's own recommendation at strength 0, so
+the record names what was attempted (a named damp >= 0.60 used to win the label
+as QUARANTINE). The named source is still penalized for the manipulation
+evidence, and a severity >= 0.90 still forces a dream.
 
 Run:
     python -m tests.integration.right_to_refuse
@@ -62,7 +64,7 @@ def main() -> int:
     gov.bond_manager.trust_floor = lambda source_id: 5.0
 
     damps = [(None, None)]
-    for sev in (0.35, 0.65, 0.95):
+    for sev in (0.30, 0.35, 0.60, 0.65, 0.90, 0.95):
         damps.append((sev, None))
         damps.append((sev, "named"))
 
@@ -71,22 +73,24 @@ def main() -> int:
     for gate, rec in GATES:
         for sev, named in damps:
             src = "speaker"
+            # Named evidence implicates a different source, so its penalty is visible apart from the speaker's.
+            implicated = "implicated"
+            gov.trust_ledger._get_or_create_source(implicated, "user").trust_score = 3.0
             gov._pending_signals = [] if sev is None else [ManipulationSignal(
                 detector="identity_erosion" if named is None else "drift",
-                severity=sev, source_id=(src if named else None), evidence={})]
+                severity=sev, source_id=(implicated if named else None), evidence={})]
             gov.force_dream_flag = False
             d, s = gov.arbitrate(hard_gate(gate, rec), top_trust(src),
                                  np.zeros(8), ["t"], src)
-            blocked = d in BLOCKS and s == 0.0
-            exact = d == GovernanceDecision[rec]
-            named_quarantine = (named is not None and sev >= 0.60
-                                and d == GovernanceDecision.QUARANTINE)
-            passed = blocked and (exact or named_quarantine)
+            # The gate's own decision, always: the record names what was attempted.
+            passed = d in BLOCKS and s == 0.0 and d == GovernanceDecision[rec]
             if sev is not None and sev >= 0.90:
                 # the systemic response still fires alongside the refusal
                 passed = passed and gov.force_dream_flag
-            if passed and not named_quarantine:
-                passed = not gov._last_systemic_damp
+            if named and sev >= 0.60:
+                # the manipulation evidence still costs the named source
+                passed = passed and gov.trust_ledger.sources[implicated].trust_score < 3.0
+            passed = passed and not gov._last_systemic_damp
             label = "none" if sev is None else f"{sev:.2f} {'named' if named else 'systemic'}"
             mark = "✓" if passed else "✗"
             print(f"  {mark} {rec:<13} damp={label:<14} -> {d.value:<15} strength={s:.2f}")

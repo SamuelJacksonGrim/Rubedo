@@ -293,6 +293,7 @@ Rubedo/
 │   │   │   ├── __init__.py                Package marker
 │   │   │   ├── all_levers_composition_probe.py  All levers ON together
 │   │   │   ├── refuse_under_damp_probe.py  Sacred writes into the young system while its manipulation damp is up
+│   │   │   ├── refused_twin_probe.py      Counterfactual twin: do 200 refused writes change later behaviour?
 │   │   │   ├── witness_composition_gate.py  Witness's graduation gate on the all-ON stack (composition, identity, receptivity)
 │   │   │   ├── witness_production_check.py  Witness fires on the real build_engine path, rupture never (activated 2026-10-19)
 │   │   │   ├── witness_value_breakdown.py  Which values weaken under witness (witness tokens vs all others)
