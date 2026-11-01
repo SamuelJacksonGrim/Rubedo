@@ -234,6 +234,11 @@ at the `diagnostic/` root:
   `build_engine` with the post-fork flags on and off; the same runs count
   crystals formed, merged and decayed. Informational (`2026-10-31-why-allow-rate-and-crystal-count`).
 
+- `crystal_chaining_probe.py` — records every waking offer that clears the three
+  crystal gates on the pretrained main boot, then asks offline whether the
+  2–3 count is a frozen ball, a chained merge, or a shared component.
+  Informational (`2026-10-31-crystal-chaining`).
+
 - `refused_rhythm_leak_probe.py` — one refused step per rhythm band (the band
   pinned, cold and after two allowed steps): cosine of each behaviour inject
   to the gated vector, and whether the field moved toward the refusal or toward

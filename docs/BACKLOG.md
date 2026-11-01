@@ -52,7 +52,8 @@ runtime or gate changes until it is answered.
 - [ ] **Dream-credit budget for lever C.** C works mechanically now (real relation, source-symbol credit, only new
       crystals pay) but floods: many new dream crystals × several symbols × 0.30 → strength cap → mass CORE promotion
       breaks trust and bonds. Needs a per-dream / per-symbol budget or diminishing credit.
-- [x] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512). → DONE (2026-10-31) — `findings/2026-10-31-why-allow-rate-and-crystal-count.md`: passers merge (cosine ≥ 0.92); decay removes none; the count is flat by step 250.
+- [x] Why the crystal store holds only 1–4 crystals over 500 steps (cap 512). → DONE (2026-10-31) — `findings/2026-10-31-why-allow-rate-and-crystal-count.md`: passers merge (cosine ≥ 0.92); decay removes none; the count is flat by step 250. The center does not walk, and the offers are two regions plus a shared direction: `findings/2026-10-31-crystal-chaining.md`.
+- [ ] Is the cold eval cone's 12–15 a wider set of regions, or the same offers with this shared component gone? Pretrained components at cosine 0.92 are 2/2/2, and removing the first component multiplies the store. Do not move 0.92 to answer it. `findings/2026-10-31-crystal-chaining.md`.
 - [ ] **A felt shock, repeated, with age-matched twins**: can the system become antifragile under stress it actually
       feels (desat, or an anchor kick that moves expression by ~0.1 of a normal step)? The H0 nudges were below feeling.
 - [ ] **50,000-step plain run** (~80 min/seed): does the raw direction's slow wobble ceiling or drift?

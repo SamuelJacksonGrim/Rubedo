@@ -134,6 +134,6 @@ crystals later; whether merge chaining compresses a richer offer set is the open
 ## Open / next
 
 - [ ] `main()`'s p=0.20 dream channel, if the number wanted is the one `main()` prints rather than the smoke workload. Not a fork difference.
-- [ ] Why a pretrained cone has 2–3 directions and a cold eval cone has about 12–15. That is the next crystal question. It is not a gate, and 0.92 was not touched.
+- [ ] Why a pretrained cone has 2–3 directions and a cold eval cone has about 12–15. Chaining on this offer set → measured (2026-10-31) — `findings/2026-10-31-crystal-chaining.md`: the center does not walk; components at 0.92 are 2/2/2; complete-link is 2/3/4; order moves the count by one crystal on two seeds; removing the shared component multiplies the count. The cold cone was not re-recorded. 0.92 was not changed.
 - [x] Which post-fork default moves allow_rate. None of them. → this file.
 - [x] Starved, decayed, or young. None of those. Merged. → this file.

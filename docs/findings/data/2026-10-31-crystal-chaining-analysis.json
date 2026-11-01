@@ -1,0 +1,571 @@
+{
+  "calls": {
+    "chaining": true,
+    "drift_chain": false,
+    "knife_edge": true,
+    "made": true,
+    "mean_centred": "manufactures",
+    "order_move": true,
+    "pc1_removed": "manufactures",
+    "plateau": false,
+    "threshold_call": "knife_edge",
+    "within_crystal_split": true
+  },
+  "seeds": [
+    {
+      "allow_rate": 0.55,
+      "any_replay_center_moved": false,
+      "calls_allowed": true,
+      "complete_link": 2,
+      "components": 2,
+      "crystals": [
+        {
+          "centroid_cosine": 0.995795,
+          "centroid_travel": 0.004205,
+          "crystal": 0,
+          "form_step": 101,
+          "min_pair": 0.983216,
+          "min_to_pin": 0.983216,
+          "n": 2,
+          "n_pairs": 1,
+          "n_pairs_below_0_92": 0,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        },
+        {
+          "centroid_cosine": 0.954493,
+          "centroid_travel": 0.045507,
+          "crystal": 1,
+          "form_step": 237,
+          "min_pair": 0.928399,
+          "min_to_pin": 0.928399,
+          "n": 264,
+          "n_pairs": 34716,
+          "n_pairs_below_0_92": 0,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        }
+      ],
+      "crystals_end": 2,
+      "dream_clearers": 0,
+      "drift_chain": false,
+      "grid": [
+        {
+          "complete_link": 2,
+          "components": 1,
+          "replay": 2,
+          "threshold": 0.8
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.85
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.88
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.9
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.91
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.92
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.93
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.94
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.95
+        },
+        {
+          "complete_link": 5,
+          "components": 2,
+          "replay": 4,
+          "threshold": 0.96
+        },
+        {
+          "complete_link": 5,
+          "components": 3,
+          "replay": 5,
+          "threshold": 0.98
+        }
+      ],
+      "identity": "MATCH",
+      "integrity_ok": true,
+      "knife": true,
+      "mean_centred": {
+        "called": true,
+        "complete_link": 28,
+        "components": 5,
+        "dropped": 0,
+        "replay": 18
+      },
+      "merge_threshold": 0.92,
+      "online_count": 2,
+      "order_counts": {
+        "arrival": 2,
+        "far_mean_first": 2,
+        "near_mean_first": 2,
+        "pc1_decreasing": 2,
+        "pc1_increasing": 2,
+        "reverse": 2,
+        "shuffle_0": 2,
+        "shuffle_1": 2,
+        "shuffle_10": 2,
+        "shuffle_11": 2,
+        "shuffle_12": 2,
+        "shuffle_13": 2,
+        "shuffle_14": 2,
+        "shuffle_15": 2,
+        "shuffle_16": 2,
+        "shuffle_17": 2,
+        "shuffle_18": 2,
+        "shuffle_19": 2,
+        "shuffle_2": 2,
+        "shuffle_20": 2,
+        "shuffle_21": 2,
+        "shuffle_22": 2,
+        "shuffle_23": 2,
+        "shuffle_3": 2,
+        "shuffle_4": 2,
+        "shuffle_5": 2,
+        "shuffle_6": 2,
+        "shuffle_7": 2,
+        "shuffle_8": 2,
+        "shuffle_9": 2
+      },
+      "order_distinct": [
+        2
+      ],
+      "order_max": 2,
+      "order_min": 2,
+      "pc1_large": true,
+      "pc1_removed": {
+        "called": true,
+        "complete_link": 169,
+        "components": 132,
+        "dropped": 0,
+        "replay": 156
+      },
+      "pc1_variance_fraction": 0.5294,
+      "plateau": false,
+      "replay_matches_online": true,
+      "seed": 42,
+      "shuffle_max": 2,
+      "shuffle_min": 2,
+      "wake_clearers": 266,
+      "wake_reject": {
+        "coherence": 55,
+        "relation": 7,
+        "stability": 172
+      },
+      "within_crystal_split": false
+    },
+    {
+      "allow_rate": 0.602,
+      "any_replay_center_moved": false,
+      "calls_allowed": true,
+      "complete_link": 3,
+      "components": 2,
+      "crystals": [
+        {
+          "centroid_cosine": 0.997609,
+          "centroid_travel": 0.002391,
+          "crystal": 0,
+          "form_step": 15,
+          "min_pair": 0.990449,
+          "min_to_pin": 0.990449,
+          "n": 2,
+          "n_pairs": 1,
+          "n_pairs_below_0_92": 0,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        },
+        {
+          "centroid_cosine": 0.990411,
+          "centroid_travel": 0.009589,
+          "crystal": 1,
+          "form_step": 226,
+          "min_pair": 0.912489,
+          "min_to_pin": 0.945643,
+          "n": 275,
+          "n_pairs": 37675,
+          "n_pairs_below_0_92": 168,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        }
+      ],
+      "crystals_end": 2,
+      "dream_clearers": 0,
+      "drift_chain": false,
+      "grid": [
+        {
+          "complete_link": 2,
+          "components": 1,
+          "replay": 2,
+          "threshold": 0.8
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.85
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.88
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.9
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.91
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.92
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.93
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.94
+        },
+        {
+          "complete_link": 4,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.95
+        },
+        {
+          "complete_link": 4,
+          "components": 3,
+          "replay": 4,
+          "threshold": 0.96
+        },
+        {
+          "complete_link": 5,
+          "components": 3,
+          "replay": 5,
+          "threshold": 0.98
+        }
+      ],
+      "identity": "MATCH",
+      "integrity_ok": true,
+      "knife": false,
+      "mean_centred": {
+        "called": true,
+        "complete_link": 26,
+        "components": 8,
+        "dropped": 0,
+        "replay": 18
+      },
+      "merge_threshold": 0.92,
+      "online_count": 2,
+      "order_counts": {
+        "arrival": 2,
+        "far_mean_first": 3,
+        "near_mean_first": 2,
+        "pc1_decreasing": 2,
+        "pc1_increasing": 3,
+        "reverse": 2,
+        "shuffle_0": 2,
+        "shuffle_1": 2,
+        "shuffle_10": 2,
+        "shuffle_11": 2,
+        "shuffle_12": 2,
+        "shuffle_13": 2,
+        "shuffle_14": 2,
+        "shuffle_15": 2,
+        "shuffle_16": 2,
+        "shuffle_17": 2,
+        "shuffle_18": 2,
+        "shuffle_19": 3,
+        "shuffle_2": 2,
+        "shuffle_20": 2,
+        "shuffle_21": 2,
+        "shuffle_22": 3,
+        "shuffle_23": 2,
+        "shuffle_3": 2,
+        "shuffle_4": 3,
+        "shuffle_5": 2,
+        "shuffle_6": 2,
+        "shuffle_7": 2,
+        "shuffle_8": 3,
+        "shuffle_9": 2
+      },
+      "order_distinct": [
+        2,
+        3
+      ],
+      "order_max": 3,
+      "order_min": 2,
+      "pc1_large": false,
+      "pc1_removed": {
+        "called": true,
+        "complete_link": 98,
+        "components": 73,
+        "dropped": 0,
+        "replay": 87
+      },
+      "pc1_variance_fraction": 0.4739,
+      "plateau": true,
+      "replay_matches_online": true,
+      "seed": 43,
+      "shuffle_max": 3,
+      "shuffle_min": 2,
+      "wake_clearers": 277,
+      "wake_reject": {
+        "coherence": 64,
+        "relation": 8,
+        "stability": 151
+      },
+      "within_crystal_split": true
+    },
+    {
+      "allow_rate": 0.56,
+      "any_replay_center_moved": false,
+      "calls_allowed": true,
+      "complete_link": 4,
+      "components": 2,
+      "crystals": [
+        {
+          "centroid_cosine": 0.98442,
+          "centroid_travel": 0.01558,
+          "crystal": 0,
+          "form_step": 2,
+          "min_pair": 0.936925,
+          "min_to_pin": 0.941162,
+          "n": 9,
+          "n_pairs": 36,
+          "n_pairs_below_0_92": 0,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        },
+        {
+          "centroid_cosine": 0.994047,
+          "centroid_travel": 0.005953,
+          "crystal": 1,
+          "form_step": 191,
+          "min_pair": 0.960937,
+          "min_to_pin": 0.975369,
+          "n": 3,
+          "n_pairs": 3,
+          "n_pairs_below_0_92": 0,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        },
+        {
+          "centroid_cosine": 0.985918,
+          "centroid_travel": 0.014082,
+          "crystal": 2,
+          "form_step": 233,
+          "min_pair": 0.918422,
+          "min_to_pin": 0.937899,
+          "n": 268,
+          "n_pairs": 35778,
+          "n_pairs_below_0_92": 3,
+          "stored_center_cosine": 1.0,
+          "stored_center_l2": 0.0
+        }
+      ],
+      "crystals_end": 3,
+      "dream_clearers": 0,
+      "drift_chain": false,
+      "grid": [
+        {
+          "complete_link": 2,
+          "components": 1,
+          "replay": 2,
+          "threshold": 0.8
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.85
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.88
+        },
+        {
+          "complete_link": 2,
+          "components": 2,
+          "replay": 2,
+          "threshold": 0.9
+        },
+        {
+          "complete_link": 3,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.91
+        },
+        {
+          "complete_link": 4,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.92
+        },
+        {
+          "complete_link": 4,
+          "components": 2,
+          "replay": 3,
+          "threshold": 0.93
+        },
+        {
+          "complete_link": 5,
+          "components": 2,
+          "replay": 4,
+          "threshold": 0.94
+        },
+        {
+          "complete_link": 6,
+          "components": 2,
+          "replay": 6,
+          "threshold": 0.95
+        },
+        {
+          "complete_link": 7,
+          "components": 3,
+          "replay": 6,
+          "threshold": 0.96
+        },
+        {
+          "complete_link": 9,
+          "components": 5,
+          "replay": 9,
+          "threshold": 0.98
+        }
+      ],
+      "identity": "MATCH",
+      "integrity_ok": true,
+      "knife": false,
+      "mean_centred": {
+        "called": true,
+        "complete_link": 38,
+        "components": 8,
+        "dropped": 0,
+        "replay": 27
+      },
+      "merge_threshold": 0.92,
+      "online_count": 3,
+      "order_counts": {
+        "arrival": 3,
+        "far_mean_first": 3,
+        "near_mean_first": 2,
+        "pc1_decreasing": 2,
+        "pc1_increasing": 3,
+        "reverse": 3,
+        "shuffle_0": 2,
+        "shuffle_1": 2,
+        "shuffle_10": 2,
+        "shuffle_11": 3,
+        "shuffle_12": 3,
+        "shuffle_13": 3,
+        "shuffle_14": 2,
+        "shuffle_15": 2,
+        "shuffle_16": 3,
+        "shuffle_17": 3,
+        "shuffle_18": 2,
+        "shuffle_19": 2,
+        "shuffle_2": 2,
+        "shuffle_20": 2,
+        "shuffle_21": 2,
+        "shuffle_22": 3,
+        "shuffle_23": 2,
+        "shuffle_3": 2,
+        "shuffle_4": 3,
+        "shuffle_5": 2,
+        "shuffle_6": 2,
+        "shuffle_7": 2,
+        "shuffle_8": 2,
+        "shuffle_9": 2
+      },
+      "order_distinct": [
+        2,
+        3
+      ],
+      "order_max": 3,
+      "order_min": 2,
+      "pc1_large": false,
+      "pc1_removed": {
+        "called": true,
+        "complete_link": 51,
+        "components": 18,
+        "dropped": 0,
+        "replay": 35
+      },
+      "pc1_variance_fraction": 0.473,
+      "plateau": false,
+      "replay_matches_online": true,
+      "seed": 44,
+      "shuffle_max": 3,
+      "shuffle_min": 2,
+      "wake_clearers": 280,
+      "wake_reject": {
+        "coherence": 92,
+        "relation": 4,
+        "stability": 124
+      },
+      "within_crystal_split": true
+    }
+  ],
+  "toy": {
+    "complete_link": 2,
+    "components": 1,
+    "cos_0_18": 0.951056,
+    "cos_0_36": 0.809017,
+    "cos_18_36": 0.951056,
+    "max_l2_abc": 0.0,
+    "max_l2_bac": 0.0,
+    "ok": true,
+    "replay_abc": 2,
+    "replay_bac": 1
+  }
+}

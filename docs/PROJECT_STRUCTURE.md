@@ -277,6 +277,7 @@ Rubedo/
 │   │   ├── __init__.py                    Package marker
 │   │   ├── rename_digest.py               Seeded replay digest for behaviour-preserving renames
 │   │   ├── why_allow_crystals_probe.py    Allow-rate boots on one workload; crystal formed/merged/decayed
+│   │   ├── crystal_chaining_probe.py      Waking crystal offers, then offline merge geometry; no constant changed
 │   │   ├── refused_rhythm_leak_probe.py   Refused step, each rhythm pinned: does its inject carry the refused vector
 │   │   ├── tier4/
 │   │   │   ├── __init__.py                Package marker
