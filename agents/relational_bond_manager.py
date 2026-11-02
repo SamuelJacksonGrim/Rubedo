@@ -442,10 +442,46 @@ class RelationalBondManager:
         # (observe() clamps V and refreshes the window while it stays there);
         # nothing to do until the structural footprint catches up.
 
+    def _make_bond(
+        self,
+        source_id: str,
+        bond_type: BondType,
+        bond_confidence: float,
+        bond_strength: float,
+        bond_depth: int,
+        interaction_count: int,
+        coherence_mean: float,
+        emotional_signature: float,
+        crystal_count: int,
+        attractor_count: int,
+        entity_signal: float = 0.0,
+        formed_at: Optional[float] = None,
+        last_reinforced: Optional[float] = None,
+    ) -> RelationalBond:
+        """The single RelationalBond constructor — emergence and restore both use this."""
+        kwargs = dict(
+            source_id=source_id,
+            bond_type=bond_type,
+            bond_confidence=bond_confidence,
+            bond_strength=bond_strength,
+            bond_depth=bond_depth,
+            interaction_count=interaction_count,
+            coherence_mean=coherence_mean,
+            emotional_signature=emotional_signature,
+            crystal_count=crystal_count,
+            attractor_count=attractor_count,
+            entity_signal=entity_signal,
+        )
+        if formed_at is not None:
+            kwargs["formed_at"] = formed_at
+        if last_reinforced is not None:
+            kwargs["last_reinforced"] = last_reinforced
+        return RelationalBond(**kwargs)
+
     def _form_bond(self, source_id: str):
         """Create the bond from accumulated pre-bond state (the commitment)."""
         pre = self._pre_bond[source_id]
-        seed = RelationalBond(
+        seed = self._make_bond(
             source_id           = source_id,
             bond_type           = "transactional",   # placeholder before inference
             bond_confidence     = 0.5,
@@ -550,3 +586,167 @@ class RelationalBondManager:
         if self._ddm is not None:
             result["ddm"] = self._ddm.summary()
         return result
+
+    # ------------------------------------------------------------------
+    # Lived-state snapshot (state only; thresholds and LRs stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        bonds = {}
+        for sid, b in self._bonds.items():
+            bonds[sid] = {
+                "source_id": b.source_id,
+                "bond_type": b.bond_type,
+                "bond_confidence": float(b.bond_confidence),
+                "bond_strength": float(b.bond_strength),
+                "bond_depth": int(b.bond_depth),
+                "interaction_count": int(b.interaction_count),
+                "coherence_mean": float(b.coherence_mean),
+                "emotional_signature": float(b.emotional_signature),
+                "crystal_count": int(b.crystal_count),
+                "attractor_count": int(b.attractor_count),
+                "entity_signal": float(b.entity_signal),
+                "formed_at": float(b.formed_at),
+                "last_reinforced": float(b.last_reinforced),
+            }
+        return {
+            "step": int(self._step),
+            "bonds": bonds,
+            "pre_bond": {
+                sid: {
+                    "interaction_count": int(pre["interaction_count"]),
+                    "coherence_mean": float(pre["coherence_mean"]),
+                    "emotional_signature": float(pre["emotional_signature"]),
+                    "crystal_count": int(pre["crystal_count"]),
+                    "attractor_count": int(pre["attractor_count"]),
+                    "allow_count": int(pre.get("allow_count", 0)),
+                }
+                for sid, pre in self._pre_bond.items()
+            },
+            "coherence_window": [float(x) for x in self._coherence_window],
+            "ddm": None if self._ddm is None else self._ddm.snapshot(),
+        }
+
+    def _decode_lived(self, data, known_sources=None) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_str, require_dict, require_keys,
+        )
+        data = require_dict(data, "bonds")
+        require_keys(data, ("step", "bonds", "pre_bond", "coherence_window"), "bonds")
+        step = as_int(data["step"], 0, 10**9, "bonds.step")
+        bonds_in = require_dict(data["bonds"], "bonds.bonds")
+        pre_in = require_dict(data["pre_bond"], "bonds.pre_bond")
+        window_in = data["coherence_window"]
+        if not isinstance(window_in, list):
+            raise LivedStateError("bonds.coherence_window must be a list")
+
+        known = set(known_sources) if known_sources is not None else None
+        bonds = {}
+        for sid, raw in bonds_in.items():
+            raw = require_dict(raw, f"bonds[{sid}]")
+            require_keys(raw, (
+                "source_id", "bond_type", "bond_confidence", "bond_strength",
+                "bond_depth", "interaction_count", "coherence_mean",
+                "emotional_signature", "crystal_count", "attractor_count",
+                "entity_signal", "formed_at", "last_reinforced",
+            ), f"bonds[{sid}]")
+            source_id = as_str(raw["source_id"], "bond source_id")
+            if source_id != sid:
+                raise LivedStateError(
+                    f"bond key {sid!r} != source_id {source_id!r}"
+                )
+            if known is not None and source_id not in known:
+                raise LivedStateError(
+                    f"bond for {source_id!r} has no trust record (planted)"
+                )
+            bond_type = as_str(raw["bond_type"], "bond_type", max_len=32)
+            if bond_type not in PRIORITY:
+                raise LivedStateError(f"unknown bond_type {bond_type!r}")
+            interaction_count = as_int(
+                raw["interaction_count"], 0, 10**9, "interaction_count"
+            )
+            crystal_count = as_int(raw["crystal_count"], 0, 10**9, "crystal_count")
+            if interaction_count < self.formation_interaction_threshold:
+                raise LivedStateError(
+                    f"bond {source_id!r} interaction_count {interaction_count} "
+                    f"< live formation threshold {self.formation_interaction_threshold}"
+                )
+            if crystal_count < self.formation_crystal_threshold:
+                raise LivedStateError(
+                    f"bond {source_id!r} crystal_count {crystal_count} "
+                    f"< live formation threshold {self.formation_crystal_threshold}"
+                )
+            bonds[source_id] = self._make_bond(
+                source_id=source_id,
+                bond_type=bond_type,  # type: ignore[arg-type]
+                bond_confidence=as_float(raw["bond_confidence"], 0.0, 1.0, "bond_confidence"),
+                bond_strength=as_float(raw["bond_strength"], 0.0, 5.0, "bond_strength"),
+                bond_depth=as_int(raw["bond_depth"], 0, 10**9, "bond_depth"),
+                interaction_count=interaction_count,
+                coherence_mean=as_float(raw["coherence_mean"], -1e6, 1e6, "coherence_mean"),
+                emotional_signature=as_float(
+                    raw["emotional_signature"], -1e6, 1e6, "emotional_signature"
+                ),
+                crystal_count=crystal_count,
+                attractor_count=as_int(raw["attractor_count"], 0, 10**9, "attractor_count"),
+                entity_signal=as_float(raw["entity_signal"], 0.0, 1.0, "entity_signal"),
+                formed_at=as_float(raw["formed_at"], 0.0, 1e20, "formed_at"),
+                last_reinforced=as_float(
+                    raw["last_reinforced"], 0.0, 1e20, "last_reinforced"
+                ),
+            )
+
+        pre_bond = {}
+        pre_keys = (
+            "interaction_count", "coherence_mean", "emotional_signature",
+            "crystal_count", "attractor_count", "allow_count",
+        )
+        for sid, raw in pre_in.items():
+            sid = as_str(sid, "pre_bond source")
+            raw = require_dict(raw, f"pre_bond[{sid}]")
+            require_keys(raw, pre_keys, f"pre_bond[{sid}]")
+            pre_bond[sid] = {
+                "interaction_count": as_int(raw["interaction_count"], 0, 10**9, "interaction_count"),
+                "coherence_mean": as_float(raw["coherence_mean"], -1e6, 1e6, "coherence_mean"),
+                "emotional_signature": as_float(
+                    raw["emotional_signature"], -1e6, 1e6, "emotional_signature"
+                ),
+                "crystal_count": as_int(raw["crystal_count"], 0, 10**9, "crystal_count"),
+                "attractor_count": as_int(raw["attractor_count"], 0, 10**9, "attractor_count"),
+                "allow_count": as_int(raw["allow_count"], 0, 10**9, "allow_count"),
+            }
+
+        maxlen = self._coherence_window.maxlen or 64
+        coherence_window = deque(
+            (as_float(x, -1e6, 1e6, "coherence_window") for x in window_in[-maxlen:]),
+            maxlen=maxlen,
+        )
+
+        ddm_staged = None
+        ddm_payload = data.get("ddm", None)
+        if ddm_payload is not None:
+            if self._ddm is None:
+                raise LivedStateError(
+                    "checkpoint has DDM state but the live manager has no accumulator"
+                )
+            ddm_staged = self._ddm._decode_lived(ddm_payload)
+            extra = set(ddm_staged["candidates"]) - set(pre_bond)
+            if extra:
+                raise LivedStateError(
+                    f"DDM candidates not in pre_bond: {sorted(extra)}"
+                )
+        return {
+            "step": step,
+            "bonds": bonds,
+            "pre_bond": pre_bond,
+            "coherence_window": coherence_window,
+            "ddm": ddm_staged,
+        }
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._step = staged["step"]
+        self._bonds = staged["bonds"]
+        self._pre_bond = staged["pre_bond"]
+        self._coherence_window = staged["coherence_window"]
+        if staged["ddm"] is not None:
+            self._ddm._apply_lived(staged["ddm"])

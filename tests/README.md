@@ -148,6 +148,12 @@ cooperate correctly."
   `review_core_promotion()` rejection paths and two approval paths.
   The four-case CORE promotion test we ran during Tier 3 building,
   now permanent.
+- `lived_state_checkpoint.py` — Trust, bonds, crystals and attractors
+  survive a production-signature bridge checkpoint and a session
+  `lived_state.json`. Restore is in-place (DDM and the emotion stability
+  ref keep their identity), constants stay in code, a planted bond or
+  malformed file fails loud and leaves the live system untouched. Finding
+  `2026-11-02-lived-state-checkpoint`.
 - `checkpoint_registry_identity.py` — `Generator.load_checkpoint` must
   preserve the `SymbolRegistry` *object*, not just its contents —
   `SelfhoodGovernance` and `ValueEmergenceEngine` capture the reference at

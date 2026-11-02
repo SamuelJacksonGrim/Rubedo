@@ -25,3 +25,4 @@ build a fresh stack, load, compare. Run once on the old code and once on the fix
 - The live RFE-Core2 checkout has the same bug in the same file. Port the fix there once Samuel says go.
 - The bridge checkpoint also omits bonds, trust, crystals, attractors and the temporal stream (ARCHITECTURE.md
   § Speech-cortex bridge). Emotion was the cheapest and most identity-relevant gap; the rest wait for the flow map.
+  → DONE 2026-11-02 for trust, bonds, crystals, attractors (`2026-11-02-lived-state-checkpoint`). Stream still omitted.

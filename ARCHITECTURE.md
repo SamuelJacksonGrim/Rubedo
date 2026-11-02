@@ -453,13 +453,16 @@ the readout for the dream channel, `listen.py`, and `DreamSession`.
 
 What does get persisted (`save_checkpoint` in the bridge's scratch
 directory): step counter, field vector and field history, value-engine
-serialize, registry via in-place `__dict__` update. Bonds, trust,
-crystals, attractors, and the temporal stream are not in that file. The
-checkpoint also stores `arousal` and `valence`, but the loader assigns
-them back onto `EmotionalGradient`. Those names are read-only
-properties, the assignment throws, and the `except` drops it. Emotion
-does not round-trip. The file comment that says bonds have a dump and no
-loader matches this checkpoint: they are simply absent.
+serialize, registry via in-place `__dict__` update, emotion via
+`EmotionalGradient.snapshot()` / `restore()`, and lived identity (trust,
+bonds, crystals, attractors) via `agents.lived_state.snapshot_from_cycle`,
+which reads `cycle.governance` so a call site cannot forget to pass it.
+The temporal stream, witness, predictor, attention window, vector space
+and lattice are not in that file. Session persistence writes the same
+lived bundle as `lived_state.json` beside weights, ecology and values.
+A malformed or planted lived payload raises and leaves the live objects
+untouched. Thresholds stay in code. Finding
+`docs/findings/2026-11-02-lived-state-checkpoint.md`.
 
 ### What Qwen touches, and what it does not
 

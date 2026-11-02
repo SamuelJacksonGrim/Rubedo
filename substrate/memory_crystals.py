@@ -340,3 +340,60 @@ class CrystalStore:
             "mean_usage":      round(float(np.mean(usages)), 4),
             "total_activations": sum(c.activation_count for c in self.crystals),
         }
+
+    # ------------------------------------------------------------------
+    # Lived-state snapshot (crystals only; thresholds stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        return {
+            "crystals": [
+                {
+                    "vector": c.vector.astype(np.float32).tolist(),
+                    "origin_tokens": list(c.origin_tokens),
+                    "stability": float(c.stability),
+                    "coherence": float(c.coherence),
+                    "activation_count": int(c.activation_count),
+                    "created_at": float(c.created_at),
+                    "last_activated": float(c.last_activated),
+                    "usage": float(c.usage),
+                }
+                for c in self.crystals
+            ],
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_str_list, as_vector,
+            require_dict, require_keys,
+        )
+        data = require_dict(data, "crystals")
+        require_keys(data, ("crystals",), "crystals")
+        raw_list = data["crystals"]
+        if not isinstance(raw_list, list):
+            raise LivedStateError("crystals.crystals must be a list")
+        if len(raw_list) > self.max_crystals:
+            raise LivedStateError(
+                f"{len(raw_list)} crystals exceeds live cap {self.max_crystals}"
+            )
+        crystals = []
+        for i, raw in enumerate(raw_list):
+            raw = require_dict(raw, f"crystals[{i}]")
+            require_keys(raw, (
+                "vector", "origin_tokens", "stability", "coherence",
+                "activation_count", "created_at", "last_activated", "usage",
+            ), f"crystals[{i}]")
+            crystals.append(MemoryCrystal(
+                vector=as_vector(raw["vector"], dim, f"crystals[{i}].vector"),
+                origin_tokens=as_str_list(raw["origin_tokens"], f"crystals[{i}].origin_tokens"),
+                stability=as_float(raw["stability"], 0.0, 10.0, "stability"),
+                coherence=as_float(raw["coherence"], -1.0, 1.0, "coherence"),
+                activation_count=as_int(raw["activation_count"], 0, 10**9, "activation_count"),
+                created_at=as_float(raw["created_at"], 0.0, 1e20, "created_at"),
+                last_activated=as_float(raw["last_activated"], 0.0, 1e20, "last_activated"),
+                usage=as_float(raw["usage"], 0.0, 1e6, "usage"),
+            ))
+        return {"crystals": crystals}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self.crystals = staged["crystals"]

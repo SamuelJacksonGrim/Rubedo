@@ -362,3 +362,70 @@ class BondFormationAccumulator:
         while len(self._candidates) > self.max_candidates:
             evicted, _ = self._candidates.popitem(last=False)
             logger.debug("Bond accumulator: evicted stale candidate '%s'", evicted)
+
+    # ------------------------------------------------------------------
+    # Lived-state snapshot (candidates + RNG; physics constants stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        from agents.lived_state import jsonify
+        return {
+            "candidates": {
+                sid: {
+                    "V": float(s.V),
+                    "steps": int(s.steps),
+                    "windows": int(s.windows),
+                    "outcomes": {str(k): int(v) for k, v in s.outcomes.items()},
+                    "last_outcome": s.last_outcome,
+                    "trace": [float(x) for x in s.trace],
+                }
+                for sid, s in self._candidates.items()
+            },
+            "rng": jsonify(self._rng.bit_generator.state),
+        }
+
+    def _decode_lived(self, data) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_str, require_dict, require_keys,
+        )
+        data = require_dict(data, "ddm")
+        require_keys(data, ("candidates", "rng"), "ddm")
+        raw_cands = require_dict(data["candidates"], "ddm.candidates")
+        if len(raw_cands) > self.max_candidates:
+            raise LivedStateError(
+                f"ddm has {len(raw_cands)} candidates; live cap is {self.max_candidates}"
+            )
+        candidates: "OrderedDict[str, CandidateState]" = OrderedDict()
+        for sid, raw in raw_cands.items():
+            sid = as_str(sid, "ddm candidate id")
+            raw = require_dict(raw, f"ddm.candidates[{sid}]")
+            require_keys(raw, (
+                "V", "steps", "windows", "outcomes", "last_outcome", "trace",
+            ), f"ddm.candidates[{sid}]")
+            V = as_float(raw["V"], self.b_reject, self.b_accept, "V")
+            outcomes_in = require_dict(raw["outcomes"], "outcomes")
+            outcomes = Counter()
+            for k, v in outcomes_in.items():
+                as_str(k, "outcome key", max_len=64)
+                outcomes[k] = as_int(v, 0, 10**9, "outcome count")
+            trace_in = raw["trace"]
+            if not isinstance(trace_in, list):
+                raise LivedStateError("ddm trace must be a list")
+            state = CandidateState(
+                V=V,
+                steps=as_int(raw["steps"], 0, 10**9, "steps"),
+                windows=as_int(raw["windows"], 0, 10**9, "windows"),
+                outcomes=outcomes,
+                last_outcome=as_str(raw["last_outcome"], "last_outcome", max_len=64),
+                trace=deque(
+                    (as_float(x, -1e6, 1e6, "trace") for x in trace_in[-64:]),
+                    maxlen=64,
+                ),
+            )
+            candidates[sid] = state
+        rng_state = require_dict(data["rng"], "ddm.rng")
+        return {"candidates": candidates, "rng": rng_state}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._candidates = staged["candidates"]
+        self._rng.bit_generator.state = staged["rng"]

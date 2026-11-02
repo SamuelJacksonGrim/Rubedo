@@ -117,8 +117,10 @@ CONFIG = {
     # Session persistence: save (weights + symbol ecology + emergent values) at
     # end of run, resume them at next boot — the system survives dormancy
     # instead of rebooting as a newborn. Resume skips boot pretraining (the
-    # restored weights already carry it). What does NOT persist yet: crystals,
-    # attractors, trust ledger, bonds, field state (no serializers). OPT-IN:
+    # restored weights already carry it). Lived identity (trust, bonds, crystals,
+    # attractors) is written beside them as lived_state.json. What still does
+    # not persist: field, witness, emotion, stream, lattice, topology.
+    # OPT-IN:
     # boot-checkpoint adoption was shelved by Phase 3 Decision 2; the load-path
     # bug that motivated the caution is fixed and guarded
     # (tests/integration/checkpoint_registry_identity.py), so per-run use is
@@ -335,6 +337,7 @@ def build_engine(config: dict = None):
             "weights": _ckpt_dir / "generator_weights.pt",
             "ecology": _ckpt_dir / "ecology.json",
             "values":  _ckpt_dir / "values.json",
+            "lived":   _ckpt_dir / "lived_state.json",
         }
         if _cand["weights"].exists() and _cand["ecology"].exists():
             _ckpt = _cand
@@ -417,9 +420,12 @@ def build_engine(config: dict = None):
         generator.load_checkpoint(str(_ckpt["weights"]), str(_ckpt["ecology"]))
         if _ckpt["values"].exists():
             value_engine.load_from_disk(str(_ckpt["values"]))
+        if _ckpt["lived"].exists():
+            from agents.lived_state import load_lived_state
+            load_lived_state(str(_ckpt["lived"]), cycle)
         generator.eval()   # loading must not disturb the operating regime
         logger.info("Session resumed: weights + ecology + emergent values "
-                    "restored from previous run.")
+                    "+ lived identity restored from previous run.")
 
     # Six-rhythm selector: centroids belong to the final weights, so build the
     # reader after pretraining AND after any session resume.
@@ -656,10 +662,12 @@ def main():
             str(ckpt_dir / "ecology.json"),
         )
         value_engine.save_to_disk(str(ckpt_dir / "values.json"))
+        from agents.lived_state import save_lived_state
+        save_lived_state(str(ckpt_dir / "lived_state.json"), cycle)
         if cycle.stream_recorder is not None:
             cycle.stream_recorder.dump_jsonl(str(ckpt_dir / "stream_last_run.jsonl"))
-        logger.info("Session saved → %s (weights + ecology + values%s). Not yet "
-                    "persisted: crystals, attractors, trust, bonds, field state.",
+        logger.info("Session saved → %s (weights + ecology + values + lived "
+                    "identity%s). Not persisted: field, witness, emotion, stream.",
                     ckpt_dir,
                     " + stream log" if cycle.stream_recorder is not None else "")
 

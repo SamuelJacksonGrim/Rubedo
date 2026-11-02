@@ -169,7 +169,8 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 - [ ] Emotion calibration audit (`EMOTION_CALIBRATION.md`): six scalars from three inputs; joy ≈ coherence.
 - [x] Rubedo main's allow_rate runs higher than live (0.73–0.76 vs 0.57–0.60). Find out why. → DONE (2026-10-31) — `findings/2026-10-31-why-allow-rate-and-crystal-count.md`: same measurement puts the pretrained main in the live band. The high band is a cold eval boot. No post-fork flag moves it.
 - [ ] The `active_values ≥ 30` composition bar sits at the edge of seed variance.
-- [ ] Bridge checkpoint still omits bonds, trust, crystals, attractors and the stream.
+- [x] Bridge checkpoint still omits bonds, trust, crystals, attractors and the stream. → DONE 2026-11-02 for the four identity stores (`findings/2026-11-02-lived-state-checkpoint.md`); the stream, witness, predictor, attention window and vector space still do not round-trip.
+- [ ] Bridge / session still omit the stream, witness, predictor, attention window and vector space.
 - [ ] Remaining nondeterminism: GPU kernels; the bridge's Qwen calls.
 
 ---

@@ -159,7 +159,7 @@ def test_one_bond_constructor():
                 if "RelationalBond(" in code:
                     hits.append(path.relative_to(REPO).as_posix() + f":{i}")
     check("exactly one RelationalBond( call, in the bond manager",
-          hits == ["agents/relational_bond_manager.py:448"],
+          hits == ["agents/relational_bond_manager.py:479"],
           f"hits={hits}")
 
 

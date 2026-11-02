@@ -309,3 +309,58 @@ class Attractor:
             "max_strength":   round(float(np.max(strengths)), 4),
             "total_activations": sum(c.activation_count for c in self.centers),
         }
+
+    # ------------------------------------------------------------------
+    # Lived-state snapshot (centers only; thresholds stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        return {
+            "centers": [
+                {
+                    "vector": c.vector.astype(np.float32).tolist(),
+                    "origin_tokens": list(c.origin_tokens),
+                    "strength": float(c.strength),
+                    "activation_count": int(c.activation_count),
+                    "created_at": float(c.created_at),
+                    "last_activated": float(c.last_activated),
+                    "usage": float(c.usage),
+                }
+                for c in self.centers
+            ],
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_str_list, as_vector,
+            require_dict, require_keys,
+        )
+        data = require_dict(data, "attractors")
+        require_keys(data, ("centers",), "attractors")
+        raw_list = data["centers"]
+        if not isinstance(raw_list, list):
+            raise LivedStateError("attractors.centers must be a list")
+        if len(raw_list) > self.max_centers:
+            raise LivedStateError(
+                f"{len(raw_list)} attractor centers exceeds live cap {self.max_centers}"
+            )
+        centers = []
+        for i, raw in enumerate(raw_list):
+            raw = require_dict(raw, f"attractors[{i}]")
+            require_keys(raw, (
+                "vector", "origin_tokens", "strength", "activation_count",
+                "created_at", "last_activated", "usage",
+            ), f"attractors[{i}]")
+            centers.append(AttractorCenter(
+                vector=as_vector(raw["vector"], dim, f"attractors[{i}].vector"),
+                origin_tokens=as_str_list(raw["origin_tokens"], f"attractors[{i}].origin_tokens"),
+                strength=as_float(raw["strength"], 0.0, 100.0, "strength"),
+                activation_count=as_int(raw["activation_count"], 0, 10**9, "activation_count"),
+                created_at=as_float(raw["created_at"], 0.0, 1e20, "created_at"),
+                last_activated=as_float(raw["last_activated"], 0.0, 1e20, "last_activated"),
+                usage=as_float(raw["usage"], 0.0, 1e6, "usage"),
+            ))
+        return {"centers": centers}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self.centers = staged["centers"]

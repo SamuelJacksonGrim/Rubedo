@@ -7,7 +7,8 @@ Design (Samuel, 2026-09-16):
   3. PERSIST THE SUBSTRATE'S LIVE STATE across sessions — not just its text notes — so it
      wakes as the same evolving mind and keeps running recursively (the field, subjective step,
      emotion, emerged values, symbol registry are checkpointed on exit and restored on launch).
-     [Bonds have a dump but no loader upstream, so they don't yet round-trip — noted, not faked.]
+     Lived identity (trust, bonds, crystals, attractors) round-trips through
+     agents.lived_state; the temporal stream, witness, and vector space do not.
   4. It can SPEAK UNPROMPTED — when you go quiet it keeps ticking on its own (ruminating on its
      own memory), and a thought surfaces by itself now and then.
 
@@ -56,6 +57,9 @@ logging.disable(logging.CRITICAL)
 sys.path.insert(0, ".")
 
 from tests._common import build_full_stack                          # noqa: E402
+from agents.lived_state import (                                    # noqa: E402
+    decode_from_cycle, apply_staged, snapshot_from_cycle,
+)
 from tools.voice.attention import (                                 # noqa: E402
     AUTONOMOUS_SAVE_WINDOW, apply_recall_floor, classify_regime, cosine,
     drop_ring_dupes, embed_family, far_cos_max, format_embed_input,
@@ -194,7 +198,9 @@ def _digest(card, mem_count, memories, turn):
 
 # ------------------------------------------------------------------ checkpoint
 def save_checkpoint(path, gen, cycle, ve):
-    ck = {"schema": 1, "saved": datetime.datetime.now().isoformat(),
+    # Governance is on the cycle production already built. Reading it here
+    # (not an optional gov= argument) is what makes trust/bonds actually save.
+    ck = {"schema": 2, "saved": datetime.datetime.now().isoformat(),
           "step": int(getattr(cycle, "_step", 0))}
     try:
         ck["field"] = {"field": cycle.field.field.tolist(),
@@ -214,6 +220,7 @@ def save_checkpoint(path, gen, cycle, ve):
         ck["registry"] = gen.registry.to_dict()
     except Exception as e:
         ck["registry_err"] = str(e)
+    ck["lived"] = snapshot_from_cycle(cycle)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(ck, f)
@@ -225,6 +232,12 @@ def load_checkpoint(path, gen, cycle, ve):
     restored = []
     with open(path, encoding="utf-8") as f:
         ck = json.load(f)
+    # Validate identity before touching anything. A malformed lived bundle
+    # must not leave field/emotion applied and trust half-written.
+    lived_staged = None
+    lived = ck.get("lived")
+    if lived is not None:
+        lived_staged = decode_from_cycle(cycle, lived)
     try:
         cycle._step = int(ck.get("step", getattr(cycle, "_step", 0))); restored.append("step")
     except Exception:
@@ -261,6 +274,9 @@ def load_checkpoint(path, gen, cycle, ve):
             restored.append("registry")
     except Exception:
         pass
+    if lived_staged is not None:
+        apply_staged(lived_staged)
+        restored.append("lived")
     return restored, ck.get("saved")
 
 

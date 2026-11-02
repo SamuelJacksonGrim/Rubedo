@@ -393,3 +393,114 @@ class TrustLedger:
 
         decay = self.decay_rate * (1.0 - stability)
         return float(np.clip(source.trust_score - decay, 0.1, 5.0))
+
+    # ------------------------------------------------------------------
+    # Lived-state snapshot (state only; decay_rate and _stability_ref stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        return {
+            "sources": {
+                sid: {
+                    "source_id": s.source_id,
+                    "origin_type": s.origin_type,
+                    "first_seen": float(s.first_seen),
+                    "interaction_count": int(s.interaction_count),
+                    "trust_score": float(s.trust_score),
+                    "last_updated": float(s.last_updated),
+                    "reliability_history": [float(x) for x in s.reliability_history],
+                }
+                for sid, s in self.sources.items()
+            },
+            "symbol_records": {
+                str(sid): {
+                    "stable_id": int(r.stable_id),
+                    "source_id": r.source_id,
+                    "symbol_trust": float(r.symbol_trust),
+                    "field_impact_ema": float(r.field_impact_ema),
+                    "violation_count": int(r.violation_count),
+                    "last_updated": float(r.last_updated),
+                    "coherence_history": [float(x) for x in r.coherence_history],
+                }
+                for sid, r in self.symbol_records.items()
+            },
+        }
+
+    def _decode_lived(self, data) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_str, require_dict, require_keys,
+        )
+        data = require_dict(data, "trust")
+        require_keys(data, ("sources", "symbol_records"), "trust")
+        sources_in = require_dict(data["sources"], "trust.sources")
+        symbols_in = require_dict(data["symbol_records"], "trust.symbol_records")
+
+        sources = {}
+        for sid, raw in sources_in.items():
+            raw = require_dict(raw, f"trust.sources[{sid}]")
+            require_keys(raw, (
+                "source_id", "origin_type", "first_seen", "interaction_count",
+                "trust_score", "last_updated", "reliability_history",
+            ), f"trust.sources[{sid}]")
+            source_id = as_str(raw["source_id"], "source_id")
+            if source_id != sid:
+                raise LivedStateError(
+                    f"trust source key {sid!r} != source_id {source_id!r}"
+                )
+            rec = SourceRecord(
+                source_id=source_id,
+                origin_type=as_str(raw["origin_type"], "origin_type"),
+                first_seen=as_float(raw["first_seen"], 0.0, 1e20, "first_seen"),
+            )
+            rec.interaction_count = as_int(
+                raw["interaction_count"], 0, 10**9, "interaction_count"
+            )
+            rec.trust_score = as_float(raw["trust_score"], 0.0, 5.0, "trust_score")
+            rec.last_updated = as_float(raw["last_updated"], 0.0, 1e20, "last_updated")
+            hist = raw["reliability_history"]
+            if not isinstance(hist, list):
+                raise LivedStateError("reliability_history must be a list")
+            rec.reliability_history = collections.deque(
+                (as_float(x, -1e6, 1e6, "reliability") for x in hist[-64:]),
+                maxlen=64,
+            )
+            sources[source_id] = rec
+
+        symbols = {}
+        for key, raw in symbols_in.items():
+            raw = require_dict(raw, f"trust.symbol_records[{key}]")
+            require_keys(raw, (
+                "stable_id", "source_id", "symbol_trust", "field_impact_ema",
+                "violation_count", "last_updated", "coherence_history",
+            ), f"trust.symbol_records[{key}]")
+            stable_id = as_int(raw["stable_id"], 0, 10**9, "stable_id")
+            if str(stable_id) != str(key):
+                raise LivedStateError(
+                    f"trust symbol key {key!r} != stable_id {stable_id}"
+                )
+            rec = SymbolTrustRecord(
+                stable_id=stable_id,
+                source_id=str(raw["source_id"]),
+                symbol_trust=as_float(raw["symbol_trust"], 0.0, 5.0, "symbol_trust"),
+                field_impact_ema=as_float(
+                    raw["field_impact_ema"], -1e6, 1e6, "field_impact_ema"
+                ),
+                violation_count=as_int(
+                    raw["violation_count"], 0, 10**9, "violation_count"
+                ),
+                last_updated=as_float(raw["last_updated"], 0.0, 1e20, "last_updated"),
+            )
+            hist = raw["coherence_history"]
+            if not isinstance(hist, list):
+                raise LivedStateError("coherence_history must be a list")
+            rec.coherence_history = collections.deque(
+                (as_float(x, -1e6, 1e6, "coherence") for x in hist[-32:]),
+                maxlen=32,
+            )
+            symbols[stable_id] = rec
+
+        return {"sources": sources, "symbol_records": symbols}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self.sources = staged["sources"]
+        self.symbol_records = staged["symbol_records"]
