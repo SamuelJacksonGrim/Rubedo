@@ -391,12 +391,11 @@ class BondFormationAccumulator:
         data = require_dict(data, "ddm")
         require_keys(data, ("candidates", "rng"), "ddm")
         raw_cands = require_dict(data["candidates"], "ddm.candidates")
-        if len(raw_cands) > self.max_candidates:
-            raise LivedStateError(
-                f"ddm has {len(raw_cands)} candidates; live cap is {self.max_candidates}"
-            )
+        items = list(raw_cands.items())
+        if len(items) > self.max_candidates:
+            items = items[-self.max_candidates:]
         candidates: "OrderedDict[str, CandidateState]" = OrderedDict()
-        for sid, raw in raw_cands.items():
+        for sid, raw in items:
             sid = as_str(sid, "ddm candidate id")
             raw = require_dict(raw, f"ddm.candidates[{sid}]")
             require_keys(raw, (

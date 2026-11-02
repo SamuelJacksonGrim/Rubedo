@@ -420,6 +420,57 @@ class ManipulationResistanceEngine:
             "sources_tracked": len(self._trust_history),
         }
 
+    def snapshot(self) -> dict:
+        return {
+            "velocities": [float(x) for x in self._velocities],
+            "gaps": [float(x) for x in self._gaps],
+            "cosines": [float(x) for x in self._cosines],
+            "g_t_divs": [float(x) for x in self._g_t_divs],
+            "trust_history": {
+                sid: [float(x) for x in hist]
+                for sid, hist in self._trust_history.items()
+            },
+        }
+
+    def _decode_lived(self, data) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_str, require_dict, require_keys,
+        )
+        data = require_dict(data, "manipulation")
+        require_keys(data, (
+            "velocities", "gaps", "cosines", "g_t_divs", "trust_history",
+        ), "manipulation")
+        cap = self.window_size
+
+        def _floats(raw, name):
+            if not isinstance(raw, list):
+                raise LivedStateError(f"{name} must be a list")
+            return collections.deque(
+                (as_float(x, -1e6, 1e6, name) for x in raw[-cap:]),
+                maxlen=cap,
+            )
+
+        trust_in = require_dict(data["trust_history"], "manipulation.trust_history")
+        trust = {}
+        for sid, hist in trust_in.items():
+            sid = as_str(sid, "manipulation source")
+            trust[sid] = _floats(hist, f"trust_history[{sid}]")
+        return {
+            "velocities": _floats(data["velocities"], "velocities"),
+            "gaps": _floats(data["gaps"], "gaps"),
+            "cosines": _floats(data["cosines"], "cosines"),
+            "g_t_divs": _floats(data["g_t_divs"], "g_t_divs"),
+            "trust_history": trust,
+        }
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._velocities = staged["velocities"]
+        self._gaps = staged["gaps"]
+        self._cosines = staged["cosines"]
+        self._g_t_divs = staged["g_t_divs"]
+        self._trust_history = staged["trust_history"]
+        self._last_metrics = None
+
 
 def canonical_detector(name: str) -> str:
     """Map a detector label to the name the engine emits now.

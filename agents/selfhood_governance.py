@@ -691,6 +691,57 @@ class SelfhoodGovernance:
             "subscribers":      len(self._subscribers),
         }
 
+    def snapshot_pending(self) -> dict:
+        """Queued manipulation damp and dream flag — consumed by the next arbitrate."""
+        return {
+            "force_dream_flag": bool(self.force_dream_flag),
+            "last_systemic_damp": bool(self._last_systemic_damp),
+            "pending_signals": [
+                {
+                    "detector": s.detector,
+                    "severity": float(s.severity),
+                    "source_id": s.source_id,
+                    "evidence": dict(s.evidence),
+                    "timestamp": float(s.timestamp),
+                }
+                for s in self._pending_signals
+            ],
+        }
+
+    def _decode_lived_pending(self, data) -> dict:
+        from agents.lived_state import (
+            as_bool, as_float, as_str, require_dict, require_keys,
+        )
+        from agents.manipulation_resistance import ManipulationSignal, canonical_detector
+        data = require_dict(data, "pending")
+        require_keys(data, ("force_dream_flag", "last_systemic_damp", "pending_signals"), "pending")
+        raw = data["pending_signals"]
+        if not isinstance(raw, list):
+            from agents.lived_state import LivedStateError
+            raise LivedStateError("pending_signals must be a list")
+        signals = []
+        for i, item in enumerate(raw):
+            item = require_dict(item, f"pending[{i}]")
+            require_keys(item, ("detector", "severity", "source_id", "evidence", "timestamp"), f"pending[{i}]")
+            sid = item["source_id"]
+            signals.append(ManipulationSignal(
+                detector=canonical_detector(as_str(item["detector"], "detector", max_len=64)),
+                severity=as_float(item["severity"], 0.0, 1.0, "severity"),
+                source_id=None if sid is None else as_str(sid, "pending source"),
+                evidence=dict(require_dict(item["evidence"], "evidence")),
+                timestamp=as_float(item["timestamp"], 0.0, 1e20, "timestamp"),
+            ))
+        return {
+            "force_dream_flag": as_bool(data["force_dream_flag"], "force_dream_flag"),
+            "last_systemic_damp": as_bool(data["last_systemic_damp"], "last_systemic_damp"),
+            "pending_signals": signals,
+        }
+
+    def _apply_lived_pending(self, staged: dict) -> None:
+        self.force_dream_flag = staged["force_dream_flag"]
+        self._last_systemic_damp = staged["last_systemic_damp"]
+        self._pending_signals = staged["pending_signals"]
+
     # ------------------------------------------------------------------
     # Internal
     # ------------------------------------------------------------------

@@ -260,3 +260,53 @@ class PredictiveEcho:
             "max_error":  round(float(np.max(errs)), 6),
             "step":       self._step,
         }
+
+    def snapshot(self) -> dict:
+        return {
+            "history": [np.asarray(h, dtype=np.float32).tolist() for h in self._history],
+            "weights": self._weights.astype(np.float64).tolist(),
+            "error_history": [float(x) for x in self._error_history],
+            "step": int(self._step),
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from collections import deque
+        from agents.lived_state import (
+            LivedStateError, as_float, as_int, as_vector, require_dict, require_keys,
+        )
+        data = require_dict(data, "echo")
+        require_keys(data, ("history", "weights", "error_history", "step"), "echo")
+        hist_in = data["history"]
+        if not isinstance(hist_in, list):
+            raise LivedStateError("echo.history must be a list")
+        cap = self._history.maxlen or self.history_len
+        hist = deque(maxlen=cap)
+        for i, h in enumerate(hist_in[-cap:]):
+            hist.append(as_vector(h, dim, f"echo.history[{i}]"))
+        weights = np.asarray(data["weights"], dtype=np.float64)
+        if weights.shape != self._weights.shape:
+            raise LivedStateError(
+                f"echo.weights shape {weights.shape} != live {self._weights.shape}"
+            )
+        if not np.all(np.isfinite(weights)):
+            raise LivedStateError("echo.weights is not finite")
+        err_in = data["error_history"]
+        if not isinstance(err_in, list):
+            raise LivedStateError("echo.error_history must be a list")
+        err_cap = self._error_history.maxlen or self.error_history_len
+        errors = deque(
+            (as_float(x, 0.0, 1e6, "echo.error") for x in err_in[-err_cap:]),
+            maxlen=err_cap,
+        )
+        return {
+            "history": hist,
+            "weights": weights,
+            "error_history": errors,
+            "step": as_int(data["step"], 0, 10**9, "echo.step"),
+        }
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._history = staged["history"]
+        self._weights = staged["weights"]
+        self._error_history = staged["error_history"]
+        self._step = staged["step"]

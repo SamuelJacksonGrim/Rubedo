@@ -220,9 +220,6 @@ class RelationalBondManager:
         # Track for adaptive threshold (Intervention 5)
         self._coherence_window.append(coherence_delta)
 
-        # Track pre-bond interactions
-        self._update_pre_bond(source_id, coherence_delta, satisfaction, is_clean_allow)
-
         # Update existing bond
         if source_id in self._bonds:
             bond = self._bonds[source_id]
@@ -258,7 +255,7 @@ class RelationalBondManager:
             bond.bond_type, bond.bond_confidence = self._infer_bond_type(bond)
 
         else:
-            # Check if pre-bond source now qualifies for bond formation
+            self._update_pre_bond(source_id, coherence_delta, satisfaction, is_clean_allow)
             if self._ddm is not None:
                 self._ddm_step(source_id, decision, metrics.get("field_alignment", 0.0))
             else:
@@ -272,18 +269,20 @@ class RelationalBondManager:
 
     def notify_crystal(self, source_id: str):
         """Called when a crystal forms whose origin_tokens came from source_id."""
-        self._pre_bond_field(source_id, "crystal_count", 1)
         if source_id in self._bonds:
             self._bonds[source_id].crystal_count += 1
             self._bonds[source_id].bond_strength = min(
                 5.0, self._bonds[source_id].bond_strength + 0.1
             )
+        else:
+            self._pre_bond_field(source_id, "crystal_count", 1)
 
     def notify_attractor(self, source_id: str):
         """Called when an attractor center is seeded by this source."""
-        self._pre_bond_field(source_id, "attractor_count", 1)
         if source_id in self._bonds:
             self._bonds[source_id].attractor_count += 1
+        else:
+            self._pre_bond_field(source_id, "attractor_count", 1)
 
     def notify_entity_signal(self, source_id: str, delta: float = 0.1):
         """Called when ENTITY-class symbols are involved from this source."""
@@ -666,15 +665,12 @@ class RelationalBondManager:
                 raw["interaction_count"], 0, 10**9, "interaction_count"
             )
             crystal_count = as_int(raw["crystal_count"], 0, 10**9, "crystal_count")
-            if interaction_count < self.formation_interaction_threshold:
+            # Formation thresholds are live code. A retune must not refuse a
+            # bond that already formed — that was erasing a mind. Planted
+            # bonds are caught by the trust-record check and well-formedness.
+            if interaction_count < 1:
                 raise LivedStateError(
-                    f"bond {source_id!r} interaction_count {interaction_count} "
-                    f"< live formation threshold {self.formation_interaction_threshold}"
-                )
-            if crystal_count < self.formation_crystal_threshold:
-                raise LivedStateError(
-                    f"bond {source_id!r} crystal_count {crystal_count} "
-                    f"< live formation threshold {self.formation_crystal_threshold}"
+                    f"bond {source_id!r} has interaction_count {interaction_count}"
                 )
             bonds[source_id] = self._make_bond(
                 source_id=source_id,

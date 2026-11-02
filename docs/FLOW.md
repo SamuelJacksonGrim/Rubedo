@@ -18,8 +18,8 @@ Process memory unless a checkpoint column says otherwise. Three serializers exis
 |---|---|---|---|
 | `Generator.save_checkpoint` | `main()`, only if `session_persistence` (default **off**) | Encoder `state_dict`. Ecology JSON: active symbols, warm/cold/graveyard, stable-id table, address space, residency sets, compaction counts, `step_counter` | Field, witness, emotion, stream, lattice, topology, watcher, predictor, attention window, dilation, governance signals other than trust/bonds. `_pending_compaction` is not in the JSON. `load_ecology` keeps the **live** Fix 0-B `_profiles` and `binding_leak`; the file does not restore them |
 | `ValueEmergenceEngine.save_to_disk` | Same flag, same moment | Values, archived values, `symbol_to_value`, the engine step, its config | Sacred bits are re-applied on load because the engine asks governance to sanctify again. Nothing else in the table |
-| `agents.lived_state` (`lived_state.json`) | Same flag, same moment; also nested as `lived` in the bridge file | Trust sources and symbol records; bonds, pre-bond counters, DDM candidates and RNG; crystals; attractor centers. In-place into the live objects. Constants stay in code | Witness, stream, predictor, attention, vector space, lattice, topology, manipulation windows, dependency window. A malformed file raises and applies nothing |
-| `tools/voice/repl_qwen.py` `save_checkpoint` | The speech bridge's own scratch file, not `build_engine` | `cycle._step`, field vector, field injection history, `ve.serialize()`, `registry.to_dict()`, emotion via `snapshot()`/`restore()`, `lived` via `snapshot_from_cycle` (reads `cycle.governance`, no extra `gov=` argument) | Witness, stream, topology, lattice, phase history. Registry restore is still `__dict__.update` from `from_dict`, which sets `_profiles` back to `None` and `binding_leak` to `0` — unlike `load_ecology` |
+| `agents.lived_state` (`lived_state.json`) | Same flag, same moment; also nested as `lived` in the bridge file | Trust, bonds, pre-bond, DDM V+RNG, crystals, attractors, witness EMAs+ghosts, emotion, field vector+history, attention window, predictive echo, watcher windows, manipulation windows, dependency window, queued manipulation damp, dreamer/chorus RNG. In-place. Constants stay in code. A refused file is moved to `*.refused-<timestamp>` | Stream, vector space, lattice, topology, field phase history, ethical flood log (wall-clock). Malformed raises and applies nothing |
+| `tools/voice/repl_qwen.py` `save_checkpoint` | The speech bridge's own scratch file, not `build_engine` | `cycle._step`, field, emotion, `ve.serialize()`, `registry.to_dict()` (in-place, live Fix 0-B `_profiles`/`binding_leak` carried like `load_ecology`), `lived` via `snapshot_from_cycle` | Stream, topology, lattice, phase history. A failed load quarantines the file and exits; it does not start a newborn that would overwrite the identity |
 | `StreamRecorder.dump_jsonl` | Same opt-in save, only if a recorder was attached | A log | Not read back into the loop |
 
 `DELETE /reset/field` zeros the field vector and does not clear its history, the ecology, trust, or values.
@@ -28,8 +28,8 @@ Process memory unless a checkpoint column says otherwise. Three serializers exis
 
 | State | Lives | Written by | Read by | Bound | Restart |
 |---|---|---|---|---|---|
-| Raw field | `ResonanceField.field` | `inject`, `decay`, `diffuse`, `reset` | Energy (`\|\|field\|\|`), `resonate` → `tanh(field)`, the coherence gauge | length `dim` | Bridge checkpoint only |
-| Injection history | `field.history` | `inject` (the pre-scale vector) | `internal_coherence` uses the last 32 | deque 256 | Bridge only |
+| Raw field | `ResonanceField.field` | `inject`, `decay`, `diffuse`, `reset` | Energy (`\|\|field\|\|`), `resonate` → `tanh(field)`, the coherence gauge | length `dim` | Bridge file and `lived` (so session persistence has it too) |
+| Injection history | `field.history` | `inject` (the pre-scale vector) | `internal_coherence` uses the last 32 | deque 256 | Bridge file and `lived` |
 | Phase history | `field._phase_history` | `inject` (FFT angles) | `phase_coherence` → dilation | deque 16 | No |
 | Field step | `field._step` | `decay` only | `observe` | unbounded int | No |
 | Rhythm thresholds | `field.thresholds` | `__init__` / YAML `field.rhythm_thresholds` | `current_rhythm` | four names, three cuts | No |
@@ -72,10 +72,10 @@ The registry is owned by `Generator`. `SymbolState` holds `usage`, `recurrence` 
 
 | State | Lives | Written by | Read by | Bound | Restart |
 |---|---|---|---|---|---|
-| Witness short / mid / long / anchor | `Witness` | `update` every step, learning rate `(1 - decay) * clip(coherence², 0.01, 1)` | next step's watcher, explore/rupture mutation, stabilize's `activate_nearest`, dreamer | three vectors + one normalized blend (0.20 / 0.30 / 0.50) | No |
+| Witness short / mid / long / anchor | `Witness` | `update` every step, learning rate `(1 - decay) * clip(coherence², 0.01, 1)` | next step's watcher, explore/rupture mutation, stabilize's `activate_nearest`, dreamer | three vectors + one normalized blend (0.20 / 0.30 / 0.50) | `lived` (plus ghosts; snapshots/candidates/trace unread, unrestored) |
 | Identity trace | `identity_trace` | `update` | no production caller of `recent_trace` | deque 256 | No |
 | Snapshots, crystallization candidates, anchor-entropy deque | `Witness` | `update` when its own thresholds hit | no production reader. **Unwired.** This is not `CrystalStore` | snapshots and candidates are unbounded lists; entropy deque is 32 | No |
-| Six emotion scalars | `EmotionalGradient` | `update` every step, one EMA α = 0.15 | `field_gain`, `mutation_scale`, `field_decay_rate`, `attractor_pull`, boredom override, arousal/valence → dilation, trust's stability input | each scalar in [0, 1] | Bridge file (`snapshot` / `restore`). Session persistence does not |
+| Six emotion scalars | `EmotionalGradient` | `update` every step, one EMA α = 0.15 | `field_gain`, `mutation_scale`, `field_decay_rate`, `attractor_pull`, boredom override, arousal/valence → dilation, trust's stability input | each scalar in [0, 1] | Bridge file and `lived` |
 | `dream_pressure`, `crystal_pressure` | computed, not stored | the two methods | `StepState.dream_pressure` and `modulation_snapshot` only. **Unwired** — no branch | — | — |
 | Predictor weights | `PredictiveEcho._weights` | `update` every step after the second | curiosity / surprise / tension / boredom targets | history 8 × `dim`; error deque 32 | No |
 | Attention window | `RecursiveAttention._history` | `refine` | the next refine | deque 16 | No |

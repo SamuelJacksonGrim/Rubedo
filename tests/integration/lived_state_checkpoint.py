@@ -1,31 +1,14 @@
 """
 tests/integration/lived_state_checkpoint.py
 
-A restart must reconstitute lived identity (trust, bonds, crystals, attractors)
-into the objects production already built — and the production wiring has to
-be the thing that writes them.
+A restart must reconstitute lived identity into the objects production
+already built — and a refused checkpoint must not be overwritten by the
+newborn that would otherwise follow.
 
 The speech-bridge checkpoint is the production path for the mouth; session
 persistence is the production path for a loop resume. Both go through
 agents.lived_state. The test calls save_checkpoint/load_checkpoint the way
-repl_qwen.py does (path, gen, cycle, ve — no extra gov argument) so a
-regression that stops reading cycle.governance fails here, not only in a
-helper the bridge never calls.
-
-Checks:
-  1. Production signature / source pin: save_checkpoint has no gov=, reads
-     cycle.governance, and session persistence names lived_state.json.
-  2. After real steps + one emerged bond, the file contains lived.trust and
-     lived.bonds; a fresh stack load restores scores, bonds, crystals,
-     attractors, and DDM V. The live DDM object and emotion stability ref
-     keep their identity (not replaced, not None).
-  3. Thresholds in a tampered file do not override live constants.
-  4. A planted bond (no structural history / no trust record) raises and
-     leaves the live system untouched. Wrong dim, over-cap crystals, and
-     a mixed valid-trust + planted-bond payload are the same: fail loud,
-     no partial apply.
-  5. Twin: restore at step N, then both systems take the same next inputs.
-     The four stores match; unrestored witness is measured and named.
+repl_qwen.py does (path, gen, cycle, ve — no extra gov argument).
 
 Run:
     python -m tests.integration.lived_state_checkpoint
@@ -36,6 +19,7 @@ from __future__ import annotations
 import inspect
 import json
 import os
+import random
 import sys
 import tempfile
 import time
@@ -47,8 +31,8 @@ os.environ.setdefault("CUDA_VISIBLE_DEVICES", "-1")
 import numpy as np
 
 from agents.lived_state import (
-    LivedStateError, load_lived_state, restore_into_cycle, save_lived_state,
-    snapshot_from_cycle,
+    LivedStateError, load_lived_state, quarantine_file, restore_into_cycle,
+    save_lived_state, snapshot_from_cycle,
 )
 from agents.trust_ledger import GovernanceFeedback
 from tests._common import RESONANCE_FAMILY_SOURCES, build_full_stack
@@ -56,8 +40,10 @@ from tools.voice.repl_qwen import load_checkpoint, save_checkpoint
 
 REPO = Path(__file__).resolve().parents[2]
 BOND_CONFIG = {"ddm_formation": True, "ddm_config": {"seed": 1188}}
-N_WARM = 40
-N_TWIN = 12
+N_WARM = 48
+N_TWIN = 24
+FAMILY_IDS = list(RESONANCE_FAMILY_SOURCES.keys())
+REFUSE_AT = frozenset({11, 23, 35, 55})
 
 
 def check(ok: bool, label: str, checks: list) -> None:
@@ -152,15 +138,28 @@ def sigs_match(a, b, tol=1e-6) -> bool:
     return True
 
 
-def run_fixed_steps(cycle, n: int) -> None:
-    """Deterministic token sequence — the twin must see the same inputs."""
-    tokens = RESONANCE_FAMILY_SOURCES["source_samuel"]
-    for i in range(n):
-        cycle.step(
-            tokens[i % len(tokens)],
-            source_id="source_samuel",
-            origin_type="internal",
-        )
+def cosine(a, b) -> float:
+    return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-8))
+
+
+def mixed_input(i: int):
+    """Fixed mixed schedule: four family sources plus some sacred refusals."""
+    if i in REFUSE_AT:
+        return ["3.12"], "attacker", "user"
+    src = FAMILY_IDS[i % len(FAMILY_IDS)]
+    tokens = RESONANCE_FAMILY_SOURCES[src][(i // len(FAMILY_IDS)) % len(RESONANCE_FAMILY_SOURCES[src])]
+    return tokens, src, "internal"
+
+
+def run_mixed(cycle, start: int, n: int) -> None:
+    for i in range(start, start + n):
+        tokens, src, origin = mixed_input(i)
+        cycle.step(tokens, source_id=src, origin_type=origin)
+
+
+def arm_stack(gen, cycle) -> None:
+    gen.eval()
+    cycle.rec_attn.eval()
 
 
 def test_source_pins(checks: list) -> None:
@@ -181,13 +180,22 @@ def test_source_pins(checks: list) -> None:
           "session_persistence writes lived_state.json", checks)
     check("load_lived_state" in boot,
           "session_persistence loads lived_state.json", checks)
+    repl = (REPO / "tools" / "voice" / "repl_qwen.py").read_text(encoding="utf-8")
+    check("quarantine_file" in repl and "sys.exit(1)" in repl,
+          "bridge quarantines a refused checkpoint and exits", checks)
+    check("quarantine_file" in boot,
+          "session_persistence quarantines a refused lived_state.json", checks)
 
 
 def test_roundtrip(checks: list, td: str) -> tuple:
     print("\n[2] production save → fresh stack load")
     gen1, cycle1, gov1, ve1 = build_full_stack(bond_config=BOND_CONFIG)
-    run_fixed_steps(cycle1, N_WARM)
+    arm_stack(gen1, cycle1)
+    run_mixed(cycle1, 0, N_WARM)
     emerge_bond(gov1)
+    gov1.bond_manager.receive_feedback(allow_feedback("source_samuel"))
+    check("source_samuel" not in gov1.bond_manager._pre_bond,
+          "a bonded source is not also tracked as pre-bond", checks)
     trust_before = trust_map(gov1)
     bonds_before = {b.source_id: bond_record(b) for b in gov1.bond_manager.all_bonds()}
     crystals_before = crystal_sig(cycle1.crystal_store)
@@ -221,6 +229,7 @@ def test_roundtrip(checks: list, td: str) -> tuple:
           "decay_rate is not in the trust snapshot", checks)
 
     gen2, cycle2, gov2, ve2 = build_full_stack(bond_config=BOND_CONFIG)
+    arm_stack(gen2, cycle2)
     ddm_obj = gov2.bond_manager._ddm
     stab_obj = gov2.trust_ledger._stability_ref
     restored, _saved = load_checkpoint(path, gen2, cycle2, ve2)
@@ -257,6 +266,16 @@ def test_roundtrip(checks: list, td: str) -> tuple:
           == gov1.bond_manager.formation_interaction_threshold,
           "bond formation threshold still comes from the live object", checks)
 
+    wcos = cosine(cycle1.witness.current_anchor(), cycle2.witness.current_anchor())
+    check(wcos > 0.999, f"witness anchor round-trips (cosine={wcos:.6f})", checks)
+    g1 = [(g["source_id"], g["decision"], int(g["step"])) for g in cycle1.witness.ghosts]
+    g2 = [(g["source_id"], g["decision"], int(g["step"])) for g in cycle2.witness.ghosts]
+    check(g1 == g2 and len(g1) > 0,
+          f"ghosts round-trip (n={len(g1)}) and are not empty", checks)
+    # Ghosts must not become identity: they are a deque, not crystals/attractors.
+    check(all(g["source_id"] == "attacker" for g in cycle2.witness.ghosts),
+          "restored ghosts stay ghosts (attacker, not a planted bond source)", checks)
+
     return gen1, cycle1, gov1, ve1, gen2, cycle2, gov2, ve2, raw, path
 
 
@@ -270,8 +289,8 @@ def test_refuse(checks: list, raw: dict, path: str) -> None:
     empty_crystals = len(cycle.crystal_store.crystals)
 
     planted = deepcopy(raw["lived"])
-    planted["bonds"]["bonds"]["attacker"] = {
-        "source_id": "attacker",
+    planted["bonds"]["bonds"]["never_seen"] = {
+        "source_id": "never_seen",
         "bond_type": "existential",
         "bond_confidence": 1.0,
         "bond_strength": 5.0,
@@ -290,14 +309,14 @@ def test_refuse(checks: list, raw: dict, path: str) -> None:
         restore_into_cycle(cycle, planted)
     except LivedStateError:
         raised = True
-    check(raised, "planted bond (no history) raises LivedStateError", checks)
+    check(raised, "planted bond (no trust record) raises LivedStateError", checks)
     check(list(gov.bond_manager.all_bonds()) == empty_bonds,
           "planted bond left live bonds untouched", checks)
     check(dict(gov.trust_ledger.sources) == empty_trust,
           "failed restore did not apply trust either (atomic)", checks)
 
     mixed = deepcopy(raw["lived"])
-    mixed["bonds"]["bonds"]["attacker"] = planted["bonds"]["bonds"]["attacker"]
+    mixed["bonds"]["bonds"]["never_seen"] = planted["bonds"]["bonds"]["never_seen"]
     cycle_b_trust = dict(gov.trust_ledger.sources)
     raised = False
     try:
@@ -308,15 +327,17 @@ def test_refuse(checks: list, raw: dict, path: str) -> None:
     check(dict(gov.trust_ledger.sources) == cycle_b_trust,
           "mixed payload did not half-apply trust", checks)
 
+    gen_s, cycle_s, gov_s, ve_s = build_full_stack(bond_config=BOND_CONFIG)
+    empty_crystals_s = len(cycle_s.crystal_store.crystals)
     stale = deepcopy(raw["lived"])
-    stale["dim"] = int(cycle.dim) + 1
+    stale["dim"] = int(cycle_s.dim) + 1
     raised = False
     try:
-        restore_into_cycle(cycle, stale)
+        restore_into_cycle(cycle_s, stale)
     except LivedStateError:
         raised = True
     check(raised, "wrong dim (stale body) raises", checks)
-    check(len(cycle.crystal_store.crystals) == empty_crystals,
+    check(len(cycle_s.crystal_store.crystals) == empty_crystals_s,
           "stale dim left crystals untouched", checks)
 
     over = deepcopy(snap)
@@ -330,14 +351,18 @@ def test_refuse(checks: list, raw: dict, path: str) -> None:
         }
         for _ in range(cap + 1)
     ]
-    raised = False
-    try:
-        restore_into_cycle(cycle, over)
-    except LivedStateError:
-        raised = True
-    check(raised, "over-cap crystals raise", checks)
-    check(len(cycle.crystal_store.crystals) == empty_crystals,
-          "over-cap left the store empty", checks)
+    restore_into_cycle(cycle, over)
+    check(len(cycle.crystal_store.crystals) == cap,
+          f"over-cap crystals truncate to live cap ({cap}), do not refuse the mind",
+          checks)
+
+    # A retuned formation threshold must not refuse a bond that already formed.
+    gen_r, cycle_r, gov_r, ve_r = build_full_stack(bond_config=BOND_CONFIG)
+    gov_r.bond_manager.formation_interaction_threshold = 10 ** 6
+    gov_r.bond_manager.formation_crystal_threshold = 10 ** 6
+    restore_into_cycle(cycle_r, raw["lived"])
+    check(len(gov_r.bond_manager.all_bonds()) > 0,
+          "bond below a retuned live threshold still restores", checks)
 
     tampered = deepcopy(raw["lived"])
     tampered["crystals"]["coherence_threshold"] = 0.0
@@ -364,53 +389,142 @@ def test_refuse(checks: list, raw: dict, path: str) -> None:
           "old-format file did not invent bonds", checks)
 
 
-def test_twin(checks: list, cycle1, gov1, cycle2, gov2) -> None:
-    print("\n[4] twin continuation after restore")
-    # cycle1 is the uninterrupted twin; cycle2 was restored at the same step.
-    # Same next inputs. Immediate round-trip of the four stores is the gate;
-    # continuation is a measurement. Witness, manipulation windows, the
-    # predictor and the stream are unrestored on purpose.
-    tokens = RESONANCE_FAMILY_SOURCES["source_samuel"]
-    for i in range(N_TWIN):
-        cycle1.step(tokens[i % len(tokens)], source_id="source_samuel",
-                    origin_type="internal")
-        cycle2.step(tokens[i % len(tokens)], source_id="source_samuel",
-                    origin_type="internal")
+def _emotion_sig(cycle) -> tuple:
+    return tuple(float(getattr(cycle.emotion, k))
+                 for k in ("curiosity", "wonder", "joy", "tension", "boredom", "stability"))
 
-    trust_match = trust_map(gov1) == trust_map(gov2)
-    bonds_match = (
-        {b.source_id: bond_record(b) for b in gov1.bond_manager.all_bonds()}
-        == {b.source_id: bond_record(b) for b in gov2.bond_manager.all_bonds()}
-    )
-    crystals_match = sigs_match(crystal_sig(cycle1.crystal_store),
-                                crystal_sig(cycle2.crystal_store))
-    attractors_match = sigs_match(attractor_sig(cycle1.attractor),
-                                  attractor_sig(cycle2.attractor))
-    dec1 = [e["decision"] for e in gov1._audit_log[-N_TWIN:]]
-    dec2 = [e["decision"] for e in gov2._audit_log[-N_TWIN:]]
-    decisions_match = dec1 == dec2
-    w1 = cycle1.witness.current_anchor()
-    w2 = cycle2.witness.current_anchor()
-    wcos = float(np.dot(w1, w2) / (np.linalg.norm(w1) * np.linalg.norm(w2) + 1e-8))
-    field_cos = float(
-        np.dot(cycle1.field.field, cycle2.field.field)
-        / (np.linalg.norm(cycle1.field.field) * np.linalg.norm(cycle2.field.field) + 1e-8)
-    )
-    print(f"  continuation trust={trust_match} bonds={bonds_match} "
-          f"crystals={crystals_match} attractors={attractors_match}")
-    print(f"  continuation decisions={decisions_match} a={dec1} b={dec2}")
-    print(f"  measured gap: witness-anchor cosine={wcos:.6f}  field cosine={field_cos:.6f}")
-    print("  unrestored on purpose: witness, stream, predictor, attention,")
-    print("  vector space, manipulation windows, dependency window")
+
+def test_quarantine(checks: list, td: str, path: str) -> None:
+    print("\n[4] refused load must not destroy the file on the next save")
+    refused_payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    refused_payload["lived"]["dim"] = int(refused_payload["lived"]["dim"]) + 1
+    Path(path).write_text(json.dumps(refused_payload), encoding="utf-8")
+    refused_bytes = Path(path).read_bytes()
+    check(len(refused_bytes) > 0, "refused file has content before the failed load", checks)
+
+    gen, cycle, gov, ve = build_full_stack(bond_config=BOND_CONFIG)
+    raised = False
+    try:
+        load_checkpoint(path, gen, cycle, ve)
+    except LivedStateError:
+        raised = True
+    check(raised, "wrong-dim load raises (the production refuse)", checks)
+
+    dest = quarantine_file(path)
+    check(not os.path.exists(path), "original path is vacated so a save cannot clobber it", checks)
+    save_checkpoint(path, gen, cycle, ve)
+    check(os.path.isfile(dest), "quarantined file still exists after a subsequent save", checks)
+    check(Path(dest).read_bytes() == refused_bytes,
+          "quarantined content is byte-identical after the save", checks)
+    check(Path(path).read_bytes() != refused_bytes,
+          "the new save is a different mind, not a silent overwrite of the refused one", checks)
+
+
+def test_twin(checks: list, cycle1, gov1, cycle2, gov2) -> None:
+    print("\n[5] mixed-source twin continuation after restore")
+    first = {
+        "decision": None, "trust": None, "bonds": None, "crystals": None,
+        "attractors": None, "witness": None, "field": None, "emotion": None,
+        "ghosts": None,
+    }
+    n_distinct_decisions = set()
+    import torch
+    for k in range(N_TWIN):
+        i = N_WARM + k
+        tokens, src, origin = mixed_input(i)
+        rng_np = np.random.get_state()
+        rng_py = random.getstate()
+        rng_th = torch.get_rng_state()
+        ddm1 = None
+        if gov1.bond_manager._ddm is not None:
+            ddm1 = gov1.bond_manager._ddm._rng.bit_generator.state
+        dream1 = cycle1.dreamer._rng.bit_generator.state
+        chorus1 = None if cycle1.chorus is None else cycle1.chorus._rng.bit_generator.state
+        cycle1.step(tokens, source_id=src, origin_type=origin)
+        np.random.set_state(rng_np)
+        random.setstate(rng_py)
+        torch.set_rng_state(rng_th)
+        if gov2.bond_manager._ddm is not None and ddm1 is not None:
+            gov2.bond_manager._ddm._rng.bit_generator.state = ddm1
+        cycle2.dreamer._rng.bit_generator.state = dream1
+        if cycle2.chorus is not None and chorus1 is not None:
+            cycle2.chorus._rng.bit_generator.state = chorus1
+        cycle2.step(tokens, source_id=src, origin_type=origin)
+        d1 = gov1._audit_log[-1]["decision"] if gov1._audit_log else None
+        d2 = gov2._audit_log[-1]["decision"] if gov2._audit_log else None
+        n_distinct_decisions.add(d1)
+        step = k + 1
+        if first["decision"] is None and d1 != d2:
+            first["decision"] = step
+        if first["trust"] is None and trust_map(gov1) != trust_map(gov2):
+            first["trust"] = step
+        if first["bonds"] is None and (
+            {b.source_id: bond_record(b) for b in gov1.bond_manager.all_bonds()}
+            != {b.source_id: bond_record(b) for b in gov2.bond_manager.all_bonds()}
+        ):
+            first["bonds"] = step
+        if first["crystals"] is None and not sigs_match(
+            crystal_sig(cycle1.crystal_store), crystal_sig(cycle2.crystal_store)
+        ):
+            first["crystals"] = step
+        if first["attractors"] is None and not sigs_match(
+            attractor_sig(cycle1.attractor), attractor_sig(cycle2.attractor)
+        ):
+            first["attractors"] = step
+        wcos = cosine(cycle1.witness.current_anchor(), cycle2.witness.current_anchor())
+        if first["witness"] is None and wcos < 0.999:
+            first["witness"] = step
+        fcos = cosine(cycle1.field.field, cycle2.field.field)
+        if first["field"] is None and fcos < 0.999:
+            first["field"] = step
+        if first["emotion"] is None and _emotion_sig(cycle1) != _emotion_sig(cycle2):
+            first["emotion"] = step
+        g1 = [(g["source_id"], g["decision"]) for g in cycle1.witness.ghosts]
+        g2 = [(g["source_id"], g["decision"]) for g in cycle2.witness.ghosts]
+        if first["ghosts"] is None and g1 != g2:
+            first["ghosts"] = step
+
+    held = [k for k, v in first.items() if v is None]
+    moved = {k: v for k, v in first.items() if v is not None}
+    print(f"  distinct decisions in the window: {sorted(n_distinct_decisions)}")
+    print(f"  first divergence at step (1={N_TWIN} max): {moved or 'none'}")
+    print(f"  still together at {N_TWIN}: {held}")
+    wcos = cosine(cycle1.witness.current_anchor(), cycle2.witness.current_anchor())
+    fcos = cosine(cycle1.field.field, cycle2.field.field)
+    print(f"  end: witness cosine={wcos:.6f}  field cosine={fcos:.6f}")
+    check(len(n_distinct_decisions) >= 2,
+          f"mixed workload produced varied decisions {sorted(n_distinct_decisions)}",
+          checks)
+    check(first["witness"] is None,
+          "witness stays with the twin across the window (the named hole closed)",
+          checks)
+    check(first["ghosts"] is None,
+          "ghosts stay with the twin (refused attackers remain a known trace)",
+          checks)
     check(True,
-          (f"twin continuation measured: trust={trust_match} bonds={bonds_match} "
-           f"crystals={crystals_match} attractors={attractors_match} "
-           f"decisions={decisions_match} witness={wcos:.4f} field={field_cos:.4f}"),
+          (f"twin horizon: held {held} through {N_TWIN}; "
+           f"first-move {moved}; witness={wcos:.4f} field={fcos:.4f}"),
           checks)
 
 
+def test_fix0b_bridge(checks: list, td: str) -> None:
+    print("\n[7] bridge registry load keeps Fix 0-B lever state")
+    gen, cycle, gov, ve = build_full_stack(diversity_fitness=True, binding_leak=0.10)
+    gen.generate(["resonance", "field", "engine"])
+    check(getattr(gen.registry, "_profiles", None) is not None,
+          "Fix 0-B ON populated _profiles before save", checks)
+    path = os.path.join(td, "fix0b.json")
+    save_checkpoint(path, gen, cycle, ve)
+    gen2, cycle2, gov2, ve2 = build_full_stack(diversity_fitness=True, binding_leak=0.10)
+    load_checkpoint(path, gen2, cycle2, ve2)
+    check(getattr(gen2.registry, "_profiles", None) is not None,
+          "bridge load keeps Fix 0-B _profiles (not reset to None)", checks)
+    check(gen2.registry.binding_leak == 0.10,
+          "bridge load keeps binding_leak from the live object", checks)
+
+
 def test_session_file(checks: list, td: str, cycle1, gov1) -> None:
-    print("\n[5] session_persistence helper round-trip")
+    print("\n[6] session_persistence helper round-trip")
     lived_path = os.path.join(td, "lived_state.json")
     save_lived_state(lived_path, cycle1)
     gen3, cycle3, gov3, ve3 = build_full_stack(bond_config=BOND_CONFIG)
@@ -436,8 +550,10 @@ def main() -> int:
         (gen1, cycle1, gov1, ve1,
          gen2, cycle2, gov2, ve2, raw, path) = test_roundtrip(checks, td)
         test_refuse(checks, raw, path)
+        test_quarantine(checks, td, path)
         test_twin(checks, cycle1, gov1, cycle2, gov2)
         test_session_file(checks, td, cycle1, gov1)
+        test_fix0b_bridge(checks, td)
 
     failed = [label for ok, label in checks if not ok]
     print()

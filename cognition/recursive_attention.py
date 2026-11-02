@@ -174,6 +174,28 @@ class RecursiveAttention(nn.Module):
 
         return result.astype(np.float32)
 
+    def snapshot(self) -> dict:
+        return {
+            "history": [np.asarray(h, dtype=np.float32).tolist() for h in self._history],
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from collections import deque
+        from agents.lived_state import LivedStateError, as_vector, require_dict, require_keys
+        data = require_dict(data, "attention")
+        require_keys(data, ("history",), "attention")
+        hist_in = data["history"]
+        if not isinstance(hist_in, list):
+            raise LivedStateError("attention.history must be a list")
+        cap = self._history.maxlen or self.history_len
+        hist = deque(maxlen=cap)
+        for i, h in enumerate(hist_in[-cap:]):
+            hist.append(as_vector(h, dim, f"attention.history[{i}]"))
+        return {"history": hist}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._history = staged["history"]
+
     def clear_history(self):
         self._history.clear()
 

@@ -339,6 +339,15 @@ def build_engine(config: dict = None):
             "values":  _ckpt_dir / "values.json",
             "lived":   _ckpt_dir / "lived_state.json",
         }
+        refused_lived = sorted(_ckpt_dir.glob("lived_state.json.refused-*"))
+        if refused_lived and not _cand["lived"].exists():
+            from agents.lived_state import LivedStateError
+            raise LivedStateError(
+                "a previous boot refused the lived identity at "
+                f"{refused_lived[-1].name}; not resuming ecology as a newborn. "
+                "Restore that file to lived_state.json, or start with an empty "
+                "checkpoint_dir."
+            )
         if _cand["weights"].exists() and _cand["ecology"].exists():
             _ckpt = _cand
             logger.info("Session checkpoint found in %s — will resume (boot "
@@ -421,8 +430,12 @@ def build_engine(config: dict = None):
         if _ckpt["values"].exists():
             value_engine.load_from_disk(str(_ckpt["values"]))
         if _ckpt["lived"].exists():
-            from agents.lived_state import load_lived_state
-            load_lived_state(str(_ckpt["lived"]), cycle)
+            from agents.lived_state import load_lived_state, quarantine_file
+            try:
+                load_lived_state(str(_ckpt["lived"]), cycle)
+            except Exception:
+                quarantine_file(str(_ckpt["lived"]))
+                raise
         generator.eval()   # loading must not disturb the operating regime
         logger.info("Session resumed: weights + ecology + emergent values "
                     "+ lived identity restored from previous run.")
@@ -667,7 +680,7 @@ def main():
         if cycle.stream_recorder is not None:
             cycle.stream_recorder.dump_jsonl(str(ckpt_dir / "stream_last_run.jsonl"))
         logger.info("Session saved → %s (weights + ecology + values + lived "
-                    "identity%s). Not persisted: field, witness, emotion, stream.",
+                    "identity%s). Not persisted: stream, attention, predictor.",
                     ckpt_dir,
                     " + stream log" if cycle.stream_recorder is not None else "")
 

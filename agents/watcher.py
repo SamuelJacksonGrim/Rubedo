@@ -404,3 +404,45 @@ class Watcher:
         self._history.append(vec.copy())
         self._rolling_sum   += vec
         self._rolling_count += 1
+
+    def snapshot(self) -> dict:
+        return {
+            "history": [np.asarray(h, dtype=np.float32).tolist() for h in self._history],
+            "velocities": [np.asarray(v, dtype=np.float32).tolist() for v in self._velocities],
+            "entropy_history": [float(x) for x in self._entropy_history],
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_float, as_vector, require_dict, require_keys,
+        )
+        data = require_dict(data, "watcher")
+        require_keys(data, ("history", "velocities", "entropy_history"), "watcher")
+        cap = self._history.maxlen or 16
+        hist_in = data["history"]
+        vel_in = data["velocities"]
+        ent_in = data["entropy_history"]
+        if not isinstance(hist_in, list) or not isinstance(vel_in, list) or not isinstance(ent_in, list):
+            raise LivedStateError("watcher histories must be lists")
+        history = collections.deque(maxlen=cap)
+        for i, h in enumerate(hist_in[-cap:]):
+            history.append(as_vector(h, dim, f"watcher.history[{i}]").astype(float))
+        velocities = collections.deque(maxlen=cap)
+        for i, v in enumerate(vel_in[-cap:]):
+            velocities.append(as_vector(v, dim, f"watcher.velocities[{i}]").astype(float))
+        entropy = collections.deque(
+            (as_float(x, -1e6, 1e6, "watcher.entropy") for x in ent_in[-cap:]),
+            maxlen=cap,
+        )
+        return {"history": history, "velocities": velocities, "entropy": entropy}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._history = staged["history"]
+        self._velocities = staged["velocities"]
+        self._entropy_history = staged["entropy"]
+        if self._history:
+            self._rolling_sum = np.sum(list(self._history), axis=0).astype(float)
+            self._rolling_count = len(self._history)
+        else:
+            self._rolling_sum = np.zeros(self.dim)
+            self._rolling_count = 0

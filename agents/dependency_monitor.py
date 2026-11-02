@@ -106,6 +106,36 @@ class DependencyMonitor:
         if feedback.decision in ("allow", "allow_weakened", "monitor"):
             self._window.append(feedback.source_id)
 
+    def snapshot(self) -> dict:
+        return {
+            "window": [str(s) for s in self._window],
+            "attractor_sources": {str(k): int(v) for k, v in self._attractor_sources.items()},
+        }
+
+    def _decode_lived(self, data) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_int, as_str, require_dict, require_keys,
+        )
+        data = require_dict(data, "dependency")
+        require_keys(data, ("window", "attractor_sources"), "dependency")
+        raw_w = data["window"]
+        if not isinstance(raw_w, list):
+            raise LivedStateError("dependency.window must be a list")
+        cap = self.window_size
+        window = collections.deque(
+            (as_str(s, "dependency source") for s in raw_w[-cap:]),
+            maxlen=cap,
+        )
+        raw_a = require_dict(data["attractor_sources"], "dependency.attractor_sources")
+        attractors = collections.defaultdict(int)
+        for sid, n in raw_a.items():
+            attractors[as_str(sid, "attractor source")] = as_int(n, 0, 10**9, "attractor count")
+        return {"window": window, "attractor_sources": attractors}
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._window = staged["window"]
+        self._attractor_sources = staged["attractor_sources"]
+
     def record_attractor(self, source_id: str):
         """
         Called by AutonomousCycle when an attractor center is formed.

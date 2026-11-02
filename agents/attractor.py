@@ -340,10 +340,6 @@ class Attractor:
         raw_list = data["centers"]
         if not isinstance(raw_list, list):
             raise LivedStateError("attractors.centers must be a list")
-        if len(raw_list) > self.max_centers:
-            raise LivedStateError(
-                f"{len(raw_list)} attractor centers exceeds live cap {self.max_centers}"
-            )
         centers = []
         for i, raw in enumerate(raw_list):
             raw = require_dict(raw, f"attractors[{i}]")
@@ -360,6 +356,9 @@ class Attractor:
                 last_activated=as_float(raw["last_activated"], 0.0, 1e20, "last_activated"),
                 usage=as_float(raw["usage"], 0.0, 1e6, "usage"),
             ))
+        if len(centers) > self.max_centers:
+            centers.sort(key=lambda c: c.strength * c.usage, reverse=True)
+            centers = centers[: self.max_centers]
         return {"centers": centers}
 
     def _apply_lived(self, staged: dict) -> None:

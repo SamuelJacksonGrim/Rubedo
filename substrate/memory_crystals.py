@@ -372,10 +372,6 @@ class CrystalStore:
         raw_list = data["crystals"]
         if not isinstance(raw_list, list):
             raise LivedStateError("crystals.crystals must be a list")
-        if len(raw_list) > self.max_crystals:
-            raise LivedStateError(
-                f"{len(raw_list)} crystals exceeds live cap {self.max_crystals}"
-            )
         crystals = []
         for i, raw in enumerate(raw_list):
             raw = require_dict(raw, f"crystals[{i}]")
@@ -393,6 +389,9 @@ class CrystalStore:
                 last_activated=as_float(raw["last_activated"], 0.0, 1e20, "last_activated"),
                 usage=as_float(raw["usage"], 0.0, 1e6, "usage"),
             ))
+        if len(crystals) > self.max_crystals:
+            crystals.sort(key=lambda c: c.stability * c.usage, reverse=True)
+            crystals = crystals[: self.max_crystals]
         return {"crystals": crystals}
 
     def _apply_lived(self, staged: dict) -> None:

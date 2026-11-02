@@ -37,40 +37,59 @@ Hermes's isolated draft (`rubedo-hermes` `1dcef7e`) added `gov=None` and a passi
 | Trust scores, bonds, crystals (n=0 at 40 steps), attractors (n=3) round-trip | hold |
 | Live DDM object and `_stability_ref is cycle.emotion` survive load | hold |
 | Tampered `coherence_threshold=0`, `formation_interaction_threshold=1`, `decay_rate=0` do not override code (still 0.75 / 20 / 0.003) | hold |
-| Planted bond (`interaction_count=1`, `crystal_count=0`, no trust record) raises `LivedStateError`; mixed valid-trust + planted-bond applies neither | hold |
-| Wrong dim, over-cap crystals (`max_crystals+1`) raise; live store stays empty | hold |
-| Old-format bridge file (schema 1, no `lived`) skips identity, does not invent bonds | hold |
+| Planted bond (source with no trust record) raises `LivedStateError`; mixed valid-trust + planted-bond applies neither | hold |
+| Wrong dim raises; live store untouched | hold |
+| Over-cap crystals truncate to the live cap (a retune must not refuse the mind) | hold |
+| A bond below a retuned live formation threshold still restores | hold |
+| Old-format bridge file (no `lived`) skips identity, does not invent bonds | hold |
+| Refused load + subsequent save: original bytes survive at `*.refused-<timestamp>` | hold |
+| Bridge registry load keeps Fix 0-B `_profiles` and `binding_leak` | hold |
+| A bonded source is not also tracked as pre-bond | hold |
 
-**Twin** (restore at step 40 into a fresh stack, then both take the same 12 `source_samuel` inputs):
+**Twin, first version** (one source, 12 steps): witness cosine 0.000, field 0.998, all 12 decisions `reject` (flood). Named the witness hole. Superseded by the mixed twin below.
 
-| | |
-|---|---|
-| trust | match |
-| decisions | match (12/12 `reject` — flood from repeating one source, both twins) |
-| crystals | match (still 0) |
-| bonds | diverge (attractor_count / type signals) |
-| attractor centers | diverge |
-| field cosine | 0.998 |
-| witness-anchor cosine | 0.000 |
+**Twin, mixed** (48 warm steps across four family sources + 3 sacred refusals, restore, then 24 more mixed steps with RNG locked per step). Decisions in the window: `allow_weakened` and `sacred_shield`.
 
-Witness starts at zero on the restored twin. Field was in the bridge file, so it stays close. Attractors keep moving from an unrestored witness / attention / predictor, and the bond's attractor_count follows. That is the continuation gap, not a round-trip miss.
+| | first divergence (step of 24) | end |
+|---|---|---|
+| decisions | held | held 24/24 |
+| witness-anchor cosine | held | 0.99998 |
+| field cosine | held | 0.99987 |
+| ghosts | held | held |
+| trust / bonds / emotion / attractors | 1 | drifted |
+| crystals | 2 | drifted |
+
+Witness was the named hole and it closed. Queued `_pending_signals` was the next: without it, decisions split at step 1 even with restored windows. With it, the gate stays with the twin for the whole window.
 
 ## Interpretation
-Restore is reconstitution of already-lived state into the objects production already built. The four stores, pre-bond counters, and DDM V+RNG are state. Thresholds, learning rates, and the DDM physics constants are not. Bonds go through the one `_make_bond` constructor (`held_contracts` still pins a single `RelationalBond(`), and only after the live formation thresholds and a trust record exist — a checkpoint cannot plant a bond that never earned one.
+Restore is reconstitution of already-lived state into the objects production already built. Formation thresholds are live code: a retune must not refuse a bond that already formed. Planted bonds are caught by the trust-record check and well-formedness, not by re-applying the formation gate. Caps that can be retuned truncate to the live bound (deque semantics / weakest eviction) instead of refusing the mind.
 
-A checkpoint is an input to identity. Malformed, stale-dim, over-cap, or planted payloads fail loud and leave the live system untouched. Restore is not a write through `arbitrate()`, so the sacred shield does not re-run over `origin_tokens`; a lived crystal that mentions `3.12` is memory, not a new refused input. A writable checkpoint is as trusted as `ecology.json`. Signing is not in this change.
+A refused checkpoint is an identity, not trash. The bridge quarantines it (`*.refused-<timestamp>`) and exits; it does not start a newborn that would overwrite the file on autosave. Session persistence does the same to `lived_state.json`, and a later boot that sees refused siblings without a current lived file refuses to resume ecology as if it were that mind.
 
-What this does **not** restore: witness (short/mid/long/anchor, ghosts), temporal stream, predictive echo, attention window, vector space, lattice, topology, manipulation windows, dependency window. Session persistence still does not save the field or emotion (the bridge file does). Vector-space and witness-list caps stay a separate contract-audit item; this path refuses over-cap crystals and attractors and does not start restoring those stores.
+Ghosts round-trip as a deque. Nothing reads them into crystals, attractors, or the field. They stay a known trace of refused attackers.
+
+What this still does **not** restore, and what the mixed twin says about them:
+
+| unrestored | measured effect on this twin |
+|---|---|
+| stream, vector space, lattice, topology | not isolated; candidates for the step-1 trust/emotion/attractor drift |
+| field `_phase_history`, `_step` | dilation only (a documented sink); left |
+| ethical flood log | wall-clock 60s window; a restart hours later would expire it anyway; left |
+| witness snapshots, crystallization candidates, identity_trace | unread in production; left |
+
+Exact equality of trust/bonds/emotion/attractors after restore is not claimed. Decisions, witness, field, and ghosts are.
 
 ## Threats / confounds
-- Runs: 1 on the gate (42 checks). Fail-before was a direct `save_checkpoint` on the unfixed function, not a full suite replay of Hermes's 500-step helper.
-- dim 64, 40 warm steps, one forced DDM bond via `notify_crystal` + allow feedback so the test does not depend on crystals forming. Attractors formed on their own (3). Crystals did not.
-- Twin inputs were one source repeating — both twins hit `reject`. That equalizes the decision row and is not a claim about a mixed workload.
-- `formed_at` / `last_reinforced` use `determinism.now()` (wall clock outside `deterministic()`). They round-trip as numbers; they are not why the twin's bonds diverged.
+- Runs: gate at 60 checks. Fail-before for the overwrite hole: unfixed `load_checkpoint` raise → catch → `save_checkpoint` on the same path replaced the bytes.
+- dim 64, 48 mixed warm steps, one forced DDM bond, 3 sacred refusals (ghosts n=3, crystals n=5, attractors n=8).
+- Twin steps A then B with numpy/python/torch/DDM/dreamer/chorus RNG cloned per step. Without that clone the twins were drawing different noise and the decision row was meaningless.
+- `rec_attn.eval()` in the test; production may leave attention in train mode (dropout).
 - Hermes's draft was read with `git -C` and not merged.
 
 ## Open / next
-- [ ] Witness, stream, predictor, attention, vector space, lattice, topology on a restart. The twin names the witness hole (cosine 0) as the one that moves attractors.
-- [ ] Field and emotion on the session-persistence path (already in the bridge file).
-- [ ] A mixed-source twin whose decisions are not a flood of `reject`.
+- [x] Witness + ghosts. → DONE 2026-11-02, mixed twin witness cosine 0.99998
+- [x] Mixed-source twin with varied decisions. → DONE, `allow_weakened` / `sacred_shield`, decisions hold 24/24
+- [x] Field and emotion on the session-persistence path. → DONE, they ride in `lived`
+- [x] Refused load must not destroy the file. → DONE, quarantine + exit
+- [ ] Stream, vector space, lattice, topology — candidates for the remaining step-1 trust/emotion/attractor drift. Not restored: not shown to move the gate.
 - [ ] Whether a checkpoint should be signed, or whether "who can write `lived_state.json`" is the whole trust boundary.

@@ -452,16 +452,16 @@ That vector-conditioned decode is still absent. `TokenDecoder` remains
 the readout for the dream channel, `listen.py`, and `DreamSession`.
 
 What does get persisted (`save_checkpoint` in the bridge's scratch
-directory): step counter, field vector and field history, value-engine
-serialize, registry via in-place `__dict__` update, emotion via
-`EmotionalGradient.snapshot()` / `restore()`, and lived identity (trust,
-bonds, crystals, attractors) via `agents.lived_state.snapshot_from_cycle`,
-which reads `cycle.governance` so a call site cannot forget to pass it.
-The temporal stream, witness, predictor, attention window, vector space
-and lattice are not in that file. Session persistence writes the same
-lived bundle as `lived_state.json` beside weights, ecology and values.
-A malformed or planted lived payload raises and leaves the live objects
-untouched. Thresholds stay in code. Finding
+directory): step counter, field, emotion, values, registry (in-place, live
+Fix 0-B lever state carried), and the lived bundle via
+`agents.lived_state.snapshot_from_cycle` (trust, bonds, crystals, attractors,
+witness EMAs and ghosts, attention, echo, watcher, manipulation/dependency
+windows, queued damp). `cycle.governance` is read so a call site cannot
+forget it. A refused file is moved to `*.refused-<timestamp>` and the
+process exits; it does not start a newborn that would overwrite the identity
+on the next save. Stream, vector space, lattice, topology, and field phase
+history are not in that file. Session persistence writes the same lived
+bundle as `lived_state.json`. Finding
 `docs/findings/2026-11-02-lived-state-checkpoint.md`.
 
 ### What Qwen touches, and what it does not

@@ -267,6 +267,96 @@ class Witness:
         })
 
     # ------------------------------------------------------------------
+    # Lived-state snapshot (identity EMAs + ghosts; decay rates stay live)
+    # ------------------------------------------------------------------
+
+    def snapshot(self) -> dict:
+        return {
+            "short": self._short.astype(np.float32).tolist(),
+            "mid": self._mid.astype(np.float32).tolist(),
+            "long": self._long.astype(np.float32).tolist(),
+            "anchor": self._anchor.astype(np.float32).tolist(),
+            "prev_anchor": self._prev_anchor.astype(np.float32).tolist(),
+            "prev_velocity": self._prev_velocity.astype(np.float32).tolist(),
+            "entropy": [float(x) for x in self._anchor_entropy_history],
+            "step": int(self._step),
+            "initialized": bool(self._initialized),
+            "ghosts": [
+                {
+                    "vec": np.asarray(g["vec"], dtype=np.float32).tolist(),
+                    "source_id": str(g["source_id"]),
+                    "decision": str(g["decision"]),
+                    "coherence": float(g["coherence"]),
+                    "step": int(g["step"]),
+                    "timestamp": float(g["timestamp"]),
+                }
+                for g in self.ghosts
+            ],
+        }
+
+    def _decode_lived(self, data, dim: int) -> dict:
+        from agents.lived_state import (
+            LivedStateError, as_bool, as_float, as_int, as_str, as_vector,
+            require_dict, require_keys,
+        )
+        data = require_dict(data, "witness")
+        require_keys(data, (
+            "short", "mid", "long", "anchor", "prev_anchor", "prev_velocity",
+            "entropy", "step", "initialized", "ghosts",
+        ), "witness")
+        entropy_in = data["entropy"]
+        if not isinstance(entropy_in, list):
+            raise LivedStateError("witness.entropy must be a list")
+        ghosts_in = data["ghosts"]
+        if not isinstance(ghosts_in, list):
+            raise LivedStateError("witness.ghosts must be a list")
+        ghost_cap = self.ghosts.maxlen or 256
+        # Cap retune: keep the most recent ghosts, do not refuse the mind.
+        ghosts_in = ghosts_in[-ghost_cap:]
+        ghosts = collections.deque(maxlen=ghost_cap)
+        for i, raw in enumerate(ghosts_in):
+            raw = require_dict(raw, f"witness.ghosts[{i}]")
+            require_keys(raw, (
+                "vec", "source_id", "decision", "coherence", "step", "timestamp",
+            ), f"witness.ghosts[{i}]")
+            ghosts.append({
+                "vec": as_vector(raw["vec"], dim, f"ghosts[{i}].vec").astype(float),
+                "source_id": as_str(raw["source_id"], "ghost source_id"),
+                "decision": as_str(raw["decision"], "ghost decision", max_len=64),
+                "coherence": as_float(raw["coherence"], -1e6, 1e6, "ghost coherence"),
+                "step": as_int(raw["step"], 0, 10**9, "ghost step"),
+                "timestamp": as_float(raw["timestamp"], 0.0, 1e20, "ghost timestamp"),
+            })
+        entropy_cap = self._anchor_entropy_history.maxlen or 32
+        return {
+            "short": as_vector(data["short"], dim, "witness.short"),
+            "mid": as_vector(data["mid"], dim, "witness.mid"),
+            "long": as_vector(data["long"], dim, "witness.long"),
+            "anchor": as_vector(data["anchor"], dim, "witness.anchor"),
+            "prev_anchor": as_vector(data["prev_anchor"], dim, "witness.prev_anchor"),
+            "prev_velocity": as_vector(data["prev_velocity"], dim, "witness.prev_velocity"),
+            "entropy": collections.deque(
+                (as_float(x, -1e6, 1e6, "entropy") for x in entropy_in[-entropy_cap:]),
+                maxlen=entropy_cap,
+            ),
+            "step": as_int(data["step"], 0, 10**9, "witness.step"),
+            "initialized": as_bool(data["initialized"], "witness.initialized"),
+            "ghosts": ghosts,
+        }
+
+    def _apply_lived(self, staged: dict) -> None:
+        self._short = staged["short"].astype(float, copy=True)
+        self._mid = staged["mid"].astype(float, copy=True)
+        self._long = staged["long"].astype(float, copy=True)
+        self._anchor = staged["anchor"].astype(float, copy=True)
+        self._prev_anchor = staged["prev_anchor"].astype(float, copy=True)
+        self._prev_velocity = staged["prev_velocity"].astype(float, copy=True)
+        self._anchor_entropy_history = staged["entropy"]
+        self._step = staged["step"]
+        self._initialized = staged["initialized"]
+        self.ghosts = staged["ghosts"]
+
+    # ------------------------------------------------------------------
     # Core update
     # ------------------------------------------------------------------
 

@@ -1,13 +1,15 @@
 """
-Lived identity state for a restart: trust, bonds (and DDM), crystals, attractors.
+Lived identity state for a restart: trust, bonds, crystals, attractors,
+witness, emotion, field, and the windows that move the next decision.
 
 A checkpoint is an input to identity. Restore is reconstitution of already-lived
-state into objects production already built — not a public constructor, and not
-a path that lets a file override thresholds or learning rates. Malformed or
-stale payloads raise LivedStateError and leave the live objects untouched.
+state into objects production already built. Malformed or stale payloads raise
+LivedStateError and leave the live objects untouched. A refused file is moved
+aside (`quarantine_file`) so a later save cannot overwrite the identity it held.
 
 Callers: the speech-bridge checkpoint and session_persistence. Constants stay
-in code; only accumulated state is in the file.
+in code; only accumulated state is in the file. Formation thresholds are not
+re-applied on restore — a retune must not refuse a bond that already formed.
 """
 
 from __future__ import annotations
@@ -19,10 +21,11 @@ import os
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+from substrate import determinism
 
 logger = logging.getLogger(__name__)
 
-SCHEMA = 1
+SCHEMA = 2
 ORIGIN_TOKEN_LIMIT = 256
 ORIGIN_TOKEN_CHARS = 256
 
@@ -74,6 +77,12 @@ def as_float(value: Any, lo: float, hi: float, name: str) -> float:
     if not math.isfinite(x) or x < lo or x > hi:
         raise LivedStateError(f"{name} out of range [{lo}, {hi}]: {x}")
     return x
+
+
+def as_bool(value: Any, name: str) -> bool:
+    if not isinstance(value, bool):
+        raise LivedStateError(f"{name} must be a bool, got {type(value).__name__}")
+    return value
 
 
 def as_str(value: Any, name: str, max_len: int = 256) -> str:
@@ -133,6 +142,27 @@ def jsonify(obj: Any) -> Any:
 # Cycle-level bundle
 # ---------------------------------------------------------------------------
 
+def quarantine_file(path: str) -> str:
+    """Move `path` aside so a later save cannot overwrite the refused identity.
+
+    Returns the quarantine path. Never deletes. If the destination exists,
+    a counter is appended. This is an operator-facing filename, not model time.
+    """
+    abs_path = os.path.abspath(path)
+    if not os.path.isfile(abs_path):
+        raise FileNotFoundError(abs_path)
+    stamp = f"{determinism.now():.0f}"
+    dest = abs_path + f".refused-{stamp}"
+    n = 0
+    candidate = dest
+    while os.path.exists(candidate):
+        n += 1
+        candidate = f"{dest}-{n}"
+    os.replace(abs_path, candidate)
+    logger.warning("Refused checkpoint preserved at %s", candidate)
+    return candidate
+
+
 def snapshot_from_cycle(cycle) -> dict:
     """State-only bundle. Thresholds, learning rates, and object identity stay live."""
     gov = cycle.governance
@@ -143,6 +173,20 @@ def snapshot_from_cycle(cycle) -> dict:
         "bonds": None if gov is None else gov.bond_manager.snapshot(),
         "crystals": cycle.crystal_store.snapshot(),
         "attractors": cycle.attractor.snapshot(),
+        "witness": cycle.witness.snapshot(),
+        "emotion": cycle.emotion.snapshot(),
+        "field": {
+            "field": cycle.field.field.tolist(),
+            "history": [h.tolist() for h in cycle.field.history],
+        },
+        "attention": cycle.rec_attn.snapshot(),
+        "echo": cycle.predictor.snapshot(),
+        "watcher": cycle.watcher.snapshot(),
+        "manipulation": None if gov is None else gov.resistance.snapshot(),
+        "dependency": None if gov is None else gov.dependency_monitor.snapshot(),
+        "pending": None if gov is None else gov.snapshot_pending(),
+        "dreamer_rng": jsonify(cycle.dreamer._rng.bit_generator.state),
+        "chorus_rng": None if cycle.chorus is None else jsonify(cycle.chorus._rng.bit_generator.state),
     }
 
 
@@ -151,7 +195,7 @@ def decode_from_cycle(cycle, data: Any) -> dict:
     data = require_dict(data, "lived")
     require_keys(data, ("schema", "dim", "crystals", "attractors"), "lived")
     schema = as_int(data["schema"], 1, SCHEMA, "lived.schema")
-    if schema != SCHEMA:
+    if schema < 1 or schema > SCHEMA:
         raise LivedStateError(f"unknown lived-state schema {schema}")
     dim = as_int(data["dim"], 1, 1_000_000, "lived.dim")
     live_dim = int(cycle.dim)
@@ -170,7 +214,84 @@ def decode_from_cycle(cycle, data: Any) -> dict:
         "trust": None,
         "bond_manager": None,
         "bonds": None,
+        "witness": cycle.witness,
+        "witness_state": None,
+        "emotion": cycle.emotion,
+        "emotion_state": None,
+        "field_obj": cycle.field,
+        "field_state": None,
     }
+    if data.get("witness") is not None:
+        staged["witness_state"] = cycle.witness._decode_lived(
+            data["witness"], live_dim
+        )
+    if data.get("emotion") is not None:
+        em = require_dict(data["emotion"], "emotion")
+        # EmotionalGradient.restore is a no-op (False) on old arousal/valence
+        # only dicts. That must fail loud here, not skip.
+        if not all(k in em for k in (
+            "curiosity", "wonder", "joy", "tension", "boredom", "stability",
+        )):
+            raise LivedStateError("emotion snapshot missing the six scalars")
+        staged["emotion_state"] = em
+    if data.get("field") is not None:
+        fld = require_dict(data["field"], "field")
+        require_keys(fld, ("field", "history"), "field")
+        vec = as_vector(fld["field"], live_dim, "field.field").astype(float)
+        hist_in = fld["history"]
+        if not isinstance(hist_in, list):
+            raise LivedStateError("field.history must be a list")
+        maxlen = cycle.field.history.maxlen
+        hist = [
+            as_vector(h, live_dim, f"field.history[{i}]").astype(float)
+            for i, h in enumerate(hist_in[-(maxlen or len(hist_in)):])
+        ]
+        from collections import deque
+        staged["field_state"] = {
+            "field": vec,
+            "history": deque(hist, maxlen=maxlen),
+        }
+    staged["attention"] = cycle.rec_attn
+    staged["attention_state"] = None
+    staged["echo"] = cycle.predictor
+    staged["echo_state"] = None
+    if data.get("attention") is not None:
+        staged["attention_state"] = cycle.rec_attn._decode_lived(
+            data["attention"], live_dim
+        )
+    if data.get("echo") is not None:
+        staged["echo_state"] = cycle.predictor._decode_lived(
+            data["echo"], live_dim
+        )
+    staged["watcher"] = cycle.watcher
+    staged["watcher_state"] = None
+    staged["resistance"] = None
+    staged["resistance_state"] = None
+    staged["dependency"] = None
+    staged["dependency_state"] = None
+    if data.get("watcher") is not None:
+        staged["watcher_state"] = cycle.watcher._decode_lived(
+            data["watcher"], live_dim
+        )
+    if gov is not None:
+        if data.get("manipulation") is not None:
+            staged["resistance"] = gov.resistance
+            staged["resistance_state"] = gov.resistance._decode_lived(data["manipulation"])
+        if data.get("dependency") is not None:
+            staged["dependency"] = gov.dependency_monitor
+            staged["dependency_state"] = gov.dependency_monitor._decode_lived(data["dependency"])
+    staged["governance"] = gov
+    staged["pending_state"] = None
+    if gov is not None and data.get("pending") is not None:
+        staged["pending_state"] = gov._decode_lived_pending(data["pending"])
+    staged["dreamer"] = cycle.dreamer
+    staged["dreamer_rng"] = data.get("dreamer_rng")
+    staged["chorus"] = cycle.chorus
+    staged["chorus_rng"] = data.get("chorus_rng")
+    if staged["dreamer_rng"] is not None:
+        require_dict(staged["dreamer_rng"], "dreamer_rng")
+    if staged["chorus_rng"] is not None:
+        require_dict(staged["chorus_rng"], "chorus_rng")
 
     trust_payload = data.get("trust", None)
     bonds_payload = data.get("bonds", None)
@@ -200,6 +321,30 @@ def apply_staged(staged: dict) -> None:
         staged["bond_manager"]._apply_lived(staged["bonds"])
     staged["crystal_store"]._apply_lived(staged["crystals"])
     staged["attractor"]._apply_lived(staged["attractors"])
+    if staged.get("witness_state") is not None:
+        staged["witness"]._apply_lived(staged["witness_state"])
+    if staged.get("emotion_state") is not None:
+        if not staged["emotion"].restore(staged["emotion_state"]):
+            raise LivedStateError("emotion restore refused the snapshot")
+    if staged.get("field_state") is not None:
+        staged["field_obj"].field = staged["field_state"]["field"]
+        staged["field_obj"].history = staged["field_state"]["history"]
+    if staged.get("attention_state") is not None:
+        staged["attention"]._apply_lived(staged["attention_state"])
+    if staged.get("echo_state") is not None:
+        staged["echo"]._apply_lived(staged["echo_state"])
+    if staged.get("watcher_state") is not None:
+        staged["watcher"]._apply_lived(staged["watcher_state"])
+    if staged.get("resistance_state") is not None:
+        staged["resistance"]._apply_lived(staged["resistance_state"])
+    if staged.get("dependency_state") is not None:
+        staged["dependency"]._apply_lived(staged["dependency_state"])
+    if staged.get("pending_state") is not None:
+        staged["governance"]._apply_lived_pending(staged["pending_state"])
+    if staged.get("dreamer_rng") is not None:
+        staged["dreamer"]._rng.bit_generator.state = staged["dreamer_rng"]
+    if staged.get("chorus_rng") is not None and staged.get("chorus") is not None:
+        staged["chorus"]._rng.bit_generator.state = staged["chorus_rng"]
 
 
 def restore_into_cycle(cycle, data: Any) -> None:

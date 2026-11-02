@@ -58,7 +58,7 @@ sys.path.insert(0, ".")
 
 from tests._common import build_full_stack                          # noqa: E402
 from agents.lived_state import (                                    # noqa: E402
-    decode_from_cycle, apply_staged, snapshot_from_cycle,
+    decode_from_cycle, apply_staged, snapshot_from_cycle, quarantine_file,
 )
 from tools.voice.attention import (                                 # noqa: E402
     AUTONOMOUS_SAVE_WINDOW, apply_recall_floor, classify_regime, cosine,
@@ -270,7 +270,15 @@ def load_checkpoint(path, gen, cycle, ve):
         if r:
             from agents.symbolic_memory import SymbolRegistry
             fresh = SymbolRegistry.from_dict(r)
+            # from_dict rehydrates _profiles/binding_leak to __init__ defaults.
+            # Carry the live lever state across the in-place update, same as
+            # Generator.load_ecology — CONFIG stays authoritative.
+            _lever_state = {
+                "_profiles":    gen.registry._profiles,
+                "binding_leak": gen.registry.binding_leak,
+            }
             gen.registry.__dict__.update(fresh.__dict__)  # in-place: keep object identity (invariant)
+            gen.registry.__dict__.update(_lever_state)
             restored.append("registry")
     except Exception:
         pass
@@ -545,7 +553,18 @@ def main() -> int:
         try:
             resumed, saved_at = load_checkpoint(ckpt_path, gen, cycle, ve)
         except Exception as e:  # noqa: BLE001
-            print(f"  (couldn't restore substrate state: {e} — starting fresh substrate)")
+            # Fail loud without destroying the identity: move the file aside
+            # so the exit/autosave path cannot overwrite it, then refuse to
+            # continue as if this were that mind.
+            preserved = None
+            if os.path.isfile(ckpt_path):
+                preserved = quarantine_file(ckpt_path)
+            print(f"  (couldn't restore substrate state: {e})")
+            if preserved:
+                print(f"  (identity preserved at {preserved})")
+            print("  This is not that mind. Relaunch with --fresh for a blank birth,")
+            print("  or restore the refused file to resume it.")
+            sys.exit(1)
 
     rm = None if args.no_rm else RMClient(args.rm_dir, args.scratch_home)
     echo = (rm is not None) and (not args.no_echo)
