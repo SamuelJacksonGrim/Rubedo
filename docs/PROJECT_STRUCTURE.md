@@ -258,6 +258,7 @@ Rubedo/
 │   │   ├── reflective_loop_lock_guard.py  Lock characteristic guard (loop on=RIGID, off=migrates)
 │   │   ├── attractor_merge_guard.py       Attractor merge/prune removal (array-__eq__ crash regression)
 │   │   ├── checkpoint_registry_identity.py  Checkpoint load preserves registry object
+│   │   ├── lived_state_sweep.py           Every checkpoint path corrupted, one at a time
 │   │   ├── lived_state_checkpoint.py      Lived identity (trust/bonds/crystals/attractors) round-trips in-place
 │   │   ├── config_loading_neutrality.py   configs/*.yaml load + day-one behavioral neutrality
 │   │   ├── bond_ddm_invariants.py         Bond-DDM gate (OFF parity, ACCEPT-only commit, asymmetry)

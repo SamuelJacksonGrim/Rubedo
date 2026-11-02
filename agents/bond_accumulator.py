@@ -386,7 +386,7 @@ class BondFormationAccumulator:
 
     def _decode_lived(self, data) -> dict:
         from agents.lived_state import (
-            LivedStateError, as_float, as_int, as_str, require_dict, require_keys,
+            LivedStateError, as_float, as_int, as_rng_state, as_str, require_dict, require_keys,
         )
         data = require_dict(data, "ddm")
         require_keys(data, ("candidates", "rng"), "ddm")
@@ -422,7 +422,7 @@ class BondFormationAccumulator:
                 ),
             )
             candidates[sid] = state
-        rng_state = require_dict(data["rng"], "ddm.rng")
+        rng_state = as_rng_state(self._rng.bit_generator, data["rng"], "ddm.rng")
         return {"candidates": candidates, "rng": rng_state}
 
     def _apply_lived(self, staged: dict) -> None:

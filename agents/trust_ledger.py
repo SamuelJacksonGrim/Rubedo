@@ -480,7 +480,7 @@ class TrustLedger:
                 )
             rec = SymbolTrustRecord(
                 stable_id=stable_id,
-                source_id=str(raw["source_id"]),
+                source_id=as_str(raw["source_id"], "symbol source_id"),
                 symbol_trust=as_float(raw["symbol_trust"], 0.0, 5.0, "symbol_trust"),
                 field_impact_ema=as_float(
                     raw["field_impact_ema"], -1e6, 1e6, "field_impact_ema"

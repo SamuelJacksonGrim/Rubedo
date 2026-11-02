@@ -61,6 +61,27 @@ Hermes's isolated draft (`rubedo-hermes` `1dcef7e`) added `gov=None` and a passi
 
 Witness was the named hole and it closed. Queued `_pending_signals` was the next: without it, decisions split at step 1 even with restored windows. With it, the gate stays with the twin for the whole window.
 
+## Hostile values (`tests/integration/lived_state_sweep.py`)
+
+Python's `json` accepts NaN and Infinity, so a file can carry them. A hand-written attack on a real checkpoint found
+what the checks above missed: emotion scalars at NaN accepted into live state (`restore` clips, and `np.clip` passes NaN
+through); a NaN `emotion.step` and any malformed generator state raising foreign exceptions, the generator ones during
+apply, so a half-restored mind; a witness anchor of 1e30 accepted (finite, and still not a mind); non-numeric
+`echo.weights` raising the wrong type; whole sections (`witness`, the DDM state) deletable with no complaint.
+
+So the gate is a sweep rather than more field checks: every path in a real warmed snapshot (705 paths, ~7,750 variants),
+each corrupted one at a time and sent through JSON. Before the fixes, 282 failures. After, 0: each variant is refused
+with live state unchanged, or accepted with everything finite and the system still stepping.
+
+The rules that came out of it: generator states are proven on a scratch generator at decode, so apply cannot fail on
+them; `as_array` refuses a coordinate over `VECTOR_MAX_ABS` (1e3, a sanity wall: the field reached ~46 over 300 warm
+steps at dim 64, the rest stay near unit scale; revisit if a wider field accumulates further); every section a live
+component needs is required, not optional.
+
+What the sweep still accepts, on purpose, and why that isn't a hole: in-range numbers of the wrong value, and removing a
+real entry (a bond, a crystal, a ghost). Those are well-formed forgeries. Validation can't tell them from a lived file,
+which is the signature question under Open. `emotion.arousal` and `valence` are ignored because they're derived.
+
 ## Interpretation
 Restore is reconstitution of already-lived state into the objects production already built. Formation thresholds are live code: a retune must not refuse a bond that already formed. Planted bonds are caught by the trust-record check and well-formedness, not by re-applying the formation gate. Caps that can be retuned truncate to the live bound (deque semantics / weakest eviction) instead of refusing the mind.
 

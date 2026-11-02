@@ -272,7 +272,7 @@ class PredictiveEcho:
     def _decode_lived(self, data, dim: int) -> dict:
         from collections import deque
         from agents.lived_state import (
-            LivedStateError, as_float, as_int, as_vector, require_dict, require_keys,
+            LivedStateError, as_array, as_float, as_int, as_vector, require_dict, require_keys,
         )
         data = require_dict(data, "echo")
         require_keys(data, ("history", "weights", "error_history", "step"), "echo")
@@ -283,13 +283,7 @@ class PredictiveEcho:
         hist = deque(maxlen=cap)
         for i, h in enumerate(hist_in[-cap:]):
             hist.append(as_vector(h, dim, f"echo.history[{i}]"))
-        weights = np.asarray(data["weights"], dtype=np.float64)
-        if weights.shape != self._weights.shape:
-            raise LivedStateError(
-                f"echo.weights shape {weights.shape} != live {self._weights.shape}"
-            )
-        if not np.all(np.isfinite(weights)):
-            raise LivedStateError("echo.weights is not finite")
+        weights = as_array(data["weights"], self._weights.shape, "echo.weights")
         err_in = data["error_history"]
         if not isinstance(err_in, list):
             raise LivedStateError("echo.error_history must be a list")

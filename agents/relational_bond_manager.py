@@ -720,6 +720,8 @@ class RelationalBondManager:
 
         ddm_staged = None
         ddm_payload = data.get("ddm", None)
+        if ddm_payload is None and self._ddm is not None:
+            raise LivedStateError("the live manager has an accumulator but the checkpoint has no DDM state")
         if ddm_payload is not None:
             if self._ddm is None:
                 raise LivedStateError(

@@ -148,6 +148,9 @@ cooperate correctly."
   `review_core_promotion()` rejection paths and two approval paths.
   The four-case CORE promotion test we ran during Tier 3 building,
   now permanent.
+- `lived_state_sweep.py` — Every path in a real warmed checkpoint, corrupted one at a time (NaN, inf, 1e30, wrong
+  type, key removed): refused cleanly with live state unchanged, or accepted with everything finite and the
+  system still stepping. No foreign exception, and none during apply.
 - `lived_state_checkpoint.py` — Trust, bonds, crystals and attractors
   survive a production-signature bridge checkpoint and a session
   `lived_state.json`. Restore is in-place (DDM and the emotion stability

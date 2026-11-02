@@ -710,7 +710,7 @@ class SelfhoodGovernance:
 
     def _decode_lived_pending(self, data) -> dict:
         from agents.lived_state import (
-            as_bool, as_float, as_str, require_dict, require_keys,
+            as_bool, as_float, as_str, jsonify, require_dict, require_keys,
         )
         from agents.manipulation_resistance import ManipulationSignal, canonical_detector
         data = require_dict(data, "pending")
@@ -728,7 +728,7 @@ class SelfhoodGovernance:
                 detector=canonical_detector(as_str(item["detector"], "detector", max_len=64)),
                 severity=as_float(item["severity"], 0.0, 1.0, "severity"),
                 source_id=None if sid is None else as_str(sid, "pending source"),
-                evidence=dict(require_dict(item["evidence"], "evidence")),
+                evidence=jsonify(require_dict(item["evidence"], "evidence")),
                 timestamp=as_float(item["timestamp"], 0.0, 1e20, "timestamp"),
             ))
         return {

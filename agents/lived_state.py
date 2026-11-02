@@ -28,6 +28,10 @@ logger = logging.getLogger(__name__)
 SCHEMA = 2
 ORIGIN_TOKEN_LIMIT = 256
 ORIGIN_TOKEN_CHARS = 256
+# Largest coordinate a restored vector may hold. The field accumulates and reached ~46 over 300 warm steps
+# at dim 64; everything else stays near unit scale. This is a sanity wall, not a tuned constant: json carries
+# 1e30 as happily as NaN, and a witness anchor of 1e30 is finite and still not a mind.
+VECTOR_MAX_ABS = 1e3
 
 
 class LivedStateError(ValueError):
@@ -111,10 +115,37 @@ def as_str_list(value: Any, name: str) -> List[str]:
 def as_vector(value: Any, dim: int, name: str) -> np.ndarray:
     if not isinstance(value, list) or len(value) != dim:
         raise LivedStateError(f"{name} must be a list of length {dim}")
-    vec = np.asarray(value, dtype=np.float32)
-    if vec.shape != (dim,) or not np.all(np.isfinite(vec)):
-        raise LivedStateError(f"{name} is not a finite vector of dim {dim}")
-    return vec
+    return as_array(value, (dim,), name, np.float32)
+
+
+def as_array(value: Any, shape: tuple, name: str, dtype=np.float64) -> np.ndarray:
+    """A finite numeric array of exactly this shape, within VECTOR_MAX_ABS. Anything else refuses."""
+    try:
+        arr = np.asarray(value, dtype=dtype)
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise LivedStateError(f"{name} is not numeric") from exc
+    if arr.shape != tuple(shape):
+        raise LivedStateError(f"{name} shape {arr.shape} != {tuple(shape)}")
+    if not np.all(np.isfinite(arr)):
+        raise LivedStateError(f"{name} is not finite")
+    if arr.size and float(np.max(np.abs(arr))) > VECTOR_MAX_ABS:
+        raise LivedStateError(f"{name} exceeds {VECTOR_MAX_ABS} in magnitude")
+    return arr
+
+
+def as_rng_state(bit_generator: Any, value: Any, name: str) -> dict:
+    """Prove a generator state loads on a scratch generator of the live type, at decode time.
+
+    Setting a malformed state raises deep inside numpy with assorted types, and doing that during apply would
+    leave a half-restored mind. Returns the state numpy normalized, so apply cannot fail on it.
+    """
+    value = require_dict(value, name)
+    scratch = type(bit_generator)()
+    try:
+        scratch.state = value
+        return scratch.state
+    except Exception as exc:  # noqa: BLE001 - numpy raises Value/Type/Key/Overflow by field
+        raise LivedStateError(f"{name} is not a valid generator state: {exc}") from exc
 
 
 def jsonify(obj: Any) -> Any:
@@ -193,10 +224,18 @@ def snapshot_from_cycle(cycle) -> dict:
 def decode_from_cycle(cycle, data: Any) -> dict:
     """Validate the whole bundle. Returns staging; does not mutate cycle."""
     data = require_dict(data, "lived")
-    require_keys(data, ("schema", "dim", "crystals", "attractors"), "lived")
-    schema = as_int(data["schema"], 1, SCHEMA, "lived.schema")
-    if schema < 1 or schema > SCHEMA:
-        raise LivedStateError(f"unknown lived-state schema {schema}")
+    require_keys(data, ("schema", "dim", "crystals", "attractors", "witness", "emotion", "field", "attention",
+                        "echo", "watcher", "dreamer_rng"), "lived")
+    as_int(data["schema"], SCHEMA, SCHEMA, "lived.schema")
+    if cycle.governance is not None:
+        require_keys(data, ("trust", "bonds", "manipulation", "dependency", "pending"), "lived")
+    if cycle.chorus is not None:
+        require_keys(data, ("chorus_rng",), "lived")
+    for section in ("witness", "emotion", "field", "attention", "echo", "watcher", "dreamer_rng") + (
+            ("trust", "bonds", "manipulation", "dependency", "pending") if cycle.governance is not None else ()) + (
+            ("chorus_rng",) if cycle.chorus is not None else ()):
+        if data[section] is None:
+            raise LivedStateError(f"lived section {section!r} is empty")
     dim = as_int(data["dim"], 1, 1_000_000, "lived.dim")
     live_dim = int(cycle.dim)
     if dim != live_dim:
@@ -229,11 +268,14 @@ def decode_from_cycle(cycle, data: Any) -> dict:
         em = require_dict(data["emotion"], "emotion")
         # EmotionalGradient.restore is a no-op (False) on old arousal/valence
         # only dicts. That must fail loud here, not skip.
-        if not all(k in em for k in (
-            "curiosity", "wonder", "joy", "tension", "boredom", "stability",
-        )):
+        scalars = ("curiosity", "wonder", "joy", "tension", "boredom", "stability")
+        if not all(k in em for k in scalars):
             raise LivedStateError("emotion snapshot missing the six scalars")
-        staged["emotion_state"] = em
+        require_keys(em, ("step",), "emotion")
+        # Validated here, not in restore(): restore clips, and np.clip passes NaN straight through.
+        # arousal/valence are derived and restore ignores them, so they are not carried.
+        staged["emotion_state"] = {k: as_float(em[k], 0.0, 1.0, f"emotion.{k}") for k in scalars}
+        staged["emotion_state"]["step"] = as_int(em["step"], 0, 10**9, "emotion.step")
     if data.get("field") is not None:
         fld = require_dict(data["field"], "field")
         require_keys(fld, ("field", "history"), "field")
@@ -285,13 +327,11 @@ def decode_from_cycle(cycle, data: Any) -> dict:
     if gov is not None and data.get("pending") is not None:
         staged["pending_state"] = gov._decode_lived_pending(data["pending"])
     staged["dreamer"] = cycle.dreamer
-    staged["dreamer_rng"] = data.get("dreamer_rng")
+    staged["dreamer_rng"] = as_rng_state(cycle.dreamer._rng.bit_generator, data["dreamer_rng"], "dreamer_rng")
     staged["chorus"] = cycle.chorus
-    staged["chorus_rng"] = data.get("chorus_rng")
-    if staged["dreamer_rng"] is not None:
-        require_dict(staged["dreamer_rng"], "dreamer_rng")
-    if staged["chorus_rng"] is not None:
-        require_dict(staged["chorus_rng"], "chorus_rng")
+    staged["chorus_rng"] = None
+    if cycle.chorus is not None:
+        staged["chorus_rng"] = as_rng_state(cycle.chorus._rng.bit_generator, data["chorus_rng"], "chorus_rng")
 
     trust_payload = data.get("trust", None)
     bonds_payload = data.get("bonds", None)
