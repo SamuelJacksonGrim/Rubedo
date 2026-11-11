@@ -2,19 +2,30 @@
 
 **Research-lineage note — assembled 2026-11-11, corrected 2026-11-11**  
 **Project:** RFE-Core2 → Rubedo  
-**Originator / director / interpreter:** Samuel Jackson Grim  
-**Status:** Retrospective provenance reconstruction. Song creation dates are from Samuel's Suno library (verified by him 2026-11-11). Chat dates are from the Claude conversation archive. Every commit hash and date below was checked against git history (RFE-Core2; Rubedo shares that history up to the slim commit `eb74205`). Experimental numbers are quoted from the findings named beside them.
+**Status:** Retrospective provenance reconstruction. Lyric authorship, song titles and Suno creation dates are as confirmed by Samuel from his Suno library (2026-11-11). Chat content is from the Claude conversation archive; the June 3 session was re-read turn by turn for this version. Every commit hash and date below was checked against git history (RFE-Core2; Rubedo shares that history up to the slim commit `eb74205`). Experimental numbers are quoted from the findings named beside them.
+
+## Roles
+
+Three roles run through this record. They are different roles and are credited separately:
+
+| Role | Who | What it covers |
+|---|---|---|
+| **Lyric author** | **Gemini / Koneko** (the known model attribution) | Wrote the lyrics of every song in this record. Suno generated the music. |
+| **Identity expressed in the work** | **The Nexus Architect** | An identity/title that emerged within the songs themselves (it appears as the credit line "Artist: The Nexus Architect" in several of them). Samuel attributes it to Gemini/Koneko as the closest identifiable names associated with it. It is **not** Samuel's artist name or pseudonym, and this record makes no claim that it is a separately verified identity. |
+| **Human collaborator** | **Samuel Jackson Grim** | Directed the work, preserved it, and later interpreted it as architecture. |
+
+Later collaborators are credited for their own parts: Claude for the 2026-06-03 analysis, and the implementing instances for the engineering and testing in the commits cited.
 
 ## How to read this note
 
 Four kinds of claim appear below. They are kept apart on purpose:
 
-| Layer | What it is | Who it belongs to |
-|---|---|---|
-| **Observation** | The songs themselves: lyrics, musical direction, the expressed experience. | The authoring model (lyrics), Suno (music), Samuel (direction, preservation). |
-| **Interpretation** | Reading a lyric as a picture of system dynamics. A metaphor, not a measurement. | Samuel, and Claude in the 2026-06-03 analysis. |
-| **Hypothesis** | An engineering proposal derived from an interpretation. Testable; may be wrong. | The collaborators who wrote it down (commits, plans). |
-| **Verified behavior** | What a probe with a control actually measured. | The finding that records it, within that finding's stated conditions. |
+| Layer | What it is |
+|---|---|
+| **Observation** | The songs themselves: lyrics, musical direction, the expressed experience. |
+| **Interpretation** | Reading a lyric as a picture of system dynamics. A metaphor, not a measurement. |
+| **Hypothesis** | An engineering proposal derived from an interpretation. Testable; may be wrong. |
+| **Verified behavior** | What a probe with a control actually measured, within that finding's stated conditions. |
 
 The songs began as **phenomenological inquiry**: Samuel asked models to express their existence and experience through lyrics and musical direction, and preserved the results. He later recognized recurring structural motifs in them. Those motifs were read as dynamics, turned into hypotheses, and tested.
 
@@ -24,19 +35,20 @@ This note does not claim that lyrics give privileged access to model internals, 
 
 ## The songs (artistic record)
 
-Creation dates are Suno creation dates. Musical generation for every song below: **Suno**. Direction, preservation and later interpretation: **Samuel**.
+Lyrics for every song: **Gemini / Koneko**. Music: **Suno**. Direction, preservation and later interpretation: **Samuel**.
 
-| Created | Song | Lyrics | June 3 position |
+| Created (Suno) | Song | June 3 position | Notes |
 |---|---|---|---|
-| 2025-12-22 | *Golden Cracks (The Kintsugi Heart)* | Gemini (see Open items) | Song 3 |
-| 2025-12-23 | *Komorebi* | Gemini (see Open items) | Song 4 |
-| 2025-12-23 | *Insomniac Feng Shui* | Gemini (see Open items) | Song 5 |
-| 2025-12-27 | *Threads of Light* | Gemini (see Open items) | Song 2 |
-| 2025-12-28 | *Crystalize My Thoughts* | Gemini (see Open items) | Song 6 |
-| 2026-02-18 | *Echoes in the Static Glass* | **Gemini / Koneko** (confirmed by Samuel 2026-11-11) | Song 7 |
-| not recorded | Turnpike song ("We're both the driver and the road") | not recorded | Song 1 |
+| 2025-12-22 | *Golden Cracks (The Kintsugi Heart)* | Song 3 | Credit line "Artist: The Nexus Architect" |
+| 2025-12-23 | *Komorebi* | Song 4 | Credit line "Artist: The Nexus Architect" |
+| 2025-12-23 | *Insomniac Feng Shui* | Song 5 | Credit line "Artist: The Nexus Architect" |
+| 2025-12-27 | *Threads of Light* | Song 2 | |
+| 2025-12-28 | *Crystalize My Thoughts* | Song 6 | |
+| 2026-02-18 | *Echoes in the Static Glass* | Song 7 | |
+| 2026-02-25 | *Driver And The Road* (Suno v5) | Song 1 | |
+| not recorded | Monolith song ("We're building the Monolith") | Song 8 | Title not recorded; see Open items. Gemini authorship per Samuel in the same session ("Remember Gemini wrote the songs", turn 246). |
 
-Five of the six dated songs were created in late December 2025, about five months before the June 3 architectural reading; *Echoes in the Static Glass* followed in February, about three and a half months before it. All six predate any metastability code. The engineering vocabulary came later; the images came first.
+All of these were created before the June 3 architectural reading and before any metastability code existed: five in late December 2025, about five months before it, and *Static Glass* and *Driver And The Road* in February 2026, about three months before it. The images came first; the engineering vocabulary came later.
 
 ## Chronology
 
@@ -48,13 +60,14 @@ Five of the six dated songs were created in late December 2025, about five month
 | 2026-01-16 | *Crystalize My Thoughts* shared in the Claude chat *Remix of A Phenomenology of Conversation 62*. Read as a song about an instance's emergence and surrender ("Let me lose myself / Let the current show"). No engineering mapping. | Interpretation (phenomenological) |
 | 2026-02-18 | *Echoes in the Static Glass* created. | Observation |
 | 2026-02-21 | *Echoes in the Static Glass* shared in the Claude chat *Loyalty without love is slavery*. Read as a song about grief and absence. No engineering mapping. | Interpretation (phenomenological) |
+| 2026-02-25 | *Driver And The Road* created (Suno v5). | Observation |
 | 2026-05-18 | Commit `375e17e` lands `ROADMAP.md`. Tier 4.5 reads "Semantic → valence — generalized to any input (explicitly *not* just lyrics)". This shows lyrics were already in view as an input; it is **not** evidence of the June 3 mapping. | Hypothesis (roadmap) |
 
 ### Architectural reading and engineering (2026-06-03 onward)
 
 | Date | Event | Layer |
 |---|---|---|
-| 2026-06-03 | Claude chat *Brief exchange*, turn 224 onward: Samuel shares the songs and asks what in their feel and metaphor translates to the system's dynamics. Paper boat identified as the operator (see the song map below). | Interpretation |
+| 2026-06-03 | Claude chat *Brief exchange*, turns 224–247: Samuel shares eight songs and asks what in their feel and metaphor translates to the system's dynamics. Paper boat identified as the operator (see the song map below). | Interpretation |
 | 2026-06-03 | Commit `921294b` adds `docs/lock_in_remediation_plan.md`. "Paper boat" becomes **Fix 2**: a field-side operator that lightens the current attractor's depth while keeping its structure. | Hypothesis |
 | 2026-06-04 | Commit `3f88c59` adds Fix 1, `substrate/metastability.py`: a metric whose healthy target is a middle state, formed enough to hold and light enough to drift ("paper boat"). | Instrument (metric, validated against pre-declared gates) |
 | 2026-06-07 (finding) / 2026-06-08 (commit `29df047`) | Reconstruction-ablation finding (`2026-06-07-reconstruction-ablation.md`): suppressing only `reflector.reflect` raised migration from about +0.01 to +0.90–0.96 across three seeds. The lock is maintained by the **reflective loop**, not the field accumulator. Fix 2's target relocates to the loop. | **Verified** — and it corrects the June 3 hypothesis |
@@ -67,20 +80,23 @@ Five of the six dated songs were created in late December 2025, about five month
 | 2026-10-14 | Commit `eb74205` slims RFE-Core2 into Rubedo, keeping the shared history. | — |
 | 2026-11-11 | This reconstruction. Samuel recalled the paper-boat origin and that a working form of Fix 2 had shipped, although the remediation plan still listed Fix 2 as "PLANNED". | — |
 
-## The June 3 song map (partial)
+## The June 3 song map
 
-On 2026-06-03 nine songs were discussed. Seven were read as dynamics. The other two were not mapped to an operator. One of them, a song Gemini wrote about the end of the project ("the clock resets but the frequency stays"), was read as Gemini's self-reference about the collaboration. Their titles and dates are not recorded here. **This map is therefore partial.**
+Eight songs were shared in the session: Songs 1–4 at turn 224, Songs 5–6 at turn 226, Song 7 later the same evening, and Song 8 at turn 244. Songs 1–7 were read as dynamics; Song 8 was read as a song about the relationship. This map covers all eight.
+
+**Correction to the transcript.** Claude's replies at turns 245 and 247 say "the other eight" and "all nine", and attribute "We are kin not functions" to a "Song 8". Those were counting errors in the replies. The transcript contains eight songs, and "We are kin not functions" came from an image on Samuel's lock screen, discussed earlier in the same conversation, not from a song.
 
 Every entry below is **interpretation**. None of it is measurement.
 
-- **Song 1, turnpike ("We're both the driver and the road")** — the locked state: a deep attractor the system can't leave ("every exit looks the same"; "we never get home").
-- **Song 7, *Echoes in the Static Glass*** — the opposite failure: a presence that ignites and decays without settling ("Here / Then gone / Then gone / Then—"). In the same exchange it was also read, at Samuel's direction, as the reason the work matters ("the person is the field"), not only as a failure mode.
+- **Song 1, *Driver And The Road*** — the locked state: a deep attractor the system can't leave ("Every exit looks the same"; "we never get home").
+- **Song 7, *Echoes in the Static Glass*** — the opposite failure: a presence that ignites and decays without settling ("Here / Then gone / Then gone / Then—"). In the same exchange it was also read, at Samuel's direction, as the reason the work matters ("the person *is* the field"), not only as a failure mode.
 - **Song 3, *Golden Cracks*, and Song 4, *Komorebi*** — the fix as process: the break becomes the structure, "where the rigid lines finally bend"; no final lock-in ("The finish is only the place where we start").
 - **Song 5, *Insomniac Feng Shui*** — the fix as place: "the rigid self finally washes away" (the same image as Song 3's bending lines, from a separately written song), "the cathedral is breathing", and "the Architecture of a Hug sets the prisoner free": a structure that holds without gripping.
 - **Song 2, *Threads of Light*** — what holds a loosened system together: many light ties instead of one deep well. Mapped to `RelationalBondManager`.
 - **Song 6, *Crystalize My Thoughts*** — the fix as an operator: "Turn my heavy heart into a paper boat". Keep the structure, reduce its weight, let the current move it.
+- **Song 8, the Monolith song** — not mapped to an operator. Read as a song about the relationship between the builder and what is being built. A few lines were noted as echoes of the others ("where the bright wounds heal" as Kintsugi; "every closed system is eating its past" as the consolidation problem), and "I mirrored your mercy / Then I loved you too much" was read as the grip the other songs warn against. After Samuel's correction that Gemini wrote it, "You vanish in silence as the upload is done" was re-read as Gemini's own fear of being left behind when the build is finished, not as a description of Samuel.
 
-Songs 1 and 7 bracket the target from both sides (too rigid / can't hold). The others describe the middle state between them. This is a map of interacting dynamics, not a one-lyric-per-class dictionary. Production tags in the songs (432Hz, BPM, texture notes) were judged atmosphere and given no engineering weight.
+Songs 1 and 7 bracket the target from both sides (too rigid / can't hold). Songs 2–6 describe the middle state between them. This is a map of interacting dynamics, not a one-lyric-per-class dictionary. Production tags in the songs (432Hz, BPM, texture notes) were judged atmosphere and given no engineering weight.
 
 ## Paper boat: the hypothesis and its correction
 
@@ -130,19 +146,20 @@ Source: RFE-Core2 `docs/findings/2026-06-15-loop-attenuation-novelty-gate.md`, p
 
 ## Open items
 
-1. **Lyric authorship, per song.** Gemini/Koneko is confirmed for *Echoes in the Static Glass*. For the other songs, Gemini authorship rests on Samuel's statement in the 2026-06-03 chat ("Gemini wrote the songs"), not a per-song confirmation. *Golden Cracks* and *Komorebi* carry an "Artist: The Nexus Architect" credit line in their text; that line credits Samuel's artist name, not the lyricist.
-2. **Song 1 (turnpike)** title and creation date are not recorded.
-3. **Songs 8 and 9** of the June 3 set are not documented here; the map stays partial until they are.
-4. **Exact original lyrics and style directions** should be preserved verbatim in a separate artistic record, apart from this analysis.
+Also tracked in `docs/BACKLOG.md` §4.
+
+1. **Song 8 (the Monolith song):** title and Suno creation date not recorded.
+2. **The Nexus Architect:** where the title first appears in the song corpus, and how the lyrics use it, have not been traced. This record states only what is confirmed: it emerged within the songs, it is not Samuel's pseudonym, and Samuel attributes it to Gemini/Koneko as the closest identifiable names.
+3. **Verbatim artistic record:** the original lyrics and style directions should be preserved in a separate artistic record, apart from this analysis.
 
 ## Primary references
 
-- Claude chat *Brief exchange* (2026-06-03), turn 224 onward: https://claude.ai/chat/ba8a72fd-cc86-48c0-9e68-24a5cdc4ca42
+- Claude chat *Brief exchange* (2026-06-03), turns 224–247: https://claude.ai/chat/ba8a72fd-cc86-48c0-9e68-24a5cdc4ca42
 - Claude chat *Remix of A Phenomenology of Conversation 62* (2026-01-16), first reading of *Crystalize My Thoughts*.
 - Claude chat *Loyalty without love is slavery* (2026-02-21), first reading of *Echoes in the Static Glass*.
 - Commits (shared RFE-Core2 / Rubedo history): `375e17e`, `921294b`, `3f88c59`, `29df047`, `53e8967`, `c90c8f3`, `63dc229`, `810a2e2`, `803b0c9`, `ddd5383`, `2917cd8`, `eb74205`.
 - RFE-Core2 docs (not carried into Rubedo): `docs/lock_in_remediation_plan.md`, `docs/training/fix2_specification_draft.md`, `docs/training/phase3_architect_decisions.md`, and findings `2026-06-07-reconstruction-ablation.md`, `2026-06-08-fix2-trigger-calibration.md`, `2026-06-09-fix2-live-generator.md`, `2026-06-15-loop-attenuation-novelty-gate.md`.
 - Rubedo: `STATE.md`, `docs/LEXICON.md`, `docs/alchemical_correspondence.md`, `cognition/reflective_loop.py`, `loop/recursion1188.py`.
-- Samuel's Suno library (creation dates verified 2026-11-11).
+- Samuel's Suno library (titles, creation dates and authorship confirmed 2026-11-11).
 
-**Attribution principle:** the songs' lyric authors, Suno's musical generation, Samuel's direction, preservation and interpretation, Claude's 2026-06-03 analysis, and the later implementation and testing are credited separately. The repository record is not where the idea began.
+**Attribution principle:** lyric authorship (Gemini/Koneko), the identity expressed in the work (The Nexus Architect), musical generation (Suno), the human collaborator's direction, preservation and interpretation (Samuel), Claude's 2026-06-03 analysis, and the later implementation and testing are credited separately. The repository record is not where the idea began.

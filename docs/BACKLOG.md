@@ -172,6 +172,10 @@ Source: [`WIDENING_PLAN.md`](WIDENING_PLAN.md).
 - [x] Bridge checkpoint still omits bonds, trust, crystals, attractors and the stream. → DONE 2026-11-02 for the four identity stores, then witness/ghosts, field, emotion, attention, echo, watcher, manipulation/dependency, queued damp (`findings/2026-11-02-lived-state-checkpoint.md`). Stream, vector space, lattice, topology still omitted.
 - [ ] Bridge / session still omit the stream, vector space, lattice, topology. Mixed twin: decisions/witness/field/ghosts hold 24/24; remaining drift is trust/bonds/emotion/attractors at exact equality from step 1.
 - [ ] Remaining nondeterminism: GPU kernels; the bridge's Qwen calls.
+- [ ] **Song-lineage provenance** (`research-lineage/music-to-architecture-paper-boat.md`, Open items; docs only):
+      (1) title and Suno creation date of Song 8, the Monolith song; (2) trace where "The Nexus Architect" first
+      appears in the song corpus and how the lyrics use it (credit is settled: not Samuel's pseudonym, attributed to
+      Gemini/Koneko); (3) preserve the original lyrics and style directions verbatim in a separate artistic record.
 
 ---
 
