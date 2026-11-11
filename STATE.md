@@ -67,7 +67,13 @@ Each line is a closed question. The finding is authoritative; the loss if you re
 - **⊘ consumer** — research lever, off by default. cc-confound is LIFTED; graduation now gated only on an
   un-run multi-seed all-ON composition probe (`BACKLOG.md` §5) **and** the 2026-07-03 ruling that
   containment levers stay scaffolds by design.
-- **Fix 2 (reflective-loop loosening)** — deferred as premature; loosening now would admit dropout noise.
+- **Fix 2 (reflective-loop governor)** — the loosening half SHIPPED: novelty-gated loop attenuation,
+  default-ON since 2026-06-20 (see "What it CAN DO"). The full governor (≥2-source gate,
+  common-mode-aware trigger) is SHELVED by Phase 3 Decision 3 pending the §6.3 gain-sign verdict
+  (conditional so far — reachable range only) and a re-measurement on a trained checkpoint. Spec and
+  history live in RFE-Core2: `docs/training/fix2_specification_draft.md`,
+  `docs/lock_in_remediation_plan.md`. (Superseded: the old "would admit dropout noise" reason —
+  eval-mode is the operating regime.)
 - **Fix 0-B (diversity fitness counterweight)** — built, opt-in; gates on a composed-runtime run before graduation.
 - **Lantern** (Rust hypergraph memory) — deferred substrate; a port is "strictly worse until the design is proven."
 - **Boot-checkpoint adoption** — RULED adopt (2026-07-03), implementation queued.
